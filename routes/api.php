@@ -17,7 +17,7 @@ $api->version('v1', [
 
         //微信sdk
         $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
-        $api->get('we/userinfo', 'WeController@userinfo')->name('api.we.userinfo');
+        $api->get('userinfo', 'WeController@userinfo')->name('api.we.userinfo');
 
         $api->get('time', 'CheckController@index')->name('api.check.time');
         // 登录
