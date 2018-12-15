@@ -15,11 +15,9 @@ $api->version('v1', [
     ], function ($api) {
         $api->get('version', function () {return response(['version'=>'v1.02']);});
 
-
         //微信sdk
-        $api->post('wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
-        $api->get('﻿userinfo', 'WeController@userinfo')->name('api.we.userinfo');
-
+        $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
+        $api->get('we/userinfo', 'WeController@userinfo')->name('api.we.userinfo');
 
         $api->get('time', 'CheckController@index')->name('api.check.time');
         // 登录
