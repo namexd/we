@@ -18,10 +18,9 @@ $api->version('v1', [
 
         //微信sdk
         $api->post('wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
-        //微信网页授权
-        $api->get('wxauth', 'WeController@wxauth')->name('api.we.wxauth');
+        $api->get('﻿userinfo', 'WeController@userinfo')->name('api.we.userinfo');
 
-        
+
         $api->get('time', 'CheckController@index')->name('api.check.time');
         // 登录
         $api->post('authorizations', 'AuthorizationsController@store')

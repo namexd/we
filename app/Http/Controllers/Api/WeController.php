@@ -18,6 +18,10 @@ class WeController extends Controller
     {
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $oauth = $app->oauth;
-        dump($oauth);
+        return $oauth->redirect();
+    }
+    public function userinfo()
+    {
+       dump(session('userInfo'));
     }
 }

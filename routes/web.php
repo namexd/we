@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+//微信网页授权
+Route::get('we/oauth', 'WeController@oauth')->name('we.oauth');
+Route::get('we/callback', 'WeController@callback')->name('we.callback');
