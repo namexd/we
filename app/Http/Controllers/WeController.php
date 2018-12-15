@@ -100,9 +100,11 @@ class WeController extends Controller
                 'weapp_id' => $this->weapp_id,
                 'openid' => $userInfo['original']['openid'],
                 'unionid' => $userInfo['original']['unionid'],
+                'unionid' => $userInfo['original']['unionid'],
+//                'weuser_id' => $user->weuser->id,
             ];
             $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
-            $user->weuser()->weappHasWeuser()->save($weappHasWeuser);
+            $user->weappHasWeuser()->save($weappHasWeuser);
         }
         dd($user);
 

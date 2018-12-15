@@ -32,4 +32,8 @@ class User extends Authenticatable
     {
         return $this->HasOne(Weuser::class);
     }
+    public function weappHasWeuser()
+    {
+        return $this->hasManyThrough(WeappHasWeuser::class,Weuser::class);
+    }
 }
