@@ -16,6 +16,7 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name', 'email', 'password',
+        'phone','phone_verified','realname'
     ];
 
     /**
@@ -26,4 +27,9 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function weuser()
+    {
+        return $this->HasOne(Weuser::class);
+    }
 }
