@@ -10,6 +10,8 @@ $api->version('v1', [
     $api->get('version',function(){
        return 'v1';
     });
-    $api->post('wxconfig', 'WeController@wxconfig')
-        ->name('api.we.wxconfig');
+    //微信sdk
+    $api->post('wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
+    //微信网页授权
+    $api->get('wxauth', 'WeController@wxauth')->name('api.we.wxauth');
 });

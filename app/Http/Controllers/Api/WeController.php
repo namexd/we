@@ -10,6 +10,14 @@ class WeController extends Controller
     public function wxconfig()
     {
         $app = Factory::officialAccount(config('wechat.official_account.default'));
-        return $app->jssdk->buildConfig(array('onMenuShareQQ', 'onMenuShareWeibo'), true) ;
+        $jsApiList = ['onMenuShareQQ', 'onMenuShareWeibo'];
+        return $app->jssdk->buildConfig($jsApiList, false) ;
+    }
+
+    public function wxauth()
+    {
+        $app = Factory::officialAccount(config('wechat.official_account.default'));
+        $oauth = $app->oauth;
+        dump($oauth);
     }
 }
