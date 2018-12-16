@@ -16,11 +16,24 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     private $weapp_id = 1;
+    private $redirect_url = '/ucenter/#/';
 
     public function oauth()
     {
+        $scopes = 'snsapi_base';
+        if(request()->scopes)
+        {
+            $scopes = request()->scopes;
+        }
+        if(request()->redirect_url)
+        {
+            session(['redirect_url' => urldecode(request()->redirect_url)]);
+        }else{
+            session(['redirect_url' => $this->redirect_url]);
+        }
         $app = Factory::officialAccount(config('wechat.official_account.default'));
-        $oauth = $app->oauth;
+        $oauth = $app->oauth->scopes([$scopes]);
+//        $oauth = $app->oauth;
         return $oauth->redirect();
     }
 
@@ -32,31 +45,15 @@ class WeController extends Controller
         // 获取 OAuth 授权结果用户信息
         $wxuser = $oauth->user();
         $userInfo = $wxuser->toArray();
-        $array = [
-            "id" => "o2uqWjhdiLr2_p01L2tFIriUbPNg",
-            "name" => "刘念",
-            "nickname" => "刘念",
-            "avatar" => "http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJZHS11gEJuic5alkovVheP91WiauEx6b77icyM3RF7GTS4Cuu5ABL2Hs89Irwmnu8U9ja04Jk90O62g/132",
-            "email" => null,
-            "original" => [
-                "openid" => "o2uqWjhdiLr2_p01L2tFIriUbPNg",
-                "nickname" => "刘念",
-                "sex" => 1,
-                "language" => "zh_CN",
-                "city" => "嘉定",
-                "province" => "上海",
-                "country" => "中国",
-                "headimgurl" => "http://thirdwx.qlogo.cn/mmopen/vi_32/PiajxSqBRaEJZHS11gEJuic5alkovVheP91WiauEx6b77icyM3RF7GTS4Cuu5ABL2Hs89Irwmnu8U9ja04Jk90O62g/132",
-                "privilege" => [],
-                "unionid" => "o-zI_uJQvX8vh43xjdJ6iSNfy2ao",
-                "provider" => "WeChat"
-            ]
-        ];
-
         // 检测we.openid 是否存
         $hasWeuser = WeappHasWeuser::where('weapp_id', $this->weapp_id)->where('openid', $userInfo['original']['openid'])->first();
+        //如果简单版本的snsapi_base获取到的openid不存着数据库中，需要再次请求获取用户全部资料
+        if(!$hasWeuser and !isset($userInfo['original']['unionid']))
+        {
+            return redirect('/we/oauth?scopes=snsapi_userinfo');
+        }
         if (!$hasWeuser) {
-            // 检测we.unionid 是否存
+            // 改用检测we.unionid 是否存
             $hasWeuser = WeappHasWeuser::where('unionid', $userInfo['original']['unionid'])->first();
             // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
             if ($hasWeuser) {
@@ -100,16 +97,16 @@ class WeController extends Controller
                 'weapp_id' => $this->weapp_id,
                 'openid' => $userInfo['original']['openid'],
                 'unionid' => $userInfo['original']['unionid'],
-                'unionid' => $userInfo['original']['unionid'],
-//                'weuser_id' => $user->weuser->id,
+                'weuser_id' => $user->weuser->id,
             ];
             $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
-            $user->weappHasWeuser()->save($weappHasWeuser);
+            $weappHasWeuser->save();
+//            $user->weappHasWeuser()->save($weappHasWeuser);
         }
-        dd($user);
+//        dd($user);
 
         // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
-        return redirect('/ucenter?openid=' . $userInfo);
+        return redirect(session('redirect_url').'?openid=' . $userInfo['original']['openid']);
 
     }
 

@@ -19,8 +19,4 @@ class WeController extends Controller
         $oauth = $app->oauth;
         return $oauth->redirect();
     }
-    public function userinfo()
-    {
-       dump(session('userInfo'));
-    }
 }

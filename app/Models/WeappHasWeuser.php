@@ -22,8 +22,4 @@ class WeappHasWeuser extends Model
         return $this->belongsTo(Weapp::class);
     }
 
-    public function user()
-    {
-        return $this->belongsTo(User::class)->using(Weuser::class);
-    }
 }
