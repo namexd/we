@@ -45,6 +45,7 @@ class WeController extends Controller
         // 获取 OAuth 授权结果用户信息
         $wxuser = $oauth->user();
         $userInfo = $wxuser->toArray();
+
         // 检测we.openid 是否存
         $hasWeuser = WeappHasWeuser::where('weapp_id', $this->weapp_id)->where('openid', $userInfo['original']['openid'])->first();
         //如果简单版本的snsapi_base获取到的openid不存着数据库中，需要再次请求获取用户全部资料
@@ -104,9 +105,9 @@ class WeController extends Controller
 //            $user->weappHasWeuser()->save($weappHasWeuser);
         }
 //        dd($user);
-
+        $access_token = $userInfo['original']['access_token'];
         // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
-        return redirect(session('redirect_url').'?openid=' . $userInfo['original']['openid']);
+        return redirect(session('redirect_url').'?openid=' . $userInfo['original']['openid'].'&access_token='.$access_token);
 
     }
 
