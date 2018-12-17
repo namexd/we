@@ -18,6 +18,7 @@
         "overtrue/laravel-wechat": "~4.0",
         "overtrue/wechat": "~4.0",
         "socialiteproviders/weixin": "^4.0",
+        "spatie/laravel-permission": "~2.7",
         "tymon/jwt-auth": "1.0.0-rc.3"
     },
     "require-dev": {
