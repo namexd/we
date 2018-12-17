@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\SocialAuthorizationRequest;
+use App\Models\WeappHasWeuser;
 use Auth;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -25,7 +26,6 @@ class AuthorizationsController extends Controller
                 $token = array_get($response, 'access_token');
             } else {
                 $token = $request->access_token;
-
                 if ($type == 'weixin') {
                     $driver->setOpenId($request->openid);
                 }
@@ -33,7 +33,7 @@ class AuthorizationsController extends Controller
 
             $oauthUser = $driver->userFromToken($token);
         } catch (\Exception $e) {
-            return $this->response->errorUnauthorized('参数错误，未获取用户信息');
+            return $this->response->errorUnauthorized('参数错误，请重新登录');
         }
 
         switch ($type) {
@@ -41,25 +41,29 @@ class AuthorizationsController extends Controller
                 $unionid = $oauthUser->offsetExists('unionid') ? $oauthUser->offsetGet('unionid') : null;
 
                 if ($unionid) {
-                    $user = User::where('weixin_unionid', $unionid)->first();
+                    $hasUser = WeappHasWeuser::where('unionid', $unionid)->first();
                 } else {
-                    $user = User::where('weixin_openid', $oauthUser->getId())->first();
+                    $hasUser = WeappHasWeuser::where('openid', $oauthUser->getId())->first();
                 }
 
                 // 没有用户，默认创建一个用户
-                if (!$user) {
-                    $user = User::create([
-                        'name' => $oauthUser->getNickname(),
-                        'avatar' => $oauthUser->getAvatar(),
-                        'weixin_openid' => $oauthUser->getId(),
-                        'weixin_unionid' => $unionid,
-                    ]);
+                if (!$hasUser) {
+                    return $this->response->errorUnauthorized('用户不存在');
+//                    $user = User::create([
+//                        'name' => $oauthUser->getNickname(),
+//                        'avatar' => $oauthUser->getAvatar(),
+//                        'weixin_openid' => $oauthUser->getId(),
+//                        'weixin_unionid' => $unionid,
+//                    ]);
+                }else{
+                    $user = $hasUser->weuser->user;
                 }
 
                 break;
         }
 
-        return $this->response->array(['token' => $user->id]);
+        $token = Auth::guard('api')->fromUser($user);
+        return $this->respondWithToken($token)->setStatusCode(201);
     }
     public function store(AuthorizationRequest $request)
     {
