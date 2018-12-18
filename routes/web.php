@@ -18,3 +18,4 @@ Route::get('/', function () {
 //微信网页授权
 Route::get('we/oauth', 'WeController@oauth')->name('we.oauth');
 Route::get('we/callback', 'WeController@callback')->name('we.callback');
+Route::get('we/test', 'WeController@test')->name('we.test');

@@ -18,6 +18,12 @@ class WeController extends Controller
     private $weapp_id = 1;
     private $redirect_url = '/ucenter/#/';
 
+    public function test()
+    {
+        $app = Factory::officialAccount(config('wechat.official_account.default'));
+        $list = $app->customer_service->list();
+        dd($list);
+    }
     public function oauth()
     {
         $scopes = 'snsapi_base';
