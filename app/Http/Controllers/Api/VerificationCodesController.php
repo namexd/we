@@ -10,6 +10,8 @@ class VerificationCodesController extends Controller
 {
     public function store(VerificationCodeRequest $request)
     {
+        dump($expiredAt = now()->addMinutes(10));
+        die();
         $phone = $request->phone;
 
         // 生成4位随机数，左侧补0
@@ -21,8 +23,8 @@ class VerificationCodesController extends Controller
             $message = '短信发送异常';
             return $this->response->errorInternal($message ?: '短信发送异常');
         }
-
         $key = 'verificationCode_'.str_random(15);
+
         $expiredAt = now()->addMinutes(10);
         // 缓存验证码 10分钟过期。
         \Cache::put($key, ['phone' => $phone, 'code' => $code], $expiredAt);
