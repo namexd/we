@@ -37,7 +37,8 @@ $api->version('v1', [
         // 删除token
         $api->delete('authorizations/current', 'AuthorizationsController@destroy')
             ->name('api.authorizations.destroy');
-
+        //测试
+        $api->get('test','TestController@index')->name('api.test');
 
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {

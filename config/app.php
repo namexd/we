@@ -177,6 +177,10 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        //阿里云短信接口
+        Curder\LaravelAliyunSms\ServiceProvider::class,
+
+
     ],
 
     /*
