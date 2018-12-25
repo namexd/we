@@ -37,6 +37,8 @@ $api->version('v1', [
         // 删除token
         $api->delete('authorizations/current', 'AuthorizationsController@destroy')
             ->name('api.authorizations.destroy');
+
+
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {
             // 所有单位
@@ -62,6 +64,7 @@ $api->version('v1', [
             $api->post('collectors/sync', 'CollectorsController@sync')->name('api.collectors.sync');
             //同步基础数据 -- collector
             $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
+
         });
     });
 });
