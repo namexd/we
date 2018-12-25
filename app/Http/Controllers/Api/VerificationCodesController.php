@@ -10,8 +10,6 @@ class VerificationCodesController extends Controller
 {
     public function store(VerificationCodeRequest $request)
     {
-        dump($expiredAt = now()->addMinutes(10));
-        die();
         $phone = $request->phone;
 
         // 生成4位随机数，左侧补0
