@@ -12,12 +12,16 @@ class VerificationCodeRequest extends FormRequest
 
     public function rules()
     {
-        return [
+        $rule =[
             'phone' => [
                 'required',
-                'regex:/^(1[0-9])\d{9}$/',
-                'unique:users'
+                'regex:/^(1[0-9])\d{9}$/'
             ]
         ];
+        if ($this->user()) {
+            $rules['phone'][]  = 'unique:users';
+        }
+
+        return $rule;
     }
 }

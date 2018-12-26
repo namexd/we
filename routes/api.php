@@ -48,7 +48,7 @@ $api->version('v1', [
             ->name('api.authorizations.destroy');
         //测试
         $api->get('test','TestController@index')->name('api.test');
-        // 验证手机号
+        // 使用手机号和验证码登录
         $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
             ->name('api.users.phoneStore');
         // 需要 token 验证的接口
@@ -59,6 +59,8 @@ $api->version('v1', [
             $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')->name('api.users.show');
+            // 验证手机号（更新手机号)
+            $api->put('users/phone', 'UsersController@phoneUpdate')->name('api.users.phoneUpdate');
             // 所有冰箱
             $api->get('coolers', 'CoolersController@index')->name('api.coolers.index');
             $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
