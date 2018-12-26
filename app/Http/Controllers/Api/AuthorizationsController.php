@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\PhoneAuthorizationRequest;
 use App\Http\Requests\Api\SocialAuthorizationRequest;
 use App\Http\Requests\Api\WeappAuthorizationRequest;
 use App\Http\Requests\Api\WeAuthorizationRequest;
@@ -15,6 +16,38 @@ use App\Http\Requests\Api\AuthorizationRequest;
 class AuthorizationsController extends Controller
 {
 
+    public function phoneStore(PhoneAuthorizationRequest $request)
+    {
+        $verifyData = \Cache::get($request->verification_key);
+
+        if (!$verifyData) {
+            return $this->response->error('验证码已失效', 422);
+        }
+
+        if (!hash_equals($verifyData['code'], $request->verification_code)) {
+            // 返回401
+            return $this->response->errorUnauthorized('验证码错误');
+        }
+        $openid = $request->openid;
+        $has_weuser = WeappHasWeuser::where('openid',$openid)->first();
+        if(!$has_weuser)
+        {
+            return $this->response->errorUnauthorized('用户不存在');
+        }
+        $weuser = $has_weuser->weuser;
+        $user = $weuser->user;
+        $user->phone = $verifyData['phone'];
+        $user->phone_verified = 1;
+        if($request->realname)
+        {
+            $user->realname = $request->realname;
+        }
+        $user->save();
+        // 清除验证码缓存
+        \Cache::forget($request->verification_key);
+
+        return $this->response->created();
+    }
     //通过第三方登录插件登录（需要openid
     public function socialStore($type, SocialAuthorizationRequest $request)
     {

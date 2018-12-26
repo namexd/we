@@ -8,6 +8,15 @@ $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api',
     'middleware' => 'serializer:array'
 ], function ($api) {
+    // 短信验证码，1分钟，1次
+    $api->group([
+        'middleware' => ['api.throttle'],
+        'limit' => config('api.rate_limits.sms.limit'),
+        'expires' => config('api.rate_limits.sms.expires'),
+    ],function($api){
+        $api->post('verificationCodes', 'VerificationCodesController@store')
+            ->name('api.verificationCodes.store');
+    });
     $api->group([
         'middleware' => ['api.throttle'],
         'limit' => config('api.rate_limits.access.limit'),
@@ -39,9 +48,9 @@ $api->version('v1', [
             ->name('api.authorizations.destroy');
         //测试
         $api->get('test','TestController@index')->name('api.test');
-        // 短信验证码
-        $api->post('verificationCodes', 'VerificationCodesController@store')
-            ->name('api.verificationCodes.store');
+        // 验证手机号
+        $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
+            ->name('api.users.phoneStore');
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {
             // 所有单位
