@@ -180,6 +180,9 @@ return [
         //阿里云短信接口
         Curder\LaravelAliyunSms\ServiceProvider::class,
 
+        //是不是移动端
+        Jenssegers\Agent\AgentServiceProvider::class,
+
 
     ],
 
@@ -229,6 +232,8 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        'Agent' => Jenssegers\Agent\Facades\Agent::class,
 
     ],
 

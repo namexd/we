@@ -13,9 +13,10 @@ class UserTransformer extends TransformerAbstract
             'id' => $user->id,
             'name' => $user->name,
             'phone' => $user->phone ,
-            'username' => $user->username ,
+            'phone_verified' => $user->phone_verified ,
             'company_id' => $user->company_id ,
             'company_ids' => $user->company_ids ,
+            'headimgurl'=>$user->weuser->headimgurl,
             'created_at' => $user->created_at->toDateTimeString(),
             'updated_at' => $user->updated_at->toDateTimeString(),
         ];

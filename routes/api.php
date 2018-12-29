@@ -53,6 +53,12 @@ $api->version('v1', [
             ->name('api.users.phoneStore');
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {
+
+
+            //获取菜单
+            $api->get('menus','MenusController@index')->name('api.menus.index');
+            $api->get('menus/tree','MenusController@tree')->name('api.menus.tree');
+
             // 所有单位
             $api->get('companies', 'CompaniesController@index')->name('api.companies.index');
             // 当前单位

@@ -32,6 +32,6 @@ class UsersController extends Controller
         $user->save();
         // 清除验证码缓存
         \Cache::forget($request->verification_key);
-        return $this->response->created();
+        return $this->response->created(null,$user);
     }
 }

@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Requests\Api;
 
+use Dingo\Api\Auth\Auth;
 use Dingo\Api\Http\FormRequest;
 
 class VerificationCodeRequest extends FormRequest
@@ -18,7 +19,7 @@ class VerificationCodeRequest extends FormRequest
                 'regex:/^(1[0-9])\d{9}$/'
             ]
         ];
-        if ($this->user()) {
+        if (auth('api')->user()) {
             $rules['phone'][]  = 'unique:users';
         }
 
