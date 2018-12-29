@@ -14,25 +14,19 @@ class MenusController extends Controller
     public function index()
     {
         $is_mobile = Agent::isMobile();
-        $menus = (new Menu())->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
-        return $this->response->collection($menus, new MenuTransformer());
+//        $menus = (new Menu())->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+
+        $menus = (new Menu())->toTree([],1);
+        return $this->response->array($menus);
     }
 
     public function tree()
     {
-        dd($this->user()->isRole('ccms.user'));
-        $user = User::where('id', $this->user()->id)->first();
+//        $user = User::where('id', $this->user()->id)->first();
         $is_mobile = Agent::isMobile();
-        $menus = (new Menu())->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc');
 
-        dd($user->inRoles(['ccms.user', 'developer']));
-        $menus = (new Menu())->toTree();
-        foreach ($menus as $item) {
-            if ($user->visible($item['roles']) && (empty($item['permission']) ?: $user->can($item['permission']))) {
-                dd($item);
-            }
+        $menus = (new Menu())->toTree(['weapp']);
 
-        }
-        return $this->response->collection($menus, new MenuTransformer());
+        return $this->response->array($menus);
     }
 }

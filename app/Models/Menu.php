@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Encore\Admin\Traits\AdminBuilder;
-use Encore\Admin\Traits\ModelTree;
+use App\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Support\Facades\DB;
