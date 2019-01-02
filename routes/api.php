@@ -56,7 +56,7 @@ $api->version('v1', [
 
 
             //获取菜单
-            $api->get('menus','MenusController@index')->name('api.menus.index');
+            $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
             $api->get('menus/tree','MenusController@tree')->name('api.menus.tree');
 
             // 所有单位
