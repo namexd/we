@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Jenssegers\Agent\Facades\Agent;
 class AdsController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      *
