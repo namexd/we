@@ -17,6 +17,10 @@ $api->version('v1', [
         $api->post('verificationCodes', 'VerificationCodesController@store')
             ->name('api.verificationCodes.store');
     });
+
+    //广告
+    $api->get('ads',  'AdsController@index')->name('ads.index');
+
     $api->group([
         'middleware' => ['api.throttle'],
         'limit' => config('api.rate_limits.access.limit'),
