@@ -18,7 +18,6 @@ class Ad extends Model
         'order',
         'status',
         ];
-
     public function category()
     {
         return $this->belongsTo(AdCategory::class);
