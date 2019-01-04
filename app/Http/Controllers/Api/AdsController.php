@@ -6,7 +6,6 @@ use App\Models\Ad;
 use App\Models\AdCategory;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Facades\Agent;
-
 class AdsController extends Controller
 {
     /**
