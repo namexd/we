@@ -13,4 +13,9 @@ class App extends Model
         'status',
         ];
 
+    public function HasUser()
+    {
+        return $this->hasMany(UserHasApp::class);
+    }
+
 }

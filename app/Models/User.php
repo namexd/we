@@ -68,4 +68,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(App::class, 'user_has_apps', 'user_id', 'app_id');
     }
+
+    public function HasApps()
+    {
+        return $this->hasMany(UserHasApp::class);
+    }
 }

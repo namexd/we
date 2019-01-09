@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Ccms\Cooler;
-use App\Models\Ccms\DataHistory;
 use App\Transformers\CoolerHistoryTransformer;
 use App\Transformers\CoolerTransformer;
 use Request;
