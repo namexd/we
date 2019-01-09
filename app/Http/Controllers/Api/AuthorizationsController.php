@@ -45,24 +45,24 @@ class AuthorizationsController extends Controller
         if (!in_array($type, ['weixin'])) {
             return $this->response->errorBadRequest();
         }
-
-        $driver = \Socialite::driver($type);
-
-        try {
-            if ($code = $request->code) {
-                $response = $driver->getAccessTokenResponse($code);
-                $token = array_get($response, 'access_token');
-            } else {
-                $token = $request->access_token;
-                if ($type == 'weixin') {
-                    $driver->setOpenId($request->openid);
-                }
-            }
-
-            $oauthUser = $driver->userFromToken($token);
-        } catch (\Exception $e) {
-            return $this->response->errorUnauthorized('参数错误，请重新登录');
-        }
+//
+//        $driver = \Socialite::driver($type);
+//
+//        try {
+//            if ($code = $request->code) {
+//                $response = $driver->getAccessTokenResponse($code);
+//                $token = array_get($response, 'access_token');
+//            } else {
+//                $token = $request->access_token;
+//                if ($type == 'weixin') {
+//                    $driver->setOpenId($request->openid);
+//                }
+//            }
+//
+//            $oauthUser = $driver->userFromToken($token);
+//        } catch (\Exception $e) {
+//            return $this->response->errorUnauthorized('参数错误，请重新登录');
+//        }
 
         switch ($type) {
             case 'weixin':

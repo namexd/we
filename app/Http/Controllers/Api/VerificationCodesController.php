@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\VerificationCodeRequest;
 use function App\Utils\send_vcode;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class VerificationCodesController extends Controller
 {
     public function store(VerificationCodeRequest $request)
     {
+
         $phone = $request->phone;
 
         // 生成4位随机数，左侧补0
@@ -23,13 +25,15 @@ class VerificationCodesController extends Controller
         }
         $key = 'verificationCode_'.str_random(15);
 
-        $expiredAt = now()->addMinutes(10);
+        $expiredAt = Carbon::now()->addMinutes(10);
         // 缓存验证码 10分钟过期。
         \Cache::put($key, ['phone' => $phone, 'code' => $code], $expiredAt);
 
         return $this->response->array([
             'key' => $key,
             'expired_at' => $expiredAt->toDateTimeString(),
+            'test_code'=>$code,
+            'user'=>auth('api')->user()
         ])->setStatusCode(201);
     }
 }

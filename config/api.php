@@ -246,7 +246,7 @@ return [
         // 发送短信验证码，次数/分钟
         'sms' => [
             'expires' => env('SMS_RATE_LIMITS_EXPIRES', 1),
-            'limit'  => env('SMS_RATE_LIMITS', 2),
+            'limit'  => env('SMS_RATE_LIMITS', 10),
         ],
     ],
 ];

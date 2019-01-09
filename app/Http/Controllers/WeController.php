@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
+use Redirect;
 use Request;
 use EasyWeChat\Factory;
 
@@ -16,7 +17,7 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     private $weapp_id = 1;
-    private $redirect_url = '/ucenter/#/';
+    private $﻿redirect_url = '/ucenter/#/';
 
     public function test()
     {
@@ -24,20 +25,20 @@ class WeController extends Controller
         $list = $app->customer_service->list();
         dd($list);
     }
+
     public function oauth()
     {
-        $scopes = 'snsapi_base';
-        if(request()->scopes)
-        {
-            $scopes = request()->scopes;
+        $scopes =  'snsapi_base';//'snsapi_userinfo';//
+        if (request('scopes')) {
+            $scopes = request('scopes');
         }
-        if(request()->redirect_url)
-        {
-            session(['redirect_url' => urldecode(request()->redirect_url)]);
-        }else{
-            session(['redirect_url' => $this->redirect_url]);
+        if (request('redirect_url')) {
+            request()->session()->put('callback_url',urldecode(request('redirect_url')));
+        } else {
+            request()->session('callback_url', $this->﻿redirect_url);
         }
         $app = Factory::officialAccount(config('wechat.official_account.default'));
+
         $oauth = $app->oauth->scopes([$scopes]);
 //        $oauth = $app->oauth;
         return $oauth->redirect();
@@ -45,6 +46,7 @@ class WeController extends Controller
 
     public function callback()
     {
+
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $oauth = $app->oauth;
 
@@ -55,8 +57,7 @@ class WeController extends Controller
         // 检测we.openid 是否存
         $hasWeuser = WeappHasWeuser::where('weapp_id', $this->weapp_id)->where('openid', $userInfo['original']['openid'])->first();
         //如果简单版本的snsapi_base获取到的openid不存着数据库中，需要再次请求获取用户全部资料
-        if(!$hasWeuser and !isset($userInfo['original']['unionid']))
-        {
+        if (!$hasWeuser and !isset($userInfo['original']['unionid'])) {
             return redirect('/we/oauth?scopes=snsapi_userinfo');
         }
         if (!$hasWeuser) {
@@ -83,7 +84,7 @@ class WeController extends Controller
         } else {
             // 如果openid不存在，创建user,
             $new_user = [
-                'name'=>$userInfo['original']['nickname']
+                'name' => $userInfo['original']['nickname']
             ];
             $user = new User($new_user);
             $user->save();
@@ -110,10 +111,16 @@ class WeController extends Controller
             $weappHasWeuser->save();
 //            $user->weappHasWeuser()->save($weappHasWeuser);
         }
-//        dd($user);
-        $access_token = $userInfo['original']['access_token'];
+        $access_token = $userInfo['original']['access_token']??'';
+//'&access_token=' . $access_token .
+        $url = session('callback_url') . '?openid=' . $userInfo['original']['openid'] .  '&_t=' . time();
+//        dd($url);
+//        echo(trim($url));
+//        die();
+//        header("Location:".$url);exit();
+        return Redirect::away($url);
         // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
-        return redirect(session('redirect_url').'?openid=' . $userInfo['original']['openid'].'&access_token='.$access_token);
+        return redirect('https://www.baidu.com/s?wd='.urlencode($url));
 
     }
 

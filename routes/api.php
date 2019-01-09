@@ -10,7 +10,7 @@ $api->version('v1', [
 ], function ($api) {
     // 短信验证码，1分钟，1次
     $api->group([
-        'middleware' => ['api.throttle'],
+        'middleware' => ['api.throttle','api.auth'],
         'limit' => config('api.rate_limits.sms.limit'),
         'expires' => config('api.rate_limits.sms.expires'),
     ],function($api){
@@ -52,12 +52,11 @@ $api->version('v1', [
             ->name('api.authorizations.destroy');
         //测试
         $api->get('test','TestController@index')->name('api.test');
-        // 使用手机号和验证码登录
+        // 使用手机号和验证码登录,未测试
         $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
             ->name('api.users.phoneStore');
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {
-
 
             //获取菜单
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
@@ -69,6 +68,8 @@ $api->version('v1', [
             $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')->name('api.users.show');
+            // 可查看的用户列表
+            $api->get('users', 'UsersController@index')->name('api.users.index');
             // 验证手机号（更新手机号)
             $api->put('users/phone', 'UsersController@phoneUpdate')->name('api.users.phoneUpdate');
             // 所有冰箱

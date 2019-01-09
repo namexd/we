@@ -13,6 +13,11 @@ class UsersController extends Controller
         return $this->response->item($this->user(), new UserTransformer());
     }
 
+    public function index()
+    {
+        $users = User::get();
+        return $this->response->collection($users,new UserTransformer());
+    }
     public function phoneUpdate(UserPhoneRequest $request)
     {
         $verifyData = \Cache::get($request->verification_key);
@@ -25,6 +30,15 @@ class UsersController extends Controller
             // 返回401
             return $this->response->errorUnauthorized('验证码错误');
         }
+        //监测手机号是否被占用
+
+
+        $phone_exist = User::where('phone',$verifyData['phone'])->count();
+        if($phone_exist){
+            return $this->response->error('手机号被占用了，请更换手机号或者联系客服解绑',422);
+        }
+
+
         $user = User::where('id',$this->user()->id)->first();
         $user->phone = $verifyData['phone'];
         $user->phone_verified = 1;
