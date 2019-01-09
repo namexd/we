@@ -2,8 +2,8 @@
 
 namespace App\Transformers;
 
+use App\Models\Ccms\WarningEvent;
 use App\Models\Collector;
-use App\Models\WarningEvent;
 use App\Models\WarningSetting;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
