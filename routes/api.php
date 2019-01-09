@@ -73,22 +73,22 @@ $api->version('v1', [
             // 验证手机号（更新手机号)
             $api->put('users/phone', 'UsersController@phoneUpdate')->name('api.users.phoneUpdate');
             // 所有冰箱
-            $api->get('coolers', 'CoolersController@index')->name('api.coolers.index');
-            $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
-            $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.coolers.history');
+            $api->get('ccms/coolers', 'CoolersController@index')->name('api.coolers.index');
+            $api->get('ccms/coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
+            $api->get('ccms/coolers/{cooler}/history', 'CoolersController@history')->name('api.coolers.history');
             // 所有探头
-            $api->get('collectors', 'CollectorsController@index')->name('api.collectors.index');
+            $api->get('ccms/collectors', 'CollectorsController@index')->name('api.collectors.index');
             // 所有联系人
-            $api->get('contacts', 'ConcatsController@index')->name('api.contacts.index');
+            $api->get('ccms/contacts', 'ConcatsController@index')->name('api.contacts.index');
             // 实时温湿度
-            $api->get('collectors/realtime', 'CollectorsController@realtime')->name('api.collectors.realtime');
+            $api->get('ccms/collectors/realtime', 'CollectorsController@realtime')->name('api.collectors.realtime');
             //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
 //                return response(['_SERVER'=>json_encode($_SERVER)]);
 //            });
-            $api->post('collectors/sync', 'CollectorsController@sync')->name('api.collectors.sync');
+//            $api->post('collectors/sync', 'CollectorsController@sync')->name('api.collectors.sync');
             //同步基础数据 -- collector
-            $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
+//            $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
 
         });
     });

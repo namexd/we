@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Api\UserPhoneRequest;
 use App\Models\User;
 use App\Transformers\UserTransformer;
+use Dingo\Api\Auth\Auth;
 
 class UsersController extends Controller
 {
@@ -15,6 +16,8 @@ class UsersController extends Controller
 
     public function index()
     {
+        $user = $this->user();
+
         $users = User::get();
         return $this->response->collection($users,new UserTransformer());
     }

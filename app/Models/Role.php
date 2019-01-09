@@ -20,6 +20,10 @@ class Role extends Model
         return $this->belongsToMany(User::class, 'role_has_users', 'role_id', 'user_id');
     }
 
+    public function isRole(string $role) : bool
+    {
+        return $this->pluck('slug')->contains($role);
+    }
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'role_has_permissions', 'role_id', 'permission_id');

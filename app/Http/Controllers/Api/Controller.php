@@ -12,17 +12,20 @@ class Controller extends BaseController
 {
     use Helpers;
 
+    public $app_id = 1;
     public $user;
     public $company;
     public $company_ids;
 
     public function check($user)
     {
-        if ($user->status == 0) {
+        if (!$user->apps->contains($this->app_id)) {
             return $this->response->error('账号验证错误', 403)->setStatusCode('403');
         } else {
+            $apps = $user->apps;
+            $this->company_id = $apps[0]->company_id;
             $this->user = $user;
-            $this->company = Company::where('id', $user->company_id)->first();
+            $this->company = Company::where('id', $this->company_id )->first();
             $ids = $this->company ? $this->company->ids() : [];
 
             if ($user->company_ids != null) {
