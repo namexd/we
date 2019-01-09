@@ -82,6 +82,10 @@ $api->version('v1', [
             $api->get('ccms/contacts', 'ConcatsController@index')->name('api.contacts.index');
             // 实时温湿度
             $api->get('ccms/collectors/realtime', 'CollectorsController@realtime')->name('api.collectors.realtime');
+            // 未处理报警
+            $api->get('ccms/warning_events/list/{handled}', 'WarningEventsController@index')->name('api.warning_events.index');
+            $api->get('ccms/warning_events/{event}', 'WarningEventsController@show')->name('api.warning_events.show');
+            $api->put('ccms/warning_events/{event}', 'WarningEventsController@update')->name('api.warning_events.update');
             //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
 //                return response(['_SERVER'=>json_encode($_SERVER)]);

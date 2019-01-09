@@ -2,7 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Models\DataHistory;
+use App\Models\Ccms\DataHistory;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 

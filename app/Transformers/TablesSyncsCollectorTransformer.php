@@ -2,7 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Models\Collector;
+use App\Models\Ccms\Collector;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 

@@ -2,7 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Models\Cooler;
+use App\Models\Ccms\Cooler;
 use function App\Utils\format_value;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;

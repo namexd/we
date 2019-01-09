@@ -2,8 +2,7 @@
 
 namespace App\Transformers;
 
-use App\Models\Collector;
-use App\Models\Contact;
+use App\Models\Ccms\Contact;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
