@@ -68,7 +68,7 @@ $api->version('v1', [
             $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')->name('api.users.show');
-            // 可查看的用户列表
+            // 可查看的用户列表（通讯录）
             $api->get('users', 'UsersController@index')->name('api.users.index');
             // 验证手机号（更新手机号)
             $api->put('users/phone', 'UsersController@phoneUpdate')->name('api.users.phoneUpdate');
