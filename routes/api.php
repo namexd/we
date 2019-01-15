@@ -6,7 +6,7 @@ $api = app('Dingo\Api\Routing\Router');
 
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api',
-    'middleware' => 'serializer:array'
+    'middleware' =>  ['serializer:array', 'bindings']
 ], function ($api) {
     // 短信验证码，1分钟，1次
     $api->group([
@@ -20,6 +20,8 @@ $api->version('v1', [
 
     //广告
     $api->get('ads',  'AdsController@index')->name('ads.index');
+    $api->get('topics',  'TopicsController@index')->name('topics.index');
+    $api->get('topics/{topic}',  'TopicsController@show')->name('topics.show');
 
     $api->group([
         'middleware' => ['api.throttle'],

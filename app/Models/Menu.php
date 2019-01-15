@@ -71,6 +71,20 @@ class Menu extends Model
         return (bool) true;
     }
 
+
+    public function HasRoles()
+    {
+        return $this->hasMany(RoleHasMenu::class);
+    }
+
+    public function WithRoles($role_ids)
+    {
+        return $this->whereHas('hasRoles', function ($query) use ($role_ids) {
+            $query->whereIn('role_id',$role_ids);
+        });
+    }
+
+
     /**
      * Detach models from the relationship.
      *

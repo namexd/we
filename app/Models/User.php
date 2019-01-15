@@ -24,6 +24,7 @@ class User extends Authenticatable implements JWTSubject
         'phone', 'phone_verified', 'realname'
     ];
 
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -72,5 +73,17 @@ class User extends Authenticatable implements JWTSubject
     public function HasApps()
     {
         return $this->hasMany(UserHasApp::class);
+    }
+
+    public function HasRoles()
+    {
+        return $this->hasMany(RoleHasUser::class);
+    }
+
+    public function WithRole($role_id = Role::LENGWANG_ROLE_ID)
+    {
+        return $this->whereHas('hasRoles', function ($query) use ($role_id) {
+            $query->where('role_id',$role_id);
+        });
     }
 }

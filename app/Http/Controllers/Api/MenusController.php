@@ -20,8 +20,9 @@ class MenusController extends Controller
     public function index()
     {
         $is_mobile = Agent::isMobile();
+
         $model = new Menu();
-        $menus = $model->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+        $menus = $model->WithRoles($this->user()->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
         $pid = $is_mobile?$this->topid['mobile']:$this->topid['web'];
         if($is_mobile)
         {

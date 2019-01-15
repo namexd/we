@@ -70,36 +70,40 @@ return [
              * scopes：公众平台（snsapi_userinfo / snsapi_base），开放平台：snsapi_login
              * callback：OAuth授权完成后的回调页地址(如果使用中间件，则随便填写。。。)
              */
-             'oauth' => [
-                 'scopes'   => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
-                 'callback' => env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_CALLBACK', '/we/callback'),
-             ],
+            'oauth' => [
+                'scopes' => array_map('trim', explode(',', env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_SCOPES', 'snsapi_userinfo'))),
+                'callback' => env('WECHAT_OFFICIAL_ACCOUNT_OAUTH_CALLBACK', '/we/callback'),
+            ],
         ],
     ],
 
     /*
      * 开放平台第三方平台
      */
-    // 'open_platform' => [
-    //     'default' => [
-    //         'app_id'  => env('WECHAT_OPEN_PLATFORM_APPID', ''),
-    //         'secret'  => env('WECHAT_OPEN_PLATFORM_SECRET', ''),
-    //         'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
-    //         'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
-    //     ],
+    'open_platform' => [
+        //     'default' => [
+        //         'app_id'  => env('WECHAT_OPEN_PLATFORM_APPID', ''),
+        //         'secret'  => env('WECHAT_OPEN_PLATFORM_SECRET', ''),
+        //         'token'   => env('WECHAT_OPEN_PLATFORM_TOKEN', ''),
+        //         'aes_key' => env('WECHAT_OPEN_PLATFORM_AES_KEY', ''),
+        'weixinweb' => [
+                     'app_id'  => env('WEIXINWEB_APPID', ''),
+                     'secret'  => env('WEIXINWEB_SECRET', ''),
+        ],
+    ],
     // ],
 
     /*
      * 小程序
      */
-     'mini_program' => [
-         'default' => [
-             'app_id'  => env('WECHAT_MINI_PROGRAM_APPID', ''),
-             'secret'  => env('WECHAT_MINI_PROGRAM_SECRET', ''),
-             'token'   => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
-             'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
-         ],
-     ],
+    'mini_program' => [
+        'default' => [
+            'app_id' => env('WECHAT_MINI_PROGRAM_APPID', ''),
+            'secret' => env('WECHAT_MINI_PROGRAM_SECRET', ''),
+            'token' => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
+            'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
+        ],
+    ],
 
     /*
      * 微信支付

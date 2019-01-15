@@ -19,3 +19,5 @@ Route::get('/', function () {
 Route::get('we/oauth', 'WeController@oauth')->name('we.oauth');
 Route::get('we/callback', 'WeController@callback')->name('we.callback');
 Route::get('we/test', 'WeController@test')->name('we.test');
+Route::get('we/qrcode', 'WeController@qrcode')->name('we.qrcode');
+Route::get('we/qrcode/callback', 'WeController@qrback')->name('we.qrback');

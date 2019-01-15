@@ -15,6 +15,8 @@ class Role extends Model
         'name', 'slug'
     ];
 
+    const LENGWANG_ROLE_ID=5;
+
     public function users()
     {
         return $this->belongsToMany(User::class, 'role_has_users', 'role_id', 'user_id');

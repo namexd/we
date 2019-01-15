@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
+use EasyWeChat\OfficialAccount\Application;
 use Redirect;
 use Request;
 use EasyWeChat\Factory;
@@ -28,12 +29,12 @@ class WeController extends Controller
 
     public function oauth()
     {
-        $scopes =  'snsapi_base';//'snsapi_userinfo';//
+        $scopes = 'snsapi_base';//'snsapi_userinfo';//
         if (request('scopes')) {
             $scopes = request('scopes');
         }
         if (request('redirect_url')) {
-            request()->session()->put('callback_url',urldecode(request('redirect_url')));
+            request()->session()->put('callback_url', urldecode(request('redirect_url')));
         } else {
             request()->session('callback_url', $this->﻿redirect_url);
         }
@@ -46,7 +47,6 @@ class WeController extends Controller
 
     public function callback()
     {
-
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $oauth = $app->oauth;
 
@@ -111,16 +111,40 @@ class WeController extends Controller
             $weappHasWeuser->save();
 //            $user->weappHasWeuser()->save($weappHasWeuser);
         }
-        $access_token = $userInfo['original']['access_token']??'';
+        $access_token = $userInfo['original']['access_token'] ?? '';
 //'&access_token=' . $access_token .
-        $url = session('callback_url') . '?openid=' . $userInfo['original']['openid'] .  '&_t=' . time();
+        $url = session('callback_url') . '?openid=' . $userInfo['original']['openid'] . '&_t=' . time();
 //        dd($url);
 //        echo(trim($url));
 //        die();
 //        header("Location:".$url);exit();
         return Redirect::away($url);
         // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
-        return redirect('https://www.baidu.com/s?wd='.urlencode($url));
+        return redirect('https://www.baidu.com/s?wd=' . urlencode($url));
+
+    }
+
+    public function qrcode()
+    {
+        return view('we.qrcode');
+    }
+    public function qrback()
+    {
+        $app =new Application([
+            'debug' => true,
+            'app_id' => config('wechat.open_platform.weixinweb.app_id'),
+            'secret' =>  config('wechat.open_platform.secret.app_id'),
+            'oauth' => [
+                'scopes'  =>['snsapi_login'],
+                'callback'  => 'https://baidu.com',
+            ]
+        ]);
+        $oauth =  $app->oauth->user();
+        dd($oauth);
+        $url = 'www.baidu.com';
+        return Redirect::away($url);
+        // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
+        return redirect('https://www.baidu.com/s?wd=' . urlencode($url));
 
     }
 

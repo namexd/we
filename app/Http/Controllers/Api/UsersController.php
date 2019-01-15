@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\UserPhoneRequest;
+use App\Models\Role;
+use App\Models\RoleHasUser;
 use App\Models\User;
 use App\Transformers\UserTransformer;
 use Dingo\Api\Auth\Auth;
@@ -18,7 +20,12 @@ class UsersController extends Controller
     {
         $user = $this->user();
 
-        $users = User::get();
+        if($user->roles->contains(Role::LENGWANG_ROLE_ID))
+        {
+            $users = (new User())->WithRole(Role::LENGWANG_ROLE_ID)->get();
+        }else{
+            $users=null;
+        }
         return $this->response->collection($users,new UserTransformer());
     }
     public function phoneUpdate(UserPhoneRequest $request)
