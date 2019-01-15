@@ -130,6 +130,13 @@ class WeController extends Controller
     }
     public function qrback()
     {
+
+        $app = Factory::officialAccount(config('wechat.official_account.default'));
+        $oauth = $app->oauth;
+
+        // 获取 OAuth 授权结果用户信息
+        $wxuser = $oauth->user();
+        dd($wxuser);
         $app =new Application([
             'debug' => true,
             'app_id' => config('wechat.open_platform.weixinweb.app_id'),
