@@ -137,6 +137,7 @@ class WeController extends Controller
         // 获取 OAuth 授权结果用户信息
         $wxuser = $oauth->user();
         dd($wxuser);
+        die();
         $app =new Application([
             'debug' => true,
             'app_id' => config('wechat.open_platform.weixinweb.app_id'),
