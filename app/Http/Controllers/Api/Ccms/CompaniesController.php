@@ -77,12 +77,21 @@ class CompaniesController extends Controller
 //        Cache::forget('stat_manage_'.$id.'_'.$year.'_'.$month);
         $value = Cache::remember('stat_manage_'.$id.'_'.$year.'_'.$month, 60*24*30, function () use ($year,$month) {
             $companies = $this->company->children();
-            foreach($companies as $company)
+            if(count($companies))
             {
+                foreach($companies as $company)
+                {
+                    $data[] = [
+                        'id'=>$company->id,
+                        'name'=>$company->title,
+                        'value'=>$company->statManageAvg($year,$month)
+                    ];
+                }
+            }else{
                 $data[] = [
-                    'id'=>$company->id,
-                    'name'=>$company->title,
-                    'value'=>$company->statManageAvg($year,$month)
+                    'id'=> $this->company->id,
+                    'name'=>$this->company->title,
+                    'value'=>$this->company->statManageAvg($year,$month)
                 ];
             }
             return $data;
