@@ -14,9 +14,9 @@ use Illuminate\Http\Request;
 class CompaniesController extends Controller
 {
 
-    public function index(CompanyRequest $request)
+    public function index(CompanyRequest $request,$id=null)
     {
-        $this->check();
+        $this->check($id);
         $companies = Company::whereIn('id',$this->company_ids)->where('status',1);
 
         if(isset($request->hidden) and $request->hidden=='admin')

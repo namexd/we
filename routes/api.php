@@ -72,8 +72,8 @@ $api->version('v1', [
                 'namespace' => 'Ccms',
                 'prefix'=>'ccms',
             ],function($api){
-                // 所有单位
-                $api->get('companies', 'CompaniesController@index')->name('api.companies.index');
+                // 所有单位清单
+                $api->get('companies/{id?}', 'CompaniesController@index')->name('api.companies.index');
                 $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.companies.tree');
                 // 当前单位
                 $api->get('companies/current/{id?}', 'CompaniesController@current')->name('api.companies.current');
