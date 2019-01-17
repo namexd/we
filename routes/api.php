@@ -72,13 +72,15 @@ $api->version('v1', [
                 'namespace' => 'Ccms',
                 'prefix'=>'ccms',
             ],function($api){
-                // 所有单位清单
-                $api->get('companies/{id?}', 'CompaniesController@index')->name('api.companies.index');
+                //单位树
                 $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.companies.tree');
                 // 当前单位
                 $api->get('companies/current/{id?}', 'CompaniesController@current')->name('api.companies.current');
+                // 所有单位清单
+                $api->get('companies/{id?}', 'CompaniesController@index')->name('api.companies.index');
                 // 管辖下级单位的管理水平报表
-                $api->get('companies/stat/manage/{id?}/{month?}', 'CompaniesController@stat_manage')->name('api.companies.stat_manage');
+                $api->get('companies/stat/manage/{id?}/{month?}', 'CompaniesController@statManage')->name('api.companies.stat_manage');
+                $api->get('companies/stat/warnings/{id?}/{month?}', 'CompaniesController@statWarnings')->name('api.companies.stat_warnings');
                 // 所有冰箱
                 $api->get('coolers', 'CoolersController@index')->name('api.coolers.index');
                 $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
