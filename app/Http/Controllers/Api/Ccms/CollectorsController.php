@@ -1,10 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Ccms;
 
 use App\Http\Requests\Api\CollectorSyncRequest;
-use App\Models\Ccms\Collector;
-use App\Models\Ccms\Company;
 use App\Models\Ccms\DataHistory;
 use App\Transformers\CollectorHistoryTransformer;
 use App\Transformers\CollectorRealtimeTransformer;

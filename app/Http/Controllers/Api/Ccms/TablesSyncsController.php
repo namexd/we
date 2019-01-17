@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Ccms;
 
 use App\Http\Requests\Api\TablesSyncCollectorRequest;
 use App\Models\Ccms\TablesSync;

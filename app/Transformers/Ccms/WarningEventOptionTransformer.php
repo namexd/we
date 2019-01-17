@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\Ccms;
 
-use App\Models\Collector;
-use App\Models\WarningEvent;
-use App\Models\WarningEventOption;
-use App\Models\WarningSetting;
+use App\Models\Ccms\Collector;
+use App\Models\Ccms\WarningEvent;
+use App\Models\Ccms\WarningEventOption;
+use App\Models\Ccms\WarningSetting;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 

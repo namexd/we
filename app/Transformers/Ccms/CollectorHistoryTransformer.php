@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\Ccms;
 
 use App\Models\Ccms\DataHistory;
 use Carbon\Carbon;

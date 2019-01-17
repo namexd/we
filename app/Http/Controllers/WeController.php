@@ -6,8 +6,8 @@ use App\Models\User;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
 use EasyWeChat\OfficialAccount\Application;
+use GuzzleHttp\Client;
 use Redirect;
-use Request;
 use EasyWeChat\Factory;
 
 /**
@@ -126,33 +126,59 @@ class WeController extends Controller
 
     public function qrcode()
     {
-        return view('we.qrcode');
+        if (request('redirect_url')) {
+            request()->session()->put('qrback_url', urldecode(request('redirect_url')));
+        } else {
+            request()->session()->put('qrback_url', $this->﻿redirect_url);
+        }
+        $redirect_uri = route('we.qrback');
+        $redirect_uri = urlencode($redirect_uri);//该回调需要url编码
+        $appID = config('wechat.open_platform.weixinweb.app_id');
+        $scope = "snsapi_login";//写死，微信暂时只支持这个值
+//准备向微信发请求
+        $url = "https://open.weixin.qq.com/connect/qrconnect?appid=" . $appID . "&redirect_uri=" . $redirect_uri
+            . "&response_type=code&scope=" . $scope . "&state=STATE#wechat_redirect";
+//请求返回的结果(实际上是个html的字符串)
+        $client = new Client();
+        $result = $client->get($url);
+//替换图片的src才能显示二维码
+        $result = str_replace("/connect/qrcode/", "https://open.weixin.qq.com/connect/qrcode/", $result->getBody());
+        return $result; //返回页面
     }
+
     public function qrback()
     {
 
-        $app = Factory::officialAccount(config('wechat.official_account.default'));
-        $oauth = $app->oauth;
-
-        // 获取 OAuth 授权结果用户信息
-        $wxuser = $oauth->user();
-        dd($wxuser);
-        die();
-        $app =new Application([
-            'debug' => true,
-            'app_id' => config('wechat.open_platform.weixinweb.app_id'),
-            'secret' =>  config('wechat.open_platform.secret.app_id'),
-            'oauth' => [
-                'scopes'  =>['snsapi_login'],
-                'callback'  => 'https://baidu.com',
-            ]
-        ]);
-        $oauth =  $app->oauth->user();
-        dd($oauth);
-        $url = 'www.baidu.com';
+        $code = request()->code??null;
+        $appid = config('wechat.open_platform.weixinweb.app_id');
+        $secret = config('wechat.open_platform.weixinweb.secret');
+        if(session('qrback_url'))
+        {
+            $this->﻿redirect_url = session('qrback_url');
+        }
+        if (!empty($code))  //有code
+        {
+            //通过code获得 access_token + openid
+            $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid
+                . "&secret=" . $secret . "&code=" . $code . "&grant_type=authorization_code";
+            $client = new Client();
+            $jsonResult = $client->get($url);
+            $resultArray = json_decode($jsonResult->getBody(), true);
+            if(!isset($resultArray["access_token"])){
+                return Redirect::route('we.qrcode',['﻿redirect_url'=>$this->﻿redirect_url ]);
+            }
+            $access_token = $resultArray["access_token"];
+            $openid = $resultArray["openid"];
+            //通过access_token + openid 获得用户所有信息,结果全部存储在$infoArray里,后面再写自己的代码逻辑
+            $infoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=" . $access_token . "&openid=" . $openid;
+            $infoResult = $client->get($infoUrl);
+            $userInfo = json_decode($infoResult->getBody(), true);
+            $url = $this->﻿redirect_url. '?unionid=' . $userInfo['unionid'] . '&_t=' . time();
+        }else{
+            echo '授权失败';
+            die();
+        }
         return Redirect::away($url);
-        // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
-        return redirect('https://www.baidu.com/s?wd=' . urlencode($url));
 
     }
 

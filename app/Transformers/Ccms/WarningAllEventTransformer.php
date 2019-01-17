@@ -1,27 +1,40 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\Ccms;
 
 use App\Models\Ccms\WarningEvent;
-use App\Models\Collector;
-use App\Models\WarningSetting;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
-class WarningEventTransformer extends TransformerAbstract
+class WarningAllEventTransformer extends TransformerAbstract
 {
     protected $availableIncludes = ['options'];
 
-    public function transform(WarningEvent $event)
+    public function transform( $event)
     {
+//        +"id": 90749
+//    +"warning_type": "5"
+//    +"collector_id": "0"
+//    +"sender_id": "180302358"
+//    +"temp_event": "-"
+//    +"humi_event": "-"
+//    +"event_time": 1544693818
+//    +"handled": 0
+//    +"handled_time": 0
+//    +"handler": null
+//    +"company_id": 2441
+//    +"category_id": "0"
+//    +"device_name": "团泊医院犬伤"
+//    +"device_id": "中继主机：180302358"
+
         $result = [
             'id' => $event->id,
-            'cooler_name' => $event->collector->cooler_name,
-            'collector_name' => $event->collector->collector_name,
-            'collector_sn' => $event->collector->supplier_collector_id,
+            'cooler_name' => $event->device_name,
+            'collector_name' => $event->device_id,
+            'collector_sn' => $event->sender_id,
             'warning_type' => $event->warning_type,
             'warning_type_name' => WarningEvent::WARNING_TYPE[$event->warning_type],
-            'warning_level' => $event->warning_level,
+            'warning_level' => 1,
         ];
         switch ($event->warning_type) {
             case 1:
@@ -49,7 +62,7 @@ class WarningEventTransformer extends TransformerAbstract
         $result['handler_note'] = $event->handler_note;
         $result['handled_time'] = $event->handled_time ? Carbon::createFromTimestamp($event->handled_time)->toDateTimeString() : '';
         $result['company_id'] = $event->company_id;
-        $result['created_at'] = $event->warning_event_time ? Carbon::createFromTimestamp($event->warning_event_time)->toDateTimeString() : '';
+        $result['created_at'] = $event->event_time ? Carbon::createFromTimestamp($event->event_time)->toDateTimeString() : '';
         return $result;
     }
 

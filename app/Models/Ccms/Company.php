@@ -2,12 +2,27 @@
 
 namespace App\Models\Ccms;
 
+use App\Traits\ModelTree;
+use Encore\Admin\Traits\AdminBuilder;
+
 class Company extends Coldchain2Model
 {
+
+    use AdminBuilder, ModelTree {
+        ModelTree::boot as treeBoot;
+    }
+
     protected $connection = 'dbyingyong';
     protected $table = 'user_company';
     protected $pk = 'id';
     protected $fillable = ['id','title','short_title','office_title','custome_code','company_group','ctime','status','list_not_show','map_level','manager','email','phone','tel','address','map_title','address_lat','address_lon','username','password','pid','cdc_admin','cdc_level','cdc_map_level','area_level1_id','area_level2_id','area_level3_id','area_level4_id','company_type','sub_count','category_count','category_count_has_cooler','shebei_install','shebei_install_type1','shebei_install_type2','shebei_install_type3','shebei_install_type4','shebei_install_type5','shebei_install_type6','shebei_install_type7','shebei_install_type8','shebei_install_type100','shebei_install_type101','shebei_actived','shebei_actived_type1','shebei_actived_type2','shebei_actived_type3','shebei_actived_type4','shebei_actived_type5','shebei_actived_type6','shebei_actived_type7','shebei_actived_type8','shebei_actived_type100','shebei_actived_type101','shebei_vehicle','alerms_all','alerms_today','alerms_new','sort','region_code','region_name'];
+
+    public function __construct(array $attributes = [])
+    {
+        parent::__construct($attributes);
+        $this->setParentColumn('pid');
+        $this->setOrderColumn('sort');
+    }
 
     const COMPANY_TYPE  = array(
         0 => '未分类',

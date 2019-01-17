@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Transformers;
+namespace App\Transformers\Ccms;
 
 use App\Models\Ccms\WarningSetting;
 use Carbon\Carbon;

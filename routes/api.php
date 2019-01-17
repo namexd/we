@@ -3,7 +3,6 @@
 use Illuminate\Http\Request;
 
 $api = app('Dingo\Api\Routing\Router');
-
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api',
     'middleware' =>  ['serializer:array', 'bindings']
@@ -74,27 +73,47 @@ $api->version('v1', [
             $api->get('users', 'UsersController@index')->name('api.users.index');
             // 验证手机号（更新手机号)
             $api->put('users/phone', 'UsersController@phoneUpdate')->name('api.users.phoneUpdate');
-            // 所有冰箱
-            $api->get('ccms/coolers', 'CoolersController@index')->name('api.coolers.index');
-            $api->get('ccms/coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
-            $api->get('ccms/coolers/{cooler}/history', 'CoolersController@history')->name('api.coolers.history');
-            // 所有探头
-            $api->get('ccms/collectors', 'CollectorsController@index')->name('api.collectors.index');
-            // 所有联系人
-            $api->get('ccms/contacts', 'ConcatsController@index')->name('api.contacts.index');
-            // 实时温湿度
-            $api->get('ccms/collectors/realtime', 'CollectorsController@realtime')->name('api.collectors.realtime');
-            // 未处理报警
-            $api->get('ccms/warning_events/list/{handled}', 'WarningEventsController@index')->name('api.warning_events.index');
-            $api->get('ccms/warning_events/{event}', 'WarningEventsController@show')->name('api.warning_events.show');
-            $api->put('ccms/warning_events/{event}', 'WarningEventsController@update')->name('api.warning_events.update');
-            //同步数据，获取data_id之后的新数据
+            $api->group([
+                'namespace' => 'Ccms',
+                'prefix'=>'ccms',
+            ],function($api){
+                // 所有单位
+                $api->get('companies', 'CompaniesController@index')->name('api.companies.index');
+                $api->get('companies/tree', 'CompaniesController@tree')->name('api.companies.tree');
+                // 当前单位
+                $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
+                // 所有冰箱
+                $api->get('coolers', 'CoolersController@index')->name('api.coolers.index');
+                $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
+                $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.coolers.history');
+                // 所有探头
+                $api->get('collectors', 'CollectorsController@index')->name('api.collectors.index');
+                // 所有联系人
+                $api->get('contacts', 'ConcatsController@index')->name('api.contacts.index');
+                // 实时温湿度
+                $api->get('collectors/realtime', 'CollectorsController@realtime')->name('api.collectors.realtime');
+
+                // 报警统计
+                $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.warning_all_events.categories');
+                // 超温报警
+                $api->get('warning_events/overtemp/list/{handled}', 'WarningEventsController@index')->name('api.warning_events.index');
+                $api->get('warning_events/overtemp/{event}', 'WarningEventsController@show')->name('api.warning_events.show');
+                $api->put('warning_events/overtemp/{event}', 'WarningEventsController@update')->name('api.warning_events.update');
+                // 断电报警
+                $api->get('warning_events/poweroff/list/{handled}', 'WarningSenderEventsController@index')->name('api.warning_sender_events.index');
+                $api->get('warning_events/poweroff/{event}', 'WarningSenderEventsController@show')->name('api.warning_sender_events.show');
+                $api->put('warning_events/poweroff/{event}', 'WarningSenderEventsController@update')->name('api.warning_sender_events.update');
+
+
+                //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
 //                return response(['_SERVER'=>json_encode($_SERVER)]);
 //            });
 //            $api->post('collectors/sync', 'CollectorsController@sync')->name('api.collectors.sync');
-            //同步基础数据 -- collector
+                //同步基础数据 -- collector
 //            $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
+
+            });
 
         });
     });
