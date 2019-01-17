@@ -35,7 +35,6 @@ class Controller extends BaseController
             {
                 $company_id = $user->company_id;
             }else{
-
                 $user_company = $user->user_company;
                 $user_company_ids = $user_company->ids();
                 if(!in_array($company_id,$user_company_ids))

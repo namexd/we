@@ -18,6 +18,8 @@ class CompanyInfoTransformer extends TransformerAbstract
             'address' => $company->address,
             'address_lat' => $company->address_lat,
             'address_lon' => $company->address_lon,
+            "category_count" => $company->category_count,
+            "category_count_has_cooler" => $company->category_count_has_cooler,
             "shebei_install" => $company->shebei_install,
             "shebei_install_type1" => $company->shebei_install_type1,
             "shebei_install_type2" => $company->shebei_install_type2,

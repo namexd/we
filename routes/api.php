@@ -62,11 +62,6 @@ $api->version('v1', [
             //获取菜单
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
             $api->get('menus/tree','MenusController@tree')->name('api.menus.tree');
-
-            // 所有单位
-            $api->get('companies', 'CompaniesController@index')->name('api.companies.index');
-            // 当前单位
-            $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')->name('api.users.show');
             // 可查看的用户列表（通讯录）
@@ -82,6 +77,8 @@ $api->version('v1', [
                 $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.companies.tree');
                 // 当前单位
                 $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
+                // 管辖下级单位的管理水平报表
+                $api->get('companies/stat/manage/{id?}/{month?}', 'CompaniesController@stat_manage')->name('api.companies.stat_manage');
                 // 所有冰箱
                 $api->get('coolers', 'CoolersController@index')->name('api.coolers.index');
                 $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
