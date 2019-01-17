@@ -76,7 +76,7 @@ $api->version('v1', [
                 $api->get('companies', 'CompaniesController@index')->name('api.companies.index');
                 $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.companies.tree');
                 // 当前单位
-                $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
+                $api->get('companies/current/{id?}', 'CompaniesController@current')->name('api.companies.current');
                 // 管辖下级单位的管理水平报表
                 $api->get('companies/stat/manage/{id?}/{month?}', 'CompaniesController@stat_manage')->name('api.companies.stat_manage');
                 // 所有冰箱

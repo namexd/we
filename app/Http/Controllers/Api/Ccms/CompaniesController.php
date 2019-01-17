@@ -23,20 +23,21 @@ class CompaniesController extends Controller
         return $this->response->collection($companies, new CompanyTransformer());
     }
 
-    public function current()
+    public function current($id=null)
     {
-        $this->check();
-        $company = Cache::remember('companies.'.$this->user->company_id.'.current', 10, function () {
-            return $this->refresh();
+        $this->check($id);
+//        Cache::forget('companies.'.$this->company->id.'.current');
+        $company = Cache::remember('companies.'.$this->company->id.'.current', 10, function () use ($id) {
+            return $this->refresh($id);
         });
         return $this->response->item($company, new CompanyInfoTransformer());
     }
 
-    private function refresh()
+    private function refresh($id=null)
     {
-        $this->check();
+        $this->check($id);
         $today = strtotime(date('Y-m-d 00:00:00'));
-        $company = Company::where('id',$this->user->company_id)->first();
+        $company = Company::where('id',$this->company->id)->first();
         $company->alerms_new =
             WarningEvent::whereIn('company_id',$this->company_ids)->where('handled',0)->count()
             + WarningSenderEvent::whereIn('company_id',$this->company_ids)->where('handled',0)->count();
