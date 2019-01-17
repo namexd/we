@@ -27,13 +27,23 @@ class Controller extends BaseController
         $user_app = UserHasApp::where('user_id',$ucenter_user->id)->first();
         $user = User::where('id',$user_app->app_userid)->first();
 
-        if($company_id ==null)
-        {
-            $company_id = $user->company_id;
-        }
         if ($user->status == 0) {
             return $this->response->error('账号验证错误', 403)->setStatusCode('403');
         } else {
+
+            if($company_id == null)
+            {
+                $company_id = $user->company_id;
+            }else{
+
+                $user_company = $user->user_company;
+                $user_company_ids = $user_company->ids();
+                if(!in_array($company_id,$user_company_ids))
+                {
+                    $company_id = $user->company_id;
+                }
+            }
+
             $this->user = $user;
             $this->company = Company::where('id', $company_id)->first();
             $ids = $this->company ? $this->company->ids() : [];
