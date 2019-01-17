@@ -8,6 +8,9 @@ use App\Models\Ccms\WarningEvent;
 use App\Models\Ccms\WarningSenderEvent;
 use App\Transformers\Ccms\CompanyInfoTransformer;
 use App\Transformers\Ccms\CompanyTransformer;
+use function App\Utils\get_last_months;
+use function App\Utils\get_month_first;
+use function App\Utils\get_month_last;
 use Cache;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -104,28 +107,29 @@ class CompaniesController extends Controller
 
     }
 
-    public function statWarnings($id = null, $months = 6)
+    public function statWarnings($id = null, $month = 6)
     {
         $this->check($id);
         if ($id == null) {
             $id = $this->company->id;
         }
 
-        $lat_month = Carbon::now()->subMonth()->firstOfMonth();
-        dump($lat_month);
-        dump($lat_month)->subMonth()->firstOfMonth();
-        return;
-        $year = $lat_month->year;
-        $month = $lat_month->month;
-
-//        Cache::forget('stat_manage_'.$id.'_'.$year.'_'.$lat_month);
-        $value = Cache::remember('stat_warnings_' . $id . '_' . $year . '_'. $month . '_' . $lat_month, 60 * 24 * 30, function () use ($year, $month) {
-            $companies = $this->company->children();
-            foreach ($companies as $company) {
-                $data[] = [
-                    'id' => $company->id,
-                    'name' => $company->title,
-                    'value' => $company->statManageAvg($year, $month)
+        $months = get_last_months($month,null,'Y-m-d');
+        $this_month =date('Y-m-1');
+//        Cache::forget('stat_warnings_'. $id . '_' . $month . '_'. $this_month);
+        $value = Cache::remember('stat_warnings_' . $id . '_' . $month . '_'. $this_month, 60 * 24 * 30, function () use ($months, $this_month) {
+            for($i=0;$i<count($months);$i++){
+                $start = $months[$i];
+                if($i<count($months)-1){
+                    $end = $months[$i+1];
+                }else{
+                    $end = $this_month;
+                }
+                $data[]=[
+                    'start'=>$start,
+                    'end'=>$end,
+                    'name'=> date('Y年m月',strtotime($start)),
+                    'value'=>  $this->company->statWarningsCount($start, $end)
                 ];
             }
             return $data;

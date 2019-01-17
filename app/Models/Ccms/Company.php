@@ -475,6 +475,10 @@ class Company extends Coldchain2Model
         $avg = StatMange::whereIn('company_id',$this->ids())->where('year',$year)->where('month',$month)->avg('grade');
         return round($avg,2);
     }
+    public function statWarningsCount($start,$end)
+    {
+        return  WarningEvent::whereIn('company_id',$this->ids())->whereBetween('warning_event_time',[strtotime($start),strtotime($end)])->count();
+    }
 
 
 
