@@ -472,7 +472,7 @@ class Company extends Coldchain2Model
 
     public function statManageAvg($year,$month)
     {
-        $avg = statMange::whereIn('company_id',$this->ids())->where('year',$year)->where('month',$month)->avg('grade');
+        $avg = StatMange::whereIn('company_id',$this->ids())->where('year',$year)->where('month',$month)->avg('grade');
         return round($avg,2);
     }
 
