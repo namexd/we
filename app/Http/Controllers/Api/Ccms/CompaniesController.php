@@ -17,8 +17,13 @@ class CompaniesController extends Controller
     public function index(CompanyRequest $request)
     {
         $this->check();
-        $companies = Company::whereIn('id',$this->company_ids)->where('status',1)
-            ->orderBy('pid','asc')->orderBy('title','asc')->get();
+        $companies = Company::whereIn('id',$this->company_ids)->where('status',1);
+
+        if(isset($request->hidden) and $request->hidden=='admin')
+        {
+            $companies->where('cdc_admin',0);
+        }
+        $companies  = $companies->orderBy('pid','asc')->orderBy('title','asc')->get();
 
         return $this->response->collection($companies, new CompanyTransformer());
     }
