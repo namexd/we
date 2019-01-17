@@ -79,7 +79,7 @@ $api->version('v1', [
             ],function($api){
                 // 所有单位
                 $api->get('companies', 'CompaniesController@index')->name('api.companies.index');
-                $api->get('companies/tree', 'CompaniesController@tree')->name('api.companies.tree');
+                $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.companies.tree');
                 // 当前单位
                 $api->get('companies/current', 'CompaniesController@current')->name('api.companies.current');
                 // 所有冰箱

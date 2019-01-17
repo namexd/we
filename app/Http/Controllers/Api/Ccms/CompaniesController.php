@@ -49,9 +49,9 @@ class CompaniesController extends Controller
         return $company;
     }
 
-    public function tree()
+    public function tree($id=null)
     {
-        $this->check();
+        $this->check($id);
         $company = Company::whereIn('id',$this->company_ids)->select('id','pid','title','short_title')->get();
         $menus =(new Company())->toTree($company->toArray(),$this->company->id);
         return $this->response->array($menus);

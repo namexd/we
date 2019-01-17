@@ -21,17 +21,21 @@ class Controller extends BaseController
     {
     }
 
-    public function check()
+    public function check($company_id=null)
     {
         $ucenter_user = $this->user();
         $user_app = UserHasApp::where('user_id',$ucenter_user->id)->first();
         $user = User::where('id',$user_app->app_userid)->first();
 
+        if($company_id ==null)
+        {
+            $company_id = $user->company_id;
+        }
         if ($user->status == 0) {
             return $this->response->error('账号验证错误', 403)->setStatusCode('403');
         } else {
             $this->user = $user;
-            $this->company = Company::where('id', $user->company_id)->first();
+            $this->company = Company::where('id', $company_id)->first();
             $ids = $this->company ? $this->company->ids() : [];
 
             if ($user->company_ids != null) {
