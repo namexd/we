@@ -34,7 +34,8 @@ class MenusController extends Controller
             }
         }
         $menus = $model->toTree($menus->toArray(),$pid);
-        return $this->response->array($menus);
+        $data['data'] = $menus;
+        return $this->response->array($data);
     }
 
     //测试

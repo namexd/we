@@ -18,7 +18,8 @@ class AdsController extends Controller
     {
         $is_mobile = Agent::isMobile();
         $ads = AdCategory::where('types',$is_mobile ? 'mobile' : 'web')->with('ads')->get();
-        return $this->response->array($ads);
+        $data['data'] = $ads->toArray();
+        return $this->response->array($data);
     }
 
 }
