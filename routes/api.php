@@ -58,10 +58,8 @@ $api->version('v1', [
             ->name('api.users.phoneStore');
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {
-
             //获取菜单
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
-            $api->get('menus/tree','MenusController@tree')->name('api.menus.tree');
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')->name('api.users.show');
             // 可查看的用户列表（通讯录）

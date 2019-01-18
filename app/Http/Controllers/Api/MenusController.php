@@ -23,7 +23,6 @@ class MenusController extends Controller
 
         $model = new Menu();
         $menus = $model->WithRoles($this->user()->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
-        $pid = $is_mobile?$this->topid['mobile']:$this->topid['web'];
         if($is_mobile)
         {
             $pid = $this->topid['mobile'];
@@ -38,6 +37,7 @@ class MenusController extends Controller
         return $this->response->array($menus);
     }
 
+    //测试
     public function tree()
     {
 //        $user = User::where('id', $this->user()->id)->first();
