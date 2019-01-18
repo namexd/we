@@ -7,16 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class UserHasApp extends Model
 {
     protected $fillable = [
-        'weapp_id',
-        'weuser_id',
-        'openid',
-        'unionid'
+        'app_id',
+        'user_id',
+        'app_username',
+        'app_userid',
+        'app_unitid'
     ];
-    public function apps()
+    public function app()
     {
         return $this->belongsTo(App::class);
     }
-    public function users()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

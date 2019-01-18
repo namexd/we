@@ -3,29 +3,38 @@
 namespace App\Http\Requests\Api;
 
 
-use Dingo\Api\Http\FormRequest;
-
-class UserRequest extends FormRequest
+class UserRequest extends Request
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     *
-     * @return bool
-     */
-    public function authorize()
-    {
-        return true;
-    }
-
-    /**
-     * Get the validation rules that apply to the request.
-     *
-     * @return array
-     */
     public function rules()
     {
+
+        switch ($this->method()) {
+            case 'PUT':
+                $rule =[
+                    'phone' => [
+                        'required',
+                        'regex:/^(1[0-9])\d{9}$/'
+                    ]
+                ];
+                if (auth('api')->user()) {
+                    $rules['phone'][]  = 'unique:users';
+                }
+                return $rule;
+                break;
+        }
+    }
+
+    public function attributes()
+    {
         return [
-            'username'
+            'phone' => '手机号',
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'required.required' => '密码不能为空',
         ];
     }
 }

@@ -13,12 +13,13 @@ $api->version('v1', [
         'limit' => config('api.rate_limits.sms.limit'),
         'expires' => config('api.rate_limits.sms.expires'),
     ],function($api){
-        $api->post('verificationCodes', 'VerificationCodesController@store')
+        $api->post('verification_codes', 'VerificationCodesController@store')
             ->name('api.verificationCodes.store');
     });
 
     //广告
     $api->get('ads',  'AdsController@index')->name('ads.index');
+    //文章
     $api->get('topics',  'TopicsController@index')->name('topics.index');
     $api->get('topics/{topic}',  'TopicsController@show')->name('topics.show');
 
@@ -42,7 +43,7 @@ $api->version('v1', [
         // 第三方登录
         $api->post('socials/{social_type}/authorizations', 'AuthorizationsController@socialStore')
             ->name('api.socials.authorizations.store');
-        // 使用openid直接登录
+        // 微信使用openid直接登录
         $api->post('we/authorizations', 'AuthorizationsController@weStore')
             ->name('api.we.authorizations.store');
         // 刷新token
@@ -62,10 +63,20 @@ $api->version('v1', [
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
             // 当前登录用户信息
             $api->get('user', 'UsersController@me')->name('api.users.show');
+            // 验证手机号（更新手机号)
+            $api->put('users/verification_codes', 'UsersController@verificationCodes')->name('api.users.verification_codes');
+            //小程序更新手机号，未使用
+            $api->put('users/phone', 'UsersController@updatePhone')->name('api.users.updatePhone');
+            //用户绑定的系统信息
+            $api->get('user/apps', 'UsersController@apps')->name('api.users.apps');
+            $api->put('user/apps', 'UsersController@bindApps')->name('api.users.bind_pps');
+            $api->delete('user/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
+            //系统信息
+            $api->get('apps', 'AppsController@index')->name('api.apps.index');
+
             // 可查看的用户列表（通讯录）
             $api->get('users', 'UsersController@index')->name('api.users.index');
-            // 验证手机号（更新手机号)
-            $api->put('users/phone', 'UsersController@phoneUpdate')->name('api.users.phoneUpdate');
+            //冷链系统数据
             $api->group([
                 'namespace' => 'Ccms',
                 'prefix'=>'ccms',

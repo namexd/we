@@ -70,17 +70,17 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsToMany(App::class, 'user_has_apps', 'user_id', 'app_id');
     }
 
-    public function HasApps()
+    public function hasApps()
     {
         return $this->hasMany(UserHasApp::class);
     }
 
-    public function HasRoles()
+    public function hasRoles()
     {
         return $this->hasMany(RoleHasUser::class);
     }
 
-    public function WithRole($role_id = Role::LENGWANG_ROLE_ID)
+    public function withRole($role_id = Role::LENGWANG_ROLE_ID)
     {
         return $this->whereHas('hasRoles', function ($query) use ($role_id) {
             $query->where('role_id',$role_id);
