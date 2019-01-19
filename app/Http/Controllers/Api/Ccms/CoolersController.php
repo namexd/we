@@ -21,7 +21,12 @@ class CoolersController extends Controller
     {
         $this->check();
         $cooler = Cooler::whereIn('company_id',$this->company_ids)->find($cooler);
-        return $this->response->item($cooler, new CoolerTransformer());
+        if($cooler)
+        {
+            return $this->response->item($cooler, new CoolerTransformer());
+        }else{
+            return $this->response->noContent();
+        }
     }
 
     public function history($cooler)
@@ -31,10 +36,14 @@ class CoolersController extends Controller
         $end = request()->end ?? date('Y-m-d 23:59:59',strtotime($start));
         $start_time = strtotime($start);
         $end_time = strtotime($end);
-
         $cooler = Cooler::whereIn('company_id',$this->company_ids)->with('collectors')->find($cooler);
-        $data = $cooler->history($start_time,$end_time);
-        return $this->response->item($data, new CoolerHistoryTransformer());
+        if($cooler)
+        {
+            $data = $cooler->history($start_time,$end_time);
+            return $this->response->item($data, new CoolerHistoryTransformer());
+        }else{
+            return $this->response->noContent();
+        }
     }
 
 }

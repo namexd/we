@@ -22,7 +22,7 @@ class MenusController extends Controller
         $is_mobile = Agent::isMobile();
 
         $model = new Menu();
-        $menus = $model->WithRoles($this->user()->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
+        $menus = $model->withRoles($this->user()->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
         if($is_mobile)
         {
             $pid = $this->topid['mobile'];

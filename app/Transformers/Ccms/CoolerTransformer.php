@@ -21,7 +21,7 @@ class CoolerTransformer extends TransformerAbstract
             'size' => $cooler->cooler_size,
             'size2' => $cooler->cooler_size2,
             'company_id' => $cooler->company_id,
-            'company' => $cooler->company->title,
+            'company' => $cooler->company->title??'',
             'created_at' => $cooler->install_time > 0 ? Carbon::createFromTimestamp($cooler->install_time)->toDateTimeString() : 0,
             'updated_at' => $cooler->update_time > 0 ? Carbon::createFromTimestamp($cooler->update_time)->toDateTimeString() : 0,
         ];

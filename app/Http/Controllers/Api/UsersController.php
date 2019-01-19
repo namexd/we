@@ -142,7 +142,7 @@ class UsersController extends Controller
                 $user->hasRoles()->create(['role_id'=>$role->id]);
             }
         }
-        return $this->response->created(null, $rs);
+        return $this->response->created(null, $rs->toArray());
     }
 
     public function unbindApps(UserAppRequest $request)

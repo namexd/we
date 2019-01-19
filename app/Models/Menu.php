@@ -72,12 +72,12 @@ class Menu extends Model
     }
 
 
-    public function HasRoles()
+    public function hasRoles()
     {
         return $this->hasMany(RoleHasMenu::class);
     }
 
-    public function WithRoles($role_ids)
+    public function withRoles($role_ids)
     {
         return $this->whereHas('hasRoles', function ($query) use ($role_ids) {
             $query->whereIn('role_id',$role_ids);
