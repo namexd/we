@@ -65,7 +65,7 @@ class CompaniesController extends Controller
         $company = Company::whereIn('id', $this->company_ids)->select('id', 'pid', 'title', 'short_title')->get();
         $menus = (new Company())->toTree($company->toArray());
         $data['data'] = $menus;
-        return $this->response->array($data);
+        return $this->response->array($menus);
     }
 
     public function statManage($id = null, $month = null)
