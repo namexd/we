@@ -83,6 +83,10 @@ class CompaniesController extends Controller
             $year = $month[0];
             $month = $month[1];
         }
+        if(!in_array($id,$this->company_ids))
+        {
+            $id = $this->company->id;
+        }
 //        Cache::forget('stat_manage_'.$id.'_'.$year.'_'.$month);
         $value = Cache::remember('stat_manage_' . $id . '_' . $year . '_' . $month, 60 * 24 * 30, function () use ($year, $month) {
             $companies = $this->company->children();
@@ -117,6 +121,11 @@ class CompaniesController extends Controller
 
         $months = get_last_months($month,null,'Y-m-d');
         $this_month =date('Y-m-1');
+
+        if(!in_array($id,$this->company_ids))
+        {
+            $id = $this->company->id;
+        }
 //        Cache::forget('stat_warnings_'. $id . '_' . $month . '_'. $this_month);
         $value = Cache::remember('stat_warnings_' . $id . '_' . $month . '_'. $this_month, 60 * 24 * 30, function () use ($months, $this_month) {
             for($i=0;$i<count($months);$i++){
