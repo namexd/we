@@ -4,19 +4,37 @@ namespace App\Models\Ccms;
 class WarningSendlog extends Coldchain2Model
 {
 
-    function collector()
+    protected $table = 'warning_sendlog';
+
+    const TYPE = [
+        0 => '无',
+        1 => '短信',
+        2 => '邮件',
+        3 => '微信',
+    ];
+
+    public function eventOverTemp()
     {
-        return $this->belongsTo('collector');
+        return $this->belongsTo(WarningEvent::class, 'event_id', 'id')->where('event_type', '温度报警');
     }
 
-    function getSetTimeAttr($value){
-        return toDate($value);
+    public function eventPoweroff()
+    {
+        return $this->belongsTo(WarningSenderEvent::class, 'event_id', 'logid')->where('event_type', '断电报警');
     }
 
-    function getTempWarningAttr($value){
-        return is_is($value,'开启','关闭');
+    public function collector()
+    {
+        return $this->belongsTo(Collector::class, 'collector_id', 'collector_id')->where('collector_id', '>', 0);
     }
-    function getTempAreaAttr(){
-        return  $this->temp_low.'~'.$this->temp_high.'℃';
+
+    public function sender()
+    {
+        return $this->belongsTo(Sender::class, 'sender_id', 'sender_id')->where('sender_id', '>', 0)->where('status',1);
+    }
+
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id', 'id');
     }
 }

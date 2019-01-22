@@ -12,12 +12,12 @@ class UserAppRequest extends Request
                 return [
                     'username' => 'required|between:3,25|regex:/^[A-Za-z0-9\-\_]+$/',
                     'password' => 'required|string|min:6',
-                    'app_id' => 'required|string',
+                    'app_id' => 'required',
                 ];
                 break;
             case 'DELETE':
                 return [
-                    'app_id' => 'required|string',
+                    'app_id' => 'required',
                 ];
                 break;
         }
