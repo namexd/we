@@ -19,17 +19,17 @@ class CollectorsController extends Controller
     {
         $this->check();
         $collectors = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)->with('company')
-            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->get();
+            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->paginate(10);
 
-        return $this->response->collection($collectors, new CollectorTransformer());
+        return $this->response->paginator($collectors, new CollectorTransformer());
     }
 
     public function realtime()
     {
         $this->check();
         $collectors = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)
-            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->get();
-        return $this->response->collection($collectors, new CollectorRealtimeTransformer());
+            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->paginate(10);
+        return $this->response->paginator($collectors, new CollectorRealtimeTransformer());
     }
 
 }

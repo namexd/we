@@ -34,7 +34,7 @@ class WarningSenderEventsController extends Controller
     {
         $this->check();
         $event = WarningSenderEvent::whereIn('company_id',$this->company_ids)->find($event);
-        return $this->response->item($event, new WarningSenderEventTransformer());
+        return $event?$this->response->item($event, new WarningSenderEventTransformer()):$this->response->noContent();
     }
 
     public function update(WarningEventRequest $request, $event)

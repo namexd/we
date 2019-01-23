@@ -115,8 +115,8 @@ $api->version('v1', [
                 $api->get('warning_events/poweroff/{event}', 'WarningSenderEventsController@show')->name('api.ccrp.warning_sender_events.show');
                 $api->put('warning_events/poweroff/{event}', 'WarningSenderEventsController@update')->name('api.ccrp.warning_sender_events.update');
                 //报警发送记录
-                $api->get('warning_sendlog/list/{type?}','WarningSendlogController@index')->name('api.ccrp.warning_sendlog.list');
-                $api->get('warning_sendlog/{sendlog}','WarningSendlogController@show')->name('api.ccrp.warning_sendlog.show');
+                $api->get('warning_sendlog/list/{type?}','WarningSendlogsController@index')->name('api.ccrp.warning_sendlog.list');
+                $api->get('warning_sendlog/{sendlog}','WarningSendlogsController@show')->name('api.ccrp.warning_sendlog.show');
 
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){

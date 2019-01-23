@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Ccrp;
 use App\Models\Ccrp\WarningSendlog;
 use App\Transformers\Ccrp\WarningSendlogTransformer;
 
-class WarningSendlogController extends Controller
+class WarningSendlogsController extends Controller
 {
     public function index($type = 'index')
     {
@@ -34,7 +34,7 @@ class WarningSendlogController extends Controller
     public function show(WarningSendlog $sendlog)
     {
         $this->check();
-        return $this->response->item($sendlog, new WarningSendlogTransformer());
+        return in_array($sendlog->company_id,$this->company_ids)?$this->response->item($sendlog, new WarningSendlogTransformer()):$this->response->noContent();
     }
 
 
