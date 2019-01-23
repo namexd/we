@@ -59,6 +59,7 @@ $api->version('v1', [
             ->name('api.users.phoneStore');
         // 需要 token 验证的接口
         $api->group(['middleware' => 'api.auth'], function($api) {
+            $api->get('home/mobile','HomeController@mobile')->name('api.home.mobile');
             //获取菜单
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
             // 当前登录用户信息

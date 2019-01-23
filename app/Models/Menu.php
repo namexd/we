@@ -21,6 +21,13 @@ class Menu extends Model
         ModelTree::boot as treeBoot;
     }
 
+    private $topid=[
+        'mobile'=>1,
+        'web'=>8,
+        'web.ccms'=>9,
+        'web.bpms'=>0,
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -97,5 +104,19 @@ class Menu extends Model
         static::deleting(function ($model) {
             $model->roles()->detach();
         });
+    }
+
+    public function listTree($user,$is_mobile)
+    {
+        $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
+        if($is_mobile)
+        {
+            $pid = $this->topid['mobile'];
+        }else{
+            $pid = $this->topid['web.ccms'];
+        }
+        $menus = $this->toTree($menus->toArray(),$pid);
+        return $menus;
+
     }
 }

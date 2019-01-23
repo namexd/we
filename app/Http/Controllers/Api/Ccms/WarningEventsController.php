@@ -15,6 +15,15 @@ use Illuminate\Support\Facades\Input;
 
 class WarningEventsController extends Controller
 {
+    const TYPE =[
+        1=>'高温报警',
+        2=>'低温报警',
+        3=>'高湿度报警',
+        4=>'低湿度报警',
+        5=>'断电报警',
+        6=>'低压报警',
+        7=>'高压报警'
+    ];
     public function index($handled)
     {
         $this->check();

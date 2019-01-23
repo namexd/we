@@ -20,20 +20,7 @@ class MenusController extends Controller
     public function index()
     {
         $is_mobile = Agent::isMobile();
-
-        $model = new Menu();
-        $menus = $model->withRoles($this->user()->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
-        if($is_mobile)
-        {
-            $pid = $this->topid['mobile'];
-        }else{
-            if(request()->system and in_array(request()->system,$this->topid)){
-                $pid=$this->topid[request()->system];
-            }else{
-                $pid = $this->topid['web.ccms'];
-            }
-        }
-        $menus = $model->toTree($menus->toArray(),$pid);
+        $menus = (new Menu())->listTree($this->user(),$is_mobile);
         $data['data'] = $menus;
         return $this->response->array($data);
     }
