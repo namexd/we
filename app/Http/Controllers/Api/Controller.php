@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Ccms\Company;
+use App\Models\Ccrp\Company;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Dingo\Api\Routing\Helpers;

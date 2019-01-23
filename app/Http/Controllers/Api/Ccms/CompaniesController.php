@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Api\Ccms;
 
-use App\Http\Requests\Api\Ccms\CompanyRequest;
-use App\Models\Ccms\Company;
-use App\Models\Ccms\WarningEvent;
-use App\Models\Ccms\WarningSenderEvent;
-use App\Transformers\Ccms\CompanyInfoTransformer;
-use App\Transformers\Ccms\CompanyTransformer;
+use App\Http\Requests\Api\Ccrp\CompanyRequest;
+use App\Models\Ccrp\Company;
+use App\Models\Ccrp\WarningEvent;
+use App\Models\Ccrp\WarningSenderEvent;
+use App\Transformers\Ccrp\CompanyInfoTransformer;
+use App\Transformers\Ccrp\CompanyTransformer;
 use function App\Utils\get_last_months;
 use function App\Utils\get_month_first;
 use function App\Utils\get_month_last;

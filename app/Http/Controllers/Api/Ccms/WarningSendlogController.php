@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Ccms;
 
-use App\Models\Ccms\WarningSendlog;
-use App\Transformers\Ccms\WarningSendlogTransformer;
+use App\Models\Ccrp\WarningSendlog;
+use App\Transformers\Ccrp\WarningSendlogTransformer;
 
 class WarningSendlogController extends Controller
 {

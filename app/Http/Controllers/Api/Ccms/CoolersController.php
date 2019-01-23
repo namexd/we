@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Api\Ccms;
 
-use App\Models\Ccms\Cooler;
-use App\Transformers\Ccms\CoolerHistoryTransformer;
-use App\Transformers\Ccms\CoolerTransformer;
+use App\Models\Ccrp\Cooler;
+use App\Transformers\Ccrp\CoolerHistoryTransformer;
+use App\Transformers\Ccrp\CoolerTransformer;
 use Request;
 
 class CoolersController extends Controller

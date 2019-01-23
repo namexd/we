@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\Ccms;
 
-use App\Http\Requests\Api\Ccms\WarningEventRequest;
-use App\Models\Ccms\WarningSenderEvent;
-use App\Transformers\Ccms\WarningEventTransformer;
-use App\Transformers\Ccms\WarningSenderEventTransformer;
+use App\Http\Requests\Api\Ccrp\WarningEventRequest;
+use App\Models\Ccrp\WarningSenderEvent;
+use App\Transformers\Ccrp\WarningEventTransformer;
+use App\Transformers\Ccrp\WarningSenderEventTransformer;
 
 class WarningSenderEventsController extends Controller
 {

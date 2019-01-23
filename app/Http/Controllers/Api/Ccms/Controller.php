@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Api\Ccms;
-use App\Models\Ccms\Company;
-use App\Models\Ccms\User;
+use App\Models\Ccrp\Company;
+use App\Models\Ccrp\User;
 use App\Models\UserHasApp;
 use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller as BaseController;

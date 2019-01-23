@@ -2,13 +2,13 @@
 
 namespace App\Http\Controllers\Api\Ccms;
 
-use App\Http\Requests\Api\Ccms\CollectorSyncRequest;
-use App\Models\Ccms\Collector;
-use App\Models\Ccms\Company;
-use App\Models\Ccms\DataHistory;
-use App\Transformers\Ccms\CollectorHistoryTransformer;
-use App\Transformers\Ccms\CollectorRealtimeTransformer;
-use App\Transformers\Ccms\CollectorTransformer;
+use App\Http\Requests\Api\Ccrp\CollectorSyncRequest;
+use App\Models\Ccrp\Collector;
+use App\Models\Ccrp\Company;
+use App\Models\Ccrp\DataHistory;
+use App\Transformers\Ccrp\CollectorHistoryTransformer;
+use App\Transformers\Ccrp\CollectorRealtimeTransformer;
+use App\Transformers\Ccrp\CollectorTransformer;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 

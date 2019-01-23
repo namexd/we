@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Api\Ccms;
 
-use App\Models\Ccms\Contact;
-use App\Transformers\Ccms\ContactTransformer;
+use App\Models\Ccrp\Contact;
+use App\Transformers\Ccrp\ContactTransformer;
 
 class ConcatsController extends Controller
 {

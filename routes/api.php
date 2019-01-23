@@ -81,42 +81,42 @@ $api->version('v1', [
             $api->get('users', 'UsersController@index')->name('api.users.index');
             //冷链系统数据
             $api->group([
-                'namespace' => 'Ccms',
-                'prefix'=>'ccms',
+                'namespace' => 'Ccrp',
+                'prefix'=>'ccrp',
             ],function($api){
                 //单位树
-                $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.companies.tree');
+                $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.ccrp.companies.tree');
                 // 当前单位
-                $api->get('companies/current/{id?}', 'CompaniesController@current')->name('api.companies.current');
+                $api->get('companies/current/{id?}', 'CompaniesController@current')->name('api.ccrp.companies.current');
                 // 所有单位清单
-                $api->get('companies/{id?}', 'CompaniesController@index')->name('api.companies.index');
+                $api->get('companies/{id?}', 'CompaniesController@index')->name('api.ccrp.companies.index');
                 // 管辖下级单位的管理水平报表
-                $api->get('companies/stat/manage/{id?}/{month?}', 'CompaniesController@statManage')->name('api.companies.stat_manage');
-                $api->get('companies/stat/warnings/{id?}/{month?}', 'CompaniesController@statWarnings')->name('api.companies.stat_warnings');
+                $api->get('companies/stat/manage/{id?}/{month?}', 'CompaniesController@statManage')->name('api.ccrp.companies.stat_manage');
+                $api->get('companies/stat/warnings/{id?}/{month?}', 'CompaniesController@statWarnings')->name('api.ccrp.companies.stat_warnings');
                 // 所有冰箱
-                $api->get('coolers', 'CoolersController@index')->name('api.coolers.index');
-                $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.coolers.show');
-                $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.coolers.history');
+                $api->get('coolers', 'CoolersController@index')->name('api.ccrp.coolers.index');
+                $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.ccrp.coolers.show');
+                $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.ccrp.coolers.history');
                 // 所有探头
-                $api->get('collectors', 'CollectorsController@index')->name('api.collectors.index');
+                $api->get('collectors', 'CollectorsController@index')->name('api.ccrp.collectors.index');
                 // 所有联系人
-                $api->get('contacts', 'ConcatsController@index')->name('api.contacts.index');
+                $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
                 // 实时温湿度
-                $api->get('collectors/realtime', 'CollectorsController@realtime')->name('api.collectors.realtime');
+                $api->get('collectors/realtime', 'CollectorsController@realtime')->name('api.ccrp.collectors.realtime');
 
                 // 报警统计
-                $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.warning_all_events.categories');
+                $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.ccrp.warning_all_events.categories');
                 // 超温报警
-                $api->get('warning_events/overtemp/list/{handled}', 'WarningEventsController@index')->name('api.warning_events.index');
-                $api->get('warning_events/overtemp/{event}', 'WarningEventsController@show')->name('api.warning_events.show');
-                $api->put('warning_events/overtemp/{event}', 'WarningEventsController@update')->name('api.warning_events.update');
+                $api->get('warning_events/overtemp/list/{handled}', 'WarningEventsController@index')->name('api.ccrp.warning_events.index');
+                $api->get('warning_events/overtemp/{event}', 'WarningEventsController@show')->name('api.ccrp.warning_events.show');
+                $api->put('warning_events/overtemp/{event}', 'WarningEventsController@update')->name('api.ccrp.warning_events.update');
                 // 断电报警
-                $api->get('warning_events/poweroff/list/{handled}', 'WarningSenderEventsController@index')->name('api.warning_sender_events.index');
-                $api->get('warning_events/poweroff/{event}', 'WarningSenderEventsController@show')->name('api.warning_sender_events.show');
-                $api->put('warning_events/poweroff/{event}', 'WarningSenderEventsController@update')->name('api.warning_sender_events.update');
+                $api->get('warning_events/poweroff/list/{handled}', 'WarningSenderEventsController@index')->name('api.ccrp.warning_sender_events.index');
+                $api->get('warning_events/poweroff/{event}', 'WarningSenderEventsController@show')->name('api.ccrp.warning_sender_events.show');
+                $api->put('warning_events/poweroff/{event}', 'WarningSenderEventsController@update')->name('api.ccrp.warning_sender_events.update');
                 //报警发送记录
-                $api->get('warning_sendlog/list/{type?}','WarningSendlogController@index')->name('api.warning_sendlog.list');
-                $api->get('warning_sendlog/{sendlog}','WarningSendlogController@show')->name('api.warning_sendlog.show');
+                $api->get('warning_sendlog/list/{type?}','WarningSendlogController@index')->name('api.ccrp.warning_sendlog.list');
+                $api->get('warning_sendlog/{sendlog}','WarningSendlogController@show')->name('api.ccrp.warning_sendlog.show');
 
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){

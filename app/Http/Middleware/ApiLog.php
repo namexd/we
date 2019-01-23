@@ -48,7 +48,7 @@ class ApiLog
             }
             $data['query'] = json_encode($diffrent);
         }
-        $data['params'] =  json_encode(Input::get());
+        $data['params'] =   ($request->query() and current($request->query()))?json_encode($request->query()):'';
         $data['route_name'] = $request->route()->getName();
         $data['user_agent'] = $request->userAgent();
         $data['ip'] = $request->ip();

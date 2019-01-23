@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Ccms;
 
 use App\Http\Requests\Api\TablesSyncCollectorRequest;
-use App\Models\Ccms\TablesSync;
+use App\Models\Ccrp\TablesSync;
 use function App\Utils\array_trim;
 use Illuminate\Http\Request;
 
