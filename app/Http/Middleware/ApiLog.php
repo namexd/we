@@ -3,6 +3,7 @@
 namespace App\Http\Middleware;
 
 use Closure;
+use Illuminate\Support\Facades\Input;
 
 class ApiLog
 {
@@ -47,7 +48,7 @@ class ApiLog
             }
             $data['query'] = json_encode($diffrent);
         }
-        $data['params'] = $request->all() == [] ? '' : json_encode($request->all());
+        $data['params'] =  json_encode(Input::get());
         $data['route_name'] = $request->route()->getName();
         $data['user_agent'] = $request->userAgent();
         $data['ip'] = $request->ip();
