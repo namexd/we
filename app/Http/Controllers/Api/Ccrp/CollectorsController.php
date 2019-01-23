@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Ccms;
+namespace App\Http\Controllers\Api\Ccrp;
 
 use App\Http\Requests\Api\Ccrp\CollectorSyncRequest;
 use App\Models\Ccrp\Collector;

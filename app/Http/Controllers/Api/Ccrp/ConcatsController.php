@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Ccms;
+namespace App\Http\Controllers\Api\Ccrp;
 
 use App\Models\Ccrp\Contact;
 use App\Transformers\Ccrp\ContactTransformer;

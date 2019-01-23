@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Ccms;
+namespace App\Http\Controllers\Api\Ccrp;
 
 use App\Models\Ccrp\WarningSendlog;
 use App\Transformers\Ccrp\WarningSendlogTransformer;
