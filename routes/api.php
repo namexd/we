@@ -17,12 +17,6 @@ $api->version('v1', [
             ->name('api.verificationCodes.store');
     });
 
-    //广告
-    $api->get('ads',  'AdsController@index')->name('ads.index');
-    //文章
-    $api->get('topics',  'TopicsController@index')->name('topics.index');
-    $api->get('topics/{topic}',  'TopicsController@show')->name('topics.show');
-
     $api->group([
         'middleware' => ['api.throttle'],
         'limit' => config('api.rate_limits.access.limit'),
@@ -61,8 +55,13 @@ $api->version('v1', [
         $api->group([
             'middleware' => ['api.auth','apilog']
         ], function($api) {
+            //广告
+            $api->get('ads',  'AdsController@index')->name('ads.index');
+            //文章
+            $api->get('topics',  'TopicsController@index')->name('topics.index');
+            $api->get('topics/{topic}',  'TopicsController@show')->name('topics.show');
+            //首页
             $api->get('home/mobile','HomeController@mobile')->name('api.home.mobile');
-            $api->post('home/mobile','HomeController@mobile')->name('api.home.mobile');
             //获取菜单
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
             // 当前登录用户信息
