@@ -101,8 +101,6 @@ $api->version('v1', [
                 $api->get('collectors', 'CollectorsController@index')->name('api.ccrp.collectors.index');
                 // 所有联系人
                 $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
-                // 实时温湿度
-                $api->get('collectors/realtime', 'CollectorsController@realtime')->name('api.ccrp.collectors.realtime');
 
                 // 报警统计
                 $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.ccrp.warning_all_events.categories');
