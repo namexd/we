@@ -3,19 +3,13 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Ccrp\Company;
-use App\Models\User;
-use Illuminate\Http\Request;
 use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller as BaseController;
 
 class Controller extends BaseController
 {
     use Helpers;
-
-    public $app_id = 1;
-    public $user;
-    public $company;
-    public $company_ids;
+    public $pagesize = 20;
 
     public function check($user)
     {

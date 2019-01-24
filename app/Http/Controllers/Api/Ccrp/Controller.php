@@ -4,15 +4,10 @@ namespace App\Http\Controllers\Api\Ccrp;
 use App\Models\Ccrp\Company;
 use App\Models\Ccrp\User;
 use App\Models\UserHasApp;
-use Dingo\Api\Routing\Helpers;
-use App\Http\Controllers\Controller as BaseController;
+use App\Http\Controllers\Api\Controller as BaseController;
 
 class Controller extends BaseController
 {
-
-    public $appid = 1;
-    use Helpers;
-
     public $user;
     public $company;
     public $company_ids;

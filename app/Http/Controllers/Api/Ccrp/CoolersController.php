@@ -13,8 +13,8 @@ class CoolersController extends Controller
     {
         $this->check();
         $coolers = Cooler::whereIn('company_id',$this->company_ids)->where('status',1)->with('company')
-            ->orderBy('company_id','asc') ->orderBy('cooler_name','asc')->get();
-        return $this->response->collection($coolers, new CoolerTransformer());
+            ->orderBy('company_id','asc') ->orderBy('cooler_name','asc')->paginate($this->pagesize);
+        return $this->response->paginator($coolers, new CoolerTransformer());
     }
 
     public function show($cooler)

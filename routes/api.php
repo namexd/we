@@ -72,8 +72,11 @@ $api->version('v1', [
             $api->put('users/phone', 'UsersController@updatePhone')->name('api.users.updatePhone');
             //用户绑定的系统信息
             $api->get('user/apps', 'UsersController@apps')->name('api.users.apps');
-            $api->put('user/apps', 'UsersController@bindApps')->name('api.users.bind_pps');
+            $api->put('user/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
             $api->delete('user/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
+            //更新微信信息
+            $api->get('weusers', 'WeusersController@show')->name('api.weusers.show');
+            $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');
             //系统信息
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
 

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Requests\Api\UserAppRequest;
 use App\Http\Requests\Api\UserVerificatioinCodesRequest;
 use App\Http\Requests\Api\UserRequest;
+use App\Http\Requests\Api\WeuserRequest;
 use App\Models\App;
 use App\Models\Role;
 use App\Models\RoleHasUser;
@@ -161,4 +162,5 @@ class UsersController extends Controller
         }
         return $this->response->noContent();
     }
+
 }
