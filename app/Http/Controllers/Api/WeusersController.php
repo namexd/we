@@ -27,6 +27,8 @@ class WeusersController extends Controller
         $weuser->headimgurl =  $userInfo['avatarUrl'];
         $weuser->privilege =  '';
         $weuser->save();
+        $user->name = $userInfo['nickName'];
+        $user->save();
         return $this->response->created(null, $weuser->toArray());
     }
 }
