@@ -24,7 +24,7 @@ class WeusersController extends Controller
         $weuser->city =  $userInfo['city'];
         $weuser->province =  $userInfo['province'];
         $weuser->country =  $userInfo['country'];
-        $weuser->headimgurl =  $userInfo['headimgurl'];
+        $weuser->headimgurl =  $userInfo['avatarUrl'];
         $weuser->privilege =  '';
         $weuser->save();
         return $this->response->created(null, $weuser->toArray());
