@@ -13,7 +13,7 @@ class MessagesController extends Controller
     {
         if (Auth::guard('api')->check()) {
             $user = $this->user();
-//            Cache::forget('meta_message_' . $user->id);
+            Cache::forget('meta_message_' . $user->id.'_'.$type);
             $message = Cache::remember('meta_message_' . $user->id.'_'.$type, 1, function () use ($user) {
                 $total = 0;
                 $apps = $user->apps;
