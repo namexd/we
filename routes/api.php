@@ -82,7 +82,7 @@ $api->version('v1', [
             // 可查看的用户列表（通讯录）
             $api->get('users', 'UsersController@index')->name('api.users.index');
             //消息统计
-            $api->get('messages/count/{new?}',  'MessagesController@Count')->name('api.messages.count');
+            $api->get('messages/count/{type?}',  'MessagesController@Count')->name('api.messages.count');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
