@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Requests\Api\WeuserRequest;
+use App\Transformers\UserTransformer;
 use App\Transformers\WeuserTransformer;
 
 class WeusersController extends Controller
@@ -29,6 +30,7 @@ class WeusersController extends Controller
         $weuser->save();
         $user->name = $userInfo['nickName'];
         $user->save();
-        return $this->response->created(null, $weuser->toArray());
+
+        return $this->response->item($user, new UserTransformer());
     }
 }

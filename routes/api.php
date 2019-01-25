@@ -65,22 +65,22 @@ $api->version('v1', [
             //获取菜单
             $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
             // 当前登录用户信息
-            $api->get('user', 'UsersController@me')->name('api.users.show');
+            $api->get('users', 'UsersController@me')->name('api.users.show');
             // 验证手机号（更新手机号)
             $api->put('users/verification_codes', 'UsersController@verificationCodes')->name('api.users.verification_codes');
             //小程序更新手机号，未使用
             $api->put('users/phone', 'UsersController@updatePhone')->name('api.users.updatePhone');
             //用户绑定的系统信息
-            $api->get('user/apps', 'UsersController@apps')->name('api.users.apps');
-            $api->put('user/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
-            $api->delete('user/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
+            $api->get('users/apps', 'UsersController@apps')->name('api.users.apps');
+            $api->put('users/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
+            $api->delete('users/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
+            // 可查看的用户列表（通讯录）
+            $api->get('users/list', 'UsersController@index')->name('api.users.index');
             //更新微信信息
             $api->get('weusers', 'WeusersController@show')->name('api.weusers.show');
             $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');
             //系统信息
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
-            // 可查看的用户列表（通讯录）
-            $api->get('users', 'UsersController@index')->name('api.users.index');
             //消息统计
             $api->get('messages/count/{type?}',  'MessagesController@Count')->name('api.messages.count');
             //冷链系统数据
