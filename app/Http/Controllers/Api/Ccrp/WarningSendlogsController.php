@@ -27,7 +27,7 @@ class WarningSendlogsController extends Controller
             default :
                 break;
         }
-        $logs = $model->orderBy('id', 'desc')->paginate(10);
+        $logs = $model->orderBy('id', 'desc')->paginate($this->pagesize);
         return $this->response->paginator($logs, new WarningSendlogTransformer());
     }
 

@@ -11,9 +11,9 @@ class ConcatsController extends Controller
     {
         $this->check();
         $concats = Contact::whereIn('company_id',$this->company_ids)->where('status',1)->with('company')
-            ->orderBy('company_id','asc')->get();
+            ->orderBy('company_id','asc')->paginate($this->pagesize);
 
-        return $this->response->collection($concats, new ContactTransformer());
+        return $this->response->paginator($concats, new ContactTransformer());
     }
 
 }

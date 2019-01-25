@@ -30,15 +30,15 @@ class WarningEventsController extends Controller
 
         switch ($handled) {
             case 'unhandled':
-                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->where('handled',0)->orderBy('id','desc')->paginate(10);
+                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->where('handled',0)->orderBy('id','desc')->paginate($this->pagesize);
 
                 break;
             case 'handled':
-                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->where('handled',1)->orderBy('id','desc')->paginate(10);
+                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->where('handled',1)->orderBy('id','desc')->paginate($this->pagesize);
 
                 break;
             default  :
-                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->orderBy('handled','asc')->orderBy('id','desc')->paginate(10);
+                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->orderBy('handled','asc')->orderBy('id','desc')->paginate($this->pagesize);
 
         }
         return $this->response->paginator($evnets, new WarningEventTransformer());
