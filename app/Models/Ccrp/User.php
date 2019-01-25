@@ -10,7 +10,7 @@ class User extends Coldchain2Model
 
     public function user_company()
     {
-        return $this->belongsTo(Company::class,'company_id','id');
+        return $this->belongsTo(Company::class,'company_id','id')->where('status',1);
     }
 
     //验证用户名是否正确

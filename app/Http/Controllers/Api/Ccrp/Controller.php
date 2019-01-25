@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Controller as BaseController;
 
 class Controller extends BaseController
 {
+    public $app_id=1;
     public $user;
     public $company;
     public $company_ids;
@@ -19,7 +20,7 @@ class Controller extends BaseController
     public function check($company_id=null)
     {
         $ucenter_user = $this->user();
-        $user_app = UserHasApp::where('user_id',$ucenter_user->id)->first();
+        $user_app = UserHasApp::where('user_id',$ucenter_user->id)->where('app_id',$this->app_id)->first();
 
         if($user_app ==null)
         {
@@ -36,6 +37,10 @@ class Controller extends BaseController
                 $company_id = $user->company_id;
             }else{
                 $user_company = $user->user_company;
+                if(!$user_company)
+                {
+                    return $this->response->error('系统账号验证错误', 403);
+                }
                 $user_company_ids = $user_company->ids();
                 if(!in_array($company_id,$user_company_ids))
                 {

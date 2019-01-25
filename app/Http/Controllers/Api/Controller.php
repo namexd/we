@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Ccrp\Company;
+use Auth;
+use Cache;
 use Dingo\Api\Routing\Helpers;
 use App\Http\Controllers\Controller as BaseController;
 
@@ -11,40 +12,4 @@ class Controller extends BaseController
     use Helpers;
     public $pagesize = 20;
 
-    public function check($user)
-    {
-        if (!$user->apps->contains($this->app_id)) {
-            return $this->response->error('账号验证错误', 403)->setStatusCode('403');
-        } else {
-            $apps = $user->hasApps->where('app_id',$this->app_id);
-            $this->company_id = $apps[0]->app_unitid;
-            $this->user = $user;
-            $this->company = Company::where('id', $this->company_id )->first();
-
-            $ids = $this->company ? $this->company->ids() : [];
-
-            if ($user->company_ids != null) {
-                $ids_arr = explode(',', $user->company_ids);
-                foreach ($ids_arr as $item) {
-                    $item_company = Company::where('id', $item)->first();
-                    $ids = array_merge($ids, $item_company->ids());
-                }
-            }
-            if ($user->plus_company_id != null) {
-                if (is_int($user->plus_company_id)) {
-                    $ids = array_merge($ids, [$user->plus_company_id]);
-                } else {
-                    $ids_arr = explode(',', $user->plus_company_id);
-                    foreach ($ids_arr as $item) {
-                        $item_company = Company::where('id', $item)->first();
-                        $ids = array_merge($ids, $item_company->ids());
-                    }
-                }
-            }
-            if (request()->company_id and in_array(request()->company_id, $ids)) {
-                $ids = [request()->company_id];
-            }
-            $this->company_ids = $ids;
-        }
-    }
 }

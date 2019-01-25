@@ -79,9 +79,10 @@ $api->version('v1', [
             $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');
             //系统信息
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
-
             // 可查看的用户列表（通讯录）
             $api->get('users', 'UsersController@index')->name('api.users.index');
+            //消息统计
+            $api->get('messages/count/{new?}',  'MessagesController@Count')->name('api.messages.count');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
