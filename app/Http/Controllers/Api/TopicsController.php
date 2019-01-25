@@ -21,7 +21,7 @@ class TopicsController extends Controller
         {
             $model->where('category_id',$request->category_id);
         }
-        $topics = $model->paginate($request->pagesize??10);
+        $topics = $model->paginate($request->pagesize??$this->pagesize);
         return $this->response->paginator($topics, new TopicListTransformer());
     }
 
