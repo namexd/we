@@ -22,18 +22,23 @@ class CoolerStatManualRecordsTransformer extends TransformerAbstract
         $data['cooler_type'] = $cooler->cooler_type;
         $temp_cool = [];
         $temp_cold = [];
+        $need_note = false;
         foreach ($collectors as $collector) {
             if ($collector->temp_type == Collector::温区_冷藏) {
                 if ($collector->refresh_time < (time() - Collector::离线时间)) {
                     $temp_cool[] = '离线';
+                    $need_note = $need_note || true ;
                 } else {
                     $temp_cool[] = $collector->temp;
+                    $need_note = $need_note || false ;
                 }
             } elseif ($collector->temp_type == Collector::温区_冷冻) {
                 if ($collector->refresh_time < (time() - Collector::离线时间)) {
                     $temp_cold[] = '离线';
+                    $need_note = $need_note || true ;
                 } else {
                     $temp_cold[] = $collector->temp;
+                    $need_note = $need_note || false ;
                 }
             }
         }
@@ -43,7 +48,7 @@ class CoolerStatManualRecordsTransformer extends TransformerAbstract
         $data['temp_cold'] = $temp_cold==""?'/':$temp_cold;
         $collectors_error = $cooler->collectorsTempTypeError->count();
         $data['collector_type_error'] = $collectors_error;
-
+        $data['need_note'] = (bool)$need_note;
         return $data;
     }
 
