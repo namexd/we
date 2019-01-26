@@ -1,5 +1,7 @@
 <?php
+
 namespace App\Http\Controllers\Api;
+
 use App\Models\Ccrp\User;
 use App\Models\Ccrp\WarningEvent;
 use App\Models\Ccrp\WarningSenderEvent;
@@ -9,12 +11,12 @@ use Cache;
 
 class MessagesController extends Controller
 {
-    public function count($type='new')
+    public function count($type = 'new')
     {
         if (Auth::guard('api')->check()) {
             $user = $this->user();
-            Cache::forget('meta_message_' . $user->id.'_'.$type);
-            $message = Cache::remember('meta_message_' . $user->id.'_'.$type, 1, function () use ($user) {
+            Cache::forget('meta_message_' . $user->id . '_' . $type);
+            $message = Cache::remember('meta_message_' . $user->id . '_' . $type, 1, function () use ($user) {
                 $total = 0;
                 $apps = $user->apps;
                 if ($apps) {
@@ -29,6 +31,9 @@ class MessagesController extends Controller
                                         $company_ids = $ccrp_company->ids();
                                         $total += $message['ccrp']['warningevent_overtemp'] = WarningEvent::whereIn('company_id', $company_ids)->where('handled', 0)->count();
                                         $total += $message['ccrp']['warningevent_poweroff'] = WarningSenderEvent::whereIn('company_id', $company_ids)->where('handled', 0)->count();
+                                        if ($ccrp_company->cdc_admin == 0 and $manual_records = $ccrp_company->doesManualRecords) {
+                                            $message['ccrp']['need_temp_record'] = !(bool)$manual_records->isDone->count();
+                                        }
                                     }
                                 }
                                 break;

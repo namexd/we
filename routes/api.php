@@ -105,7 +105,6 @@ $api->version('v1', [
                 $api->get('collectors', 'CollectorsController@index')->name('api.ccrp.collectors.index');
                 // 所有联系人
                 $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
-
                 // 报警统计
                 $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.ccrp.warning_all_events.categories');
                 // 超温报警
@@ -117,8 +116,11 @@ $api->version('v1', [
                 $api->get('warning_events/poweroff/{event}', 'WarningSenderEventsController@show')->name('api.ccrp.warning_sender_events.show');
                 $api->put('warning_events/poweroff/{event}', 'WarningSenderEventsController@update')->name('api.ccrp.warning_sender_events.update');
                 //报警发送记录
-                $api->get('warning_sendlogs/list/{type?}','WarningSendlogsController@index')->name('api.ccrp.warning_sendlog.list');
-                $api->get('warning_sendlogs/{sendlog}','WarningSendlogsController@show')->name('api.ccrp.warning_sendlog.show');
+                $api->get('warning_sendlogs/list/{type?}','WarningSendlogsController@index')->name('api.ccrp.warning_sendlogs.list');
+                $api->get('warning_sendlogs/{sendlog}','WarningSendlogsController@show')->name('api.ccrp.warning_sendlogs.show');
+                //人工测温记录,查看或者签名
+                $api->get('stat_manual_records','StatManualRecordsController@create')->name('api.ccrp.stat_manual_records.create');
+                $api->post('stat_manual_records','StatManualRecordsController@store')->name('api.ccrp.stat_manual_records.store');
 
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){

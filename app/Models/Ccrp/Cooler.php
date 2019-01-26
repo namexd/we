@@ -8,7 +8,13 @@ class Cooler extends Coldchain2Model
     protected $primaryKey = 'cooler_id';
     protected $fillable = ['cooler_id', 'cooler_sn', 'cooler_name', 'cooler_type', 'cooler_img', 'cooler_brand', 'cooler_size', 'cooler_size2', 'cooler_model', 'is_medical', 'door_type', 'cooler_starttime', 'cooler_fillingtime', 'category_id', 'company_id', 'update_time', 'install_time', 'install_uid', 'uninstall_time', 'collector_num', 'come_from', 'status', 'sort'];
 
-    public static $status = [
+    const 状态_正常 = 1;
+    const 状态_维修 = 2;
+    const 状态_备用 = 3;
+    const 状态_报废 = 4;
+    const 状态_盘苗 = 5;
+    const 状态_除霜 = 6;
+    const STATUS = [
         '1' => '正常',
         '2' => '维修', //不报警
         '3' => '备用', //不报警，要显示温度
@@ -16,6 +22,18 @@ class Cooler extends Coldchain2Model
         '5' => '盘苗',
         '6' => '除霜',
     ];
+    const 设备类型_冷藏冰箱 = 1;
+    const 设备类型_冷冻冰箱 = 2;
+    const 设备类型_普通冰箱 = 3;
+    const 设备类型_深低温冰箱 = 4;
+    const 设备类型_冷藏冷库 = 5;
+    const 设备类型_冷冻冷库 = 6;
+    const 设备类型_房间室温 = 8;
+    const 设备类型_培养箱 = 9;
+    const 设备类型_阴凉库 = 10;
+    const 设备类型_常温库 = 11;
+    const 设备类型_保温箱 = 100;
+    const 设备类型_冷藏车 = 101;
     const COOLER_TYPE = [
         '1' => '冷藏冰箱',
         '2' => '冷冻冰箱',
@@ -35,15 +53,17 @@ class Cooler extends Coldchain2Model
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
-
     function collectors()
     {
         return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id');
     }
-
     function collectorsOnline()
     {
-        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', 1);
+        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', Collector::状态_正常)->orderBy('collector_name','asc');
+    }
+    function collectorsTempTypeError()
+    {
+        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', Collector::状态_正常)->where('temp_type',Collector::温区_未知);
     }
 
     function history($start_time, $end_time)
@@ -87,16 +107,6 @@ class Cooler extends Coldchain2Model
     {
         return $this->belongsTo(Company::class, 'company_id', 'id');
 //        return $this->belongsTo(Company::class,'company_id','id')->field('id,title,short_title');
-    }
-
-    public function getStatusAttr($value)
-    {
-        return self::$status[$value];
-    }
-
-    public function getCoolerTypeAttr($value)
-    {
-        return self::$cooler_type[$value];
     }
 
     public function getCoolerSizeAttr($value)
@@ -147,18 +157,6 @@ class Cooler extends Coldchain2Model
 
     }
 
-    /**
-     * 联动下拉框数据
-     * @return array
-     */
-    public static function lists_status()
-    {
-        return [
-            'list' => array2list(self::$status),
-            'default' => array2keys(self::$status) //所有状态
-        ];
-
-    }
 
 
 }
