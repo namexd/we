@@ -183,6 +183,9 @@ return [
         //是不是移动端
         Jenssegers\Agent\AgentServiceProvider::class,
 
+        //阿里云OSS
+        Jacobcyl\AliOSS\AliOssServiceProvider::class,
+
 
     ],
 

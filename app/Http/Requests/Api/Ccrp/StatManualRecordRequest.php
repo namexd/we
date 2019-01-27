@@ -8,7 +8,7 @@ class StatManualRecordRequest extends Request
     {
         return [
             'records'=>'required',
-            'sign'=>'required'
+            'sign'=>'required|file'
         ];
     }
 
