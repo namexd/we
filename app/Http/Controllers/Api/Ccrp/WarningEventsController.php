@@ -25,7 +25,7 @@ class WarningEventsController extends Controller
         $model = WarningEvent::whereIn('company_id', $this->company_ids);
         switch ($handled) {
             case 'unhandled':
-                $this->default_date = null;
+                $this->default_date = '全部';
                 $model = $model->where('handled', WarningEvent::未处理);
                 break;
             case 'handled':

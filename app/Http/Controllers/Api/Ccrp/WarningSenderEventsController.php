@@ -19,7 +19,7 @@ class WarningSenderEventsController extends Controller
         $model = WarningSenderEvent::whereIn('company_id', $this->company_ids);
         switch ($handled) {
             case 'unhandled':
-                $this->default_date = null;
+                $this->default_date = '全部';
                 $model = $model->where('handled', WarningSenderEvent::未处理);
                 break;
             case 'handled':
