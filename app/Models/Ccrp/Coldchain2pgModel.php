@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Coldchain2pgModel extends Model
 {
-    protected $connection = 'dbhistory';
+    protected $connection = 'pgyingyong';
 
     public function getUpdatedAtColumn()
     {
