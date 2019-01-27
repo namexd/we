@@ -1,11 +1,9 @@
 <?php
 
 namespace App\Models\Ccrp;
-class WarningSendlog extends Coldchain2Model
+class WarningSendlog extends Coldchain2pgModel
 {
-
     protected $table = 'warning_sendlog';
-
     const TIME_FIELD = 'send_time';
     const TYPE = [
         0 => '无',
