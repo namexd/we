@@ -6,6 +6,7 @@ class WarningSendlog extends Coldchain2Model
 
     protected $table = 'warning_sendlog';
 
+    const TIME_FIELD = 'send_time';
     const TYPE = [
         0 => '无',
         1 => '短信',

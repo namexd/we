@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Ccrp;
 use App\Http\Requests\Api\Ccrp\WarningEventRequest;
 use App\Models\Ccrp\WarningEvent;
 use App\Models\Ccrp\WarningSenderEvent;
+use App\Traits\ControllerDataRange;
 use App\Transformers\Ccrp\WarningAllEventTransformer;
 use App\Transformers\Ccrp\WarningEventTransformer;
 use App\Transformers\Ccrp\WarningSenderEventTransformer;
@@ -15,33 +16,35 @@ use Illuminate\Support\Facades\Input;
 
 class WarningEventsController extends Controller
 {
-    const TYPE =[
-        1=>'高温报警',
-        2=>'低温报警',
-        3=>'高湿度报警',
-        4=>'低湿度报警',
-        5=>'断电报警',
-        6=>'低压报警',
-        7=>'高压报警'
-    ];
+    use ControllerDataRange;
+    public function __construct()
+    {
+        parent::__construct();
+        $this->set_default_datas(request()->date_name??'最近30天');
+    }
+
     public function index($handled)
     {
         $this->check();
-
         switch ($handled) {
             case 'unhandled':
-                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->where('handled',0)->orderBy('id','desc')->paginate($this->pagesize);
-
+                $evnets = WarningEvent::where('handled',WarningEvent::未处理)->whereIn('company_id', $this->company_ids)->orderBy('id','desc')->paginate($this->pagesize);
+                return $this->response->paginator($evnets, new WarningEventTransformer());
                 break;
             case 'handled':
-                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->where('handled',1)->orderBy('id','desc')->paginate($this->pagesize);
-
+                $model= WarningEvent::where('handled',WarningEvent::已处理)->whereIn('company_id', $this->company_ids);
+                $model= $model->whereBetween(WarningEvent::TIME_FIELD,$this->get_dates());
+                $evnets = $model->orderBy('id','desc')->paginate($this->pagesize);
+                return $this->response->paginator($evnets, new WarningEventTransformer())->addMeta('date_range',$this->get_dates('datetime',true));
                 break;
             default  :
-                $evnets = WarningEvent::whereIn('company_id', $this->company_ids)->orderBy('handled','asc')->orderBy('id','desc')->paginate($this->pagesize);
+                $model = WarningEvent::whereIn('company_id', $this->company_ids);
+                $model= $model->whereBetween(WarningEvent::TIME_FIELD,$this->get_dates());
+                $evnets = $model->orderBy('id','desc')->paginate($this->pagesize);
+                return $this->response->paginator($evnets, new WarningEventTransformer())->addMeta('date_range',$this->get_dates('datetime',true));
 
         }
-        return $this->response->paginator($evnets, new WarningEventTransformer());
+
 
     }
 

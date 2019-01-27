@@ -20,8 +20,8 @@ class WarningSenderEventTransformer extends TransformerAbstract
             'cooler_name' => '-',
             'device_name' => $sender->note??'',
             'device_sn' => $event->sender_id,
-            'warning_type' => 5,
-            'warning_type_name' => WarningEvent::WARNING_TYPE[5],
+            'warning_type' => WarningEvent::断电预警,
+            'warning_type_name' => WarningEvent::WARNING_TYPE[WarningEvent::断电预警],
             'warning_level' => $event->warning_level,
         ];
 
