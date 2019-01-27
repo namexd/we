@@ -9,17 +9,12 @@ use App\Transformers\Ccrp\WarningSendlogTransformer;
 class WarningSendlogsController extends Controller
 {
     use ControllerDataRange;
-    public function __construct()
-    {
-        parent::__construct();
-        $this->set_default_datas(request()->date_name??'最近30天');
-    }
+    public $default_date = '最近30天';
 
     public function index($type = 'index')
     {
         $this->check();
         $model = WarningSendlog::whereIn('company_id', $this->company_ids);
-        $model= $model->whereBetween(WarningSendlog::TIME_FIELD,$this->get_dates());
         switch ($type) {
             case  'index':
                 break;
@@ -35,6 +30,8 @@ class WarningSendlogsController extends Controller
             default :
                 break;
         }
+        $this->set_default_datas(request()->date_name?? $this->default_date);
+        $model= $model->whereBetween(WarningSendlog::TIME_FIELD,$this->get_dates());
         $logs = $model->orderBy('id', 'desc')->paginate($this->pagesize);
         return $this->response->paginator($logs, new WarningSendlogTransformer())->addMeta('date_range',$this->get_dates('datetime',true));
     }
