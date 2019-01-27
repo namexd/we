@@ -6,6 +6,10 @@ use App\Traits\ControllerDataRange;
 class WarningSenderEvent extends Coldchain2Model
 {
     const TIME_FIELD ='sensor_event_time';
+
+    const 已处理=1;
+    const 未处理=0;
+
     use ControllerDataRange;
     public function __construct()
     {
