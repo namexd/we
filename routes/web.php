@@ -14,9 +14,9 @@
 Route::get('/', function () {
     return view('welcome');
 });
-//Route::get('/info', function () {
-//    return phpinfo();
-//});
+Route::get('/info', function () {
+    return phpinfo();
+});
 
 //微信网页授权
 Route::get('we/oauth', 'WeController@oauth')->name('we.oauth');

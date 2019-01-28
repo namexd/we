@@ -33,13 +33,15 @@ class StatManualRecordsController extends Controller
         $this->check();
 
         $records = $request->records;
-
+        print_r($records);
+        die();
         $file = $request->file('sign');
         $folder = 'sign';
         $company_id = $this->company->id;
         $upload = $this->upload($file, $folder, $company_id);
         if ($upload['status'] == true) {
-            dd($upload);
+            print_r($upload);
+            die();
             $data['records'] = $records;
             //add signature
             $signature = new Signature();
@@ -50,7 +52,8 @@ class StatManualRecordsController extends Controller
             //add to records
 
         }
-        dd($upload);
+        print_r($upload['status']);
+        die();
     }
 
 
