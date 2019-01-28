@@ -7,8 +7,8 @@ class StatManualRecordRequest extends Request
     public function rules()
     {
         return [
-            'records'=>'required',
-            'sign'=>'required|file'
+            'records' => 'required',
+            'sign_image_uniqid' => 'required'
         ];
     }
 
@@ -16,7 +16,7 @@ class StatManualRecordRequest extends Request
     {
         return [
             'records' => '温度数据',
-            'sign' => '手写签名签名',
+            'sign_image_uniqid' => '手写签名',
         ];
     }
 }

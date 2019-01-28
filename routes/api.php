@@ -83,6 +83,8 @@ $api->version('v1', [
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
             //消息统计
             $api->get('messages/count/{type?}',  'MessagesController@Count')->name('api.messages.count');
+            //上传文件
+            $api->post('uploads',  'UploadsController@store')->name('api.uploads.store');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',

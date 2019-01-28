@@ -31,28 +31,10 @@ class StatManualRecordsController extends Controller
     public function store(StatManualRecordRequest $request)
     {
         $this->check();
-
         $records = $request->records;
+        $oss_id = $request->sign_image_uniqid;
+        print_r($oss_id);
         print_r($records);
-        die();
-        $file = $request->file('sign');
-        $folder = 'sign';
-        $company_id = $this->company->id;
-        $upload = $this->upload($file, $folder, $company_id);
-        if ($upload['status'] == true) {
-            print_r($upload);
-            die();
-            $data['records'] = $records;
-            //add signature
-            $signature = new Signature();
-            $signature->sign_time = time();
-            $signature->company_id = $company_id;
-            $signature->file_uniqid = $upload['uniqid'];
-            $signature->save();
-            //add to records
-
-        }
-        print_r($upload['status']);
         die();
     }
 
