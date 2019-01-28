@@ -7,7 +7,7 @@ class UploadRequest extends Request
     public function rules()
     {
         return [
-            'file' => 'required|file',
+            'file' => 'required|file|mimes:jpeg,bmp,png,gif,svg,doc,docx,xls,xlsx,ppt,pptx,pdf',
             'app' => 'required',
             'action' => 'required',
             'unit_id' => 'required',
