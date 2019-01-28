@@ -55,7 +55,8 @@ $api->version('v1', [
         $api->get('uploads/{uniqid}', 'UploadsController@show')->name('uploads.show');
         // 需要 token 验证的接口
         $api->group([
-            'middleware' => ['api.auth','apilog']
+            'middleware' => ['api.auth','apilog']app/Http/Requests/Api/UploadRequest.php
+
         ], function($api) {
             //广告
             $api->get('ads',  'AdsController@index')->name('ads.index');
