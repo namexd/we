@@ -52,7 +52,7 @@ $api->version('v1', [
         $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
             ->name('api.users.phoneStore');
         // 查看文件
-        $api->get('files/{uniqid}', 'UploadsController@show')->name('uploads.show');
+        $api->get('uploads/{uniqid}', 'UploadsController@show')->name('uploads.show');
         // 需要 token 验证的接口
         $api->group([
             'middleware' => ['api.auth','apilog']
