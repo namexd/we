@@ -22,7 +22,10 @@ class StatManualRecordsController extends Controller
             $need_temp_record = !(bool)$manual_records->isDone->count();
             if ($need_temp_record) {
                 $coolers = $company->coolersOnline->whereIn('cooler_type', CompanyDoesManualRecord::设备类型);
-                return $this->response->collection($coolers, new CoolerStatManualRecordsTransformer());
+                return $this->response->collection($coolers, new CoolerStatManualRecordsTransformer())
+                    ->addMeta('app', 'ccrp')
+                    ->addMeta('unit_id', $this->company->id)
+                    ->addMeta('action', 'sign');
             }
         }
         return $this->response->noContent();
