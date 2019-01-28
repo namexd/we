@@ -103,7 +103,7 @@ class UsersController extends Controller
     {
         $user = $this->user();
         if (!$user->phone or !$user->phone_verified) {
-//            return $this->response->error('您的手机号没有验证',456);
+            return $this->response->error('您的手机号没有验证',456);
         }
         $binded = $user->hasApps->where('app_id', $request->app_id)->first();
         if ($binded) {

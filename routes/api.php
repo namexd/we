@@ -51,6 +51,8 @@ $api->version('v1', [
         // 使用手机号和验证码登录,未测试
         $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
             ->name('api.users.phoneStore');
+        // 查看文件
+        $api->get('files/{uniqid}', 'UploadsController@show')->name('uploads.show');
         // 需要 token 验证的接口
         $api->group([
             'middleware' => ['api.auth','apilog']

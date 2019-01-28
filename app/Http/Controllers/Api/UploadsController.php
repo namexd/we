@@ -10,6 +10,13 @@ use Storage;
 
 class UploadsController extends Controller
 {
+
+    public function show($uniqid)
+    {
+        $upload = Upload::where('uniqid', $uniqid)->first();
+        return $this->response->item($upload, new UploadTransformer());
+    }
+
     public function store(UploadRequest $request, $app = 'ccrp', $action = 'images', $unit_id = 0)
     {
         $file = $request->file('file');

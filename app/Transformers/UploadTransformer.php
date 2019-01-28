@@ -22,6 +22,7 @@ class UploadTransformer extends TransformerAbstract
             'ext' => $upload->ext,
             'type' => $upload->type,
             'size' => $upload->size,
+            'note' => $upload->note,
             'created_at' => $upload->created_at->toDateTimeString(),
             'updated_at' => $upload->updated_at->toDateTimeString(),
         ];
