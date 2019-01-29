@@ -23,7 +23,7 @@ class StatManualRecordsController extends Controller
         $data['data'] = $list;
         $meta = null;
         if ($this->company->cdc_admin == 0 and $manual_records = $this->company->doesManualRecords) {
-            $meta['ccrp']['needs']['stat_manual_records'] = !(bool)$manual_records->isDone->count();
+            $meta['ccrp']['needs']['stat_manual_records'] = !(bool)$manual_records->isDone();
         }
         $data['meta'] = $meta;
         $data['meta']['ccrp']['now'] = [
@@ -47,13 +47,22 @@ class StatManualRecordsController extends Controller
         $this->check();
         $company = $this->company;
         if ($company->cdc_admin == 0 and $manual_records = $company->doesManualRecords) {
-            $need_temp_record = !(bool)$manual_records->isDone->count();
-            if ($need_temp_record) {
+            $need_temp_record = $manual_records->needRecord();
+            if ($need_temp_record['status']) {
+                $meta['needs']['stat_manual_records'] = true;
+                $meta['signature']['app'] = 'ccrp';
+                $meta['signature']['unit_id'] = $this->company->id;
+                $meta['signature']['action'] = 'sign';
+                $meta['signature']['tips'] = $need_temp_record['tips'];
                 $coolers = $company->coolersOnline->whereIn('cooler_type', CompanyDoesManualRecord::设备类型);
                 return $this->response->collection($coolers, new CoolerStatManualRecordsTransformer())
-                    ->addMeta('app', 'ccrp')
-                    ->addMeta('unit_id', $this->company->id)
-                    ->addMeta('action', 'sign');
+                    ->addMeta('ccrp', $meta);
+            } else {
+                $meta['needs']['stat_manual_records'] = false;
+                $meta['signature']['tips'] = $need_temp_record['tips'];
+                $data['data'] = [];
+                $data['meta'] = $meta;
+                return $this->response->array($data);
             }
         }
         return $this->response->noContent();

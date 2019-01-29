@@ -59,15 +59,17 @@ class Company extends Coldchain2Model
 
     public function coolers()
     {
-        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status','!=',4);
+        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status', '!=', 4);
     }
+
     public function coolersUninstalled()
     {
-        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status','=',4);
+        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status', '=', 4);
     }
+
     public function coolersOnline()
     {
-        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status','!=',3)->where('status','!=',4)->where('collector_num','>',0)->orderBy('category_id','asc')->orderBy('cooler_name','asc');
+        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status', '!=', 3)->where('status', '!=', 4)->where('collector_num', '>', 0)->orderBy('category_id', 'asc')->orderBy('cooler_name', 'asc');
     }
 
     public function contacts()
@@ -475,20 +477,21 @@ class Company extends Coldchain2Model
         return $combie;
     }
 
-    public function statManageAvg($year,$month)
+    public function statManageAvg($year, $month)
     {
-        $avg = StatMange::whereIn('company_id',$this->ids())->where('year',$year)->where('month',$month)->avg('grade');
-        return round($avg,2);
-    }
-    public function statWarningsCount($start,$end)
-    {
-        return  WarningEvent::whereIn('company_id',$this->ids())->whereBetween('warning_event_time',[strtotime($start),strtotime($end)])->count();
-    }
-    public function doesManualRecords()
-    {
-        return  $this->hasOne(CompanyDoesManualRecord::class);
+        $avg = StatMange::whereIn('company_id', $this->ids())->where('year', $year)->where('month', $month)->avg('grade');
+        return round($avg, 2);
     }
 
+    public function statWarningsCount($start, $end)
+    {
+        return WarningEvent::whereIn('company_id', $this->ids())->whereBetween('warning_event_time', [strtotime($start), strtotime($end)])->count();
+    }
+
+    public function doesManualRecords()
+    {
+        return $this->hasOne(CompanyDoesManualRecord::class);
+    }
 
 
 }

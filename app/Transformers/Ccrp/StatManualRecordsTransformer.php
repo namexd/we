@@ -36,7 +36,11 @@ class StatManualRecordsTransformer extends TransformerAbstract
 
     public function includeSignature(StatManualRecord $row)
     {
-        return $this->item($row->signature, new SignatureTransformer());
+        if ($row->signature) {
+            return $this->item($row->signature, new SignatureTransformer());
+        } else {
+            return null;
+        }
     }
 
 
