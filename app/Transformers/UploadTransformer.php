@@ -13,7 +13,7 @@ class UploadTransformer extends TransformerAbstract
         return [
             'id' => $upload->id,
             'uniqid' => $upload->uniqid,
-            'sluuser_idg' => $upload->user_id,
+            'user_id' => $upload->user_id,
             'app' => $upload->app,
             'action' => $upload->action,
             'unit_id' => $upload->unit_id,

@@ -11,7 +11,7 @@ class StatManualRecord extends Coldchain2Model
 
     public function signature()
     {
-        return $this->hasOne(Signature::class, 'sign_id');
+        return $this->hasOne(Signature::class, 'id','sign_id');
     }
 
     public function company()
@@ -45,8 +45,13 @@ class StatManualRecord extends Coldchain2Model
                 $row['year'] = $year;
                 $row['month'] = $month;
                 $row['day'] = str_pad($i, 2, "0", STR_PAD_LEFT);
-                $row['AM'] = 0;
-                $row['PM'] = 0;
+                if (strtotime($year . '-' . $month . '-' . $row['day']) > time()) {
+                    $row['AM'] = null;
+                    $row['PM'] = null;
+                } else {
+                    $row['AM'] = 0;
+                    $row['PM'] = 0;
+                }
                 $data[$i] = $row;
             }
             foreach ($reports as $re) {
@@ -58,32 +63,22 @@ class StatManualRecord extends Coldchain2Model
 
     }
 
-    public static function getByDay($company_id, $year = null, $month = null, $day)
+    public static function getByDay($company_id, $day = null, $session = null)
     {
-        if ($month == null) {
+        if ($day == null) {
             $year = date('Y');
             $month = date('m');
-        }
-        $reports = self::where('company_id', $company_id)->where('year', $year)->where('month', $month)->groupBy('company_id', 'year', 'month', 'day', 'sign_time_a')->get();
-
-        $data = array();
-        if (!$reports) {
-            return false;
+            $day = date('d');
+            $session = date('A');
         } else {
-            for ($i = 1; $i <= date('d', time()); $i++) {
-                $row['year'] = $year;
-                $row['month'] = $month;
-                $row['day'] = str_pad($i, 2, "0", STR_PAD_LEFT);
-                $row['AM'] = 0;
-                $row['PM'] = 0;
-                $data[$i] = $row;
-            }
-            foreach ($reports as $re) {
-                $data[$re->day][$re->sign_time_a] = $re->cnt;
-            }
-            $data = array_values($data);
+            $date = explode('-', $day);
+            $year = $date[0];
+            $month = $date[1];
+            $day = $date[2];
         }
-        return $data;
+        $reports = self::where('company_id', $company_id)->where('year', $year)->where('month', $month)->where('day', $day)->where('sign_time_a', $session)->get();
+
+        return $reports;
 
     }
 }

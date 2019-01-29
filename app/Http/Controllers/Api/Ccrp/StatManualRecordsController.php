@@ -8,6 +8,7 @@ use App\Models\Ccrp\Signature;
 use App\Models\Ccrp\StatManualRecord;
 use App\Traits\ControllerUploader;
 use App\Transformers\Ccrp\CoolerStatManualRecordsTransformer;
+use App\Transformers\Ccrp\StatManualRecordsTransformer;
 use Illuminate\Support\Facades\Storage;
 use OSS\Core\OssException;
 
@@ -18,17 +19,26 @@ class StatManualRecordsController extends Controller
     public function index($month = null)
     {
         $this->check();
-        $list = StatManualRecord::getListByMonth($this->company->id,$month);
-        $data = ['data' => $list];
+        $list = StatManualRecord::getListByMonth($this->company->id, $month);
+        $data['data'] = $list;
+        if ($this->company->cdc_admin == 0 and $manual_records = $this->company->doesManualRecords) {
+            $meta['ccrp']['needs']['stat_manual_records'] = !(bool)$manual_records->isDone->count();
+        }
+        $data['meta'] = $meta;
+        $data['meta']['ccrp']['now'] = [
+            'year' => date('Y'),
+            'month' => date('m'),
+            'day' => date('d'),
+            'session' => date('A'),
+        ];
         return $this->response->array($data);
     }
 
-    public function show($year, $month, $day, $session)
+    public function show($day = null, $session = null)
     {
         $this->check();
-        $list = StatManualRecord::getListByMonth($this->company->id, $year, $month, $day, $session);
-        $data = ['data' => $list];
-        return $this->response->array($data);
+        $list = StatManualRecord::getByDay($this->company->id, $day, $session);
+        return $this->response->collection($list, new StatManualRecordsTransformer());
     }
 
     public function create()

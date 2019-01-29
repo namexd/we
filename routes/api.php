@@ -5,14 +5,14 @@ use Illuminate\Http\Request;
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api',
-    'middleware' =>  ['serializer:array', 'bindings']
+    'middleware' => ['serializer:array', 'bindings']
 ], function ($api) {
     // 短信验证码，1分钟，1次
     $api->group([
-        'middleware' => ['api.throttle','api.auth'],
+        'middleware' => ['api.throttle', 'api.auth'],
         'limit' => config('api.rate_limits.sms.limit'),
         'expires' => config('api.rate_limits.sms.expires'),
-    ],function($api){
+    ], function ($api) {
         $api->post('verification_codes', 'VerificationCodesController@store')
             ->name('api.verificationCodes.store');
     });
@@ -22,7 +22,9 @@ $api->version('v1', [
         'limit' => config('api.rate_limits.access.limit'),
         'expires' => config('api.rate_limits.access.expires'),
     ], function ($api) {
-        $api->get('version', function () {return response(['version'=>'v1.02']);});
+        $api->get('version', function () {
+            return response(['version' => 'v1.02']);
+        });
 
         //微信jssdk的配置信息
         $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
@@ -47,25 +49,25 @@ $api->version('v1', [
         $api->delete('authorizations/current', 'AuthorizationsController@destroy')
             ->name('api.authorizations.destroy');
         //测试
-        $api->get('test','TestController@index')->name('api.test');
+        $api->get('test', 'TestController@index')->name('api.test');
         // 使用手机号和验证码登录,未测试
         $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
             ->name('api.users.phoneStore');
         // 查看文件信息
-        $api->get('uploads/{uniqid}', 'UploadsController@show')->name('uploads.show');
+        $api->get('uploads/{uniqid}', 'UploadsController@show')->name('api.uploads.show');
         // 需要 token 验证的接口
         $api->group([
-            'middleware' => ['api.auth','apilog']
-        ], function($api) {
+            'middleware' => ['api.auth', 'apilog']
+        ], function ($api) {
             //广告
-            $api->get('ads',  'AdsController@index')->name('ads.index');
+            $api->get('ads', 'AdsController@index')->name('ads.index');
             //文章
-            $api->get('topics',  'TopicsController@index')->name('topics.index');
-            $api->get('topics/{topic}',  'TopicsController@show')->name('topics.show');
+            $api->get('topics', 'TopicsController@index')->name('topics.index');
+            $api->get('topics/{topic}', 'TopicsController@show')->name('topics.show');
             //首页
-            $api->get('home/mobile','HomeController@mobile')->name('api.home.mobile');
+            $api->get('home/mobile', 'HomeController@mobile')->name('api.home.mobile');
             //获取菜单
-            $api->get('menus/{system?}','MenusController@index')->name('api.menus.index');
+            $api->get('menus/{system?}', 'MenusController@index')->name('api.menus.index');
             // 当前登录用户信息
             $api->get('users', 'UsersController@me')->name('api.users.show');
             // 验证手机号（更新手机号)
@@ -84,14 +86,14 @@ $api->version('v1', [
             //系统信息
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
             //消息统计
-            $api->get('messages/count/{type?}',  'MessagesController@Count')->name('api.messages.count');
+            $api->get('messages/count/{type?}', 'MessagesController@Count')->name('api.messages.count');
             //上传文件
-            $api->post('uploads',  'UploadsController@store')->name('api.uploads.store');
+            $api->post('uploads', 'UploadsController@store')->name('api.uploads.store');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
-                'prefix'=>'ccrp',
-            ],function($api){
+                'prefix' => 'ccrp',
+            ], function ($api) {
                 //单位树
                 $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.ccrp.companies.tree');
                 // 当前单位
@@ -120,13 +122,13 @@ $api->version('v1', [
                 $api->get('warning_events/poweroff/{event}', 'WarningSenderEventsController@show')->name('api.ccrp.warning_sender_events.show');
                 $api->put('warning_events/poweroff/{event}', 'WarningSenderEventsController@update')->name('api.ccrp.warning_sender_events.update');
                 //报警发送记录
-                $api->get('warning_sendlogs/list/{type?}','WarningSendlogsController@index')->name('api.ccrp.warning_sendlogs.list');
-                $api->get('warning_sendlogs/{sendlog}','WarningSendlogsController@show')->name('api.ccrp.warning_sendlogs.show');
+                $api->get('warning_sendlogs/list/{type?}', 'WarningSendlogsController@index')->name('api.ccrp.warning_sendlogs.list');
+                $api->get('warning_sendlogs/{sendlog}', 'WarningSendlogsController@show')->name('api.ccrp.warning_sendlogs.show');
                 //人工测温记录,查看或者签名
-                $api->get('stat_manual_records','StatManualRecordsController@create')->name('api.ccrp.stat_manual_records.create');
-                $api->post('stat_manual_records','StatManualRecordsController@store')->name('api.ccrp.stat_manual_records.store');
-                $api->get('stat_manual_records/list/{month?}','StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
-                $api->get('stat_manual_records/show/{year}/{month}/{day}/{session}','StatManualRecordsController@show')->name('api.ccrp.stat_manual_records.show');
+                $api->get('stat_manual_records', 'StatManualRecordsController@create')->name('api.ccrp.stat_manual_records.create');
+                $api->post('stat_manual_records', 'StatManualRecordsController@store')->name('api.ccrp.stat_manual_records.store');
+                $api->get('stat_manual_records/list/{month?}', 'StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
+                $api->get('stat_manual_records/show/{day?}/{session?}', 'StatManualRecordsController@show')->name('api.ccrp.stat_manual_records.show');
 
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
