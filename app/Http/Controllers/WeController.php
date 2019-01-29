@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
-use EasyWeChat\OfficialAccount\Application;
+use function App\Utils\add_query_param;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Auth;
 use Redirect;
 use EasyWeChat\Factory;
 
@@ -17,7 +19,7 @@ use EasyWeChat\Factory;
  */
 class WeController extends Controller
 {
-    private $weapp_id = 1;
+    private $weapp_id = Weapp::智慧冷链公众号;
     private $﻿redirect_url = '/ucenter/#/';
 
     public function test()
@@ -124,14 +126,11 @@ class WeController extends Controller
 
     }
 
-    public function qrcode()
+    public function qrcode($redirect_url = null)
     {
-        if (request('redirect_url')) {
-            request()->session()->put('qrback_url', urldecode(request('redirect_url')));
-        } else {
-            request()->session()->put('qrback_url', $this->﻿redirect_url);
-        }
-        $redirect_uri = route('we.qrback');
+        $redirect_url = $redirect_url ?? base64_encode($this->﻿redirect_url);
+        request()->session()->put('qrback_url', $redirect_url);
+        $redirect_uri = route('we.qrback', ['redirect_url' => $redirect_url]);
         $redirect_uri = urlencode($redirect_uri);//该回调需要url编码
         $appID = config('wechat.open_platform.weixinweb.app_id');
         $scope = "snsapi_login";//写死，微信暂时只支持这个值
@@ -148,15 +147,14 @@ class WeController extends Controller
 
     public function qrback()
     {
-
-        $code = request()->code??null;
+        $code = request()->code ?? null;
         $appid = config('wechat.open_platform.weixinweb.app_id');
         $secret = config('wechat.open_platform.weixinweb.secret');
-        if(session('qrback_url'))
-        {
+        $token = '';
+        if (session('qrback_url')) {
             $this->﻿redirect_url = session('qrback_url');
         }
-        if (!empty($code))  //有code
+        if (!empty($code) and 0)  //有code
         {
             //通过code获得 access_token + openid
             $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid
@@ -164,8 +162,8 @@ class WeController extends Controller
             $client = new Client();
             $jsonResult = $client->get($url);
             $resultArray = json_decode($jsonResult->getBody(), true);
-            if(!isset($resultArray["access_token"])){
-                return Redirect::route('we.qrcode',['﻿redirect_url'=>$this->﻿redirect_url ]);
+            if (!isset($resultArray["access_token"])) {
+                return Redirect::route('we.qrcode', ['﻿redirect_url' => $this->﻿redirect_url]);
             }
             $access_token = $resultArray["access_token"];
             $openid = $resultArray["openid"];
@@ -173,12 +171,44 @@ class WeController extends Controller
             $infoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=" . $access_token . "&openid=" . $openid;
             $infoResult = $client->get($infoUrl);
             $userInfo = json_decode($infoResult->getBody(), true);
-            $url = $this->﻿redirect_url. '?unionid=' . $userInfo['unionid'] . '&_t=' . time();
-        }else{
-            echo '授权失败';
-            die();
+
+
+            //登录或创建用户
+            // 检测we.openid 是否存
+            $hasWeuser = WeappHasWeuser::where('weapp_id', Weapp::智慧冷链用户中心)->where('openid', $userInfo['openid'])->first();
+            if (!$hasWeuser) {
+                // 改用检测we.unionid 是否存
+                $hasWeuser = WeappHasWeuser::where('unionid', $userInfo['unionid'])->first();
+                // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
+                if ($hasWeuser) {
+                    $new_weappHasWeuser = [
+                        'weapp_id' => $this->weapp_id,
+                        'weuser_id' => $hasWeuser->weuser_id,
+                        'openid' => $userInfo['openid'],
+                        'unionid' => $userInfo['unionid'],
+                    ];
+                    $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
+                    $new_weappHasWeuser->save();
+                }
+            }
+            if ($hasWeuser) {
+                // 如果openid存在，检测unionid字段是否为空，为空则更新
+                if (!$hasWeuser->unionid and $userInfo['unionid']) {
+                    $hasWeuser->unionid = $userInfo['unionid'];
+                    $hasWeuser->save();
+                }
+
+                $weuser = $hasWeuser->weuser;
+                $user = $weuser->user;
+                $token = Auth::guard('api')->fromUser($user);
+            }
+            $url = base64_decode($this->﻿redirect_url);
+            $url = add_query_param($url, 'token', $token);
+            $url = add_query_param($url, '_t', time());
+            return Redirect::away($url);
+        } else {
+            abort(302, '微信授权失败 ：(');
         }
-        return Redirect::away($url);
 
     }
 

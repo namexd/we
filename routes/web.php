@@ -18,12 +18,13 @@ Route::get('/info', function () {
     return phpinfo();
 });
 
-//微信网页授权
+//微信网页授权,需要微信浏览器里打开
 Route::get('we/oauth', 'WeController@oauth')->name('we.oauth');
 Route::get('we/callback', 'WeController@callback')->name('we.callback');
 Route::get('we/test', 'WeController@test')->name('we.test');
-Route::get('we/qrcode', 'WeController@qrcode')->name('we.qrcode');
+//PC浏览器扫码登录
 Route::get('we/qrcode/callback', 'WeController@qrback')->name('we.qrback');
+Route::get('we/qrcode/{redirect_url?}', 'WeController@qrcode')->name('we.qrcode');
 //跳转到oss文件
 Route::get('files/{uniqid}', 'UploadsController@show')->name('uploads.show');
 

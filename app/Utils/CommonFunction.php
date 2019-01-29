@@ -87,3 +87,20 @@ function get_month_last($date=null)
     $lastday=date('Y-m-d',strtotime("$firstday +1 month -1 day"));
     return $lastday;
 }
+
+/**
+ * 往url里添加参数
+ * @param $url
+ * @param $key
+ * @param $value
+ * @return string
+ */
+function add_query_param($url, $key, $value) {
+    $url=preg_replace('/(.*)(?|&)'.$key.'=[^&]+?(&)(.*)/i','$1$2$4',$url.'&');
+    $url=substr($url,0,-1);
+    if(strpos($url,'?') === false){
+        return ($url.'?'.$key.'='.$value);
+    } else {
+        return ($url.'&'.$key.'='.$value);
+    }
+}

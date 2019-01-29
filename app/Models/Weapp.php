@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Weapp extends Model
 {
+    const 智慧冷链公众号 = 1;
+    const 智慧冷链小程序 = 2;
+    const 智慧冷链用户中心 = 3;
     protected $fillable = [
         'type',
         'name',
@@ -15,6 +18,7 @@ class Weapp extends Model
         'aes_key',
         'other'
     ];
+
     public function hasWeuser()
     {
         return $this->hasOne(WeappHasWeuser::class);
