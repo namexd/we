@@ -154,7 +154,7 @@ class WeController extends Controller
         if (session('qrback_url')) {
             $this->﻿redirect_url = session('qrback_url');
         }
-        if (!empty($code) and 0)  //有code
+        if (!empty($code))  //有code
         {
             //通过code获得 access_token + openid
             $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid
