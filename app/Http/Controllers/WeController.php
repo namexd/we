@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\Api\Request;
 use App\Models\User;
 use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
@@ -20,7 +21,7 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     private $weapp_id = Weapp::智慧冷链公众号;
-    private $﻿redirect_url = '/ucenter/#/';
+    private $﻿redirect_url = '/we/qrcode/home';
 
     public function test()
     {
@@ -209,6 +210,15 @@ class WeController extends Controller
         } else {
             abort(302, '微信授权失败 ：(');
         }
+    }
+
+    public function qrhome()
+    {
+        echo '获取到token：<hr>';
+        echo '<pre>';
+        echo request()->token;
+        echo '</pre>';
+        echo '<hr>如何扫码登录到指定地址？<br/>传递一个base64_encode(URL)给qrcode，如跳到百度：`https://we.coldyun.net/we/qrcode/aHR0cDovL3d3dy5iYWlkdS5jb20=`<hr>';
 
     }
 
