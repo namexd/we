@@ -214,11 +214,17 @@ class WeController extends Controller
 
     public function qrhome()
     {
-        echo '获取到token：<hr>';
+        echo '<h1>测试·扫码结果页面</h1><hr>';
+        echo '1. 获取到token：<hr>';
         echo '<pre>';
-        echo request()->token;
+        dump( request()->token);
         echo '</pre>';
-        echo '<hr>如何扫码登录到指定地址？<br/>传递一个base64_encode(URL)给qrcode，如跳到百度：`https://we.coldyun.net/we/qrcode/aHR0cDovL3d3dy5iYWlkdS5jb20=`<hr>';
+        $user = $token = Auth::guard('api')->user();
+        echo '2. 读取用户信息：';
+        echo '<pre>';
+        dump($user->toArray());
+        echo '</pre>';
+        echo '<hr>3. 如何扫码登录到指定地址？<br/>传递一个base64_encode(URL)给qrcode，如跳到百度：`<b>https://we.coldyun.net/we/qrcode/aHR0cDovL3d3dy5iYWlkdS5jb20=</b>`<hr>';
 
     }
 
