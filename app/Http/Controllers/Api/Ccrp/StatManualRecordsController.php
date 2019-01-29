@@ -21,6 +21,7 @@ class StatManualRecordsController extends Controller
         $this->check();
         $list = StatManualRecord::getListByMonth($this->company->id, $month);
         $data['data'] = $list;
+        $meta = null;
         if ($this->company->cdc_admin == 0 and $manual_records = $this->company->doesManualRecords) {
             $meta['ccrp']['needs']['stat_manual_records'] = !(bool)$manual_records->isDone->count();
         }
