@@ -23,7 +23,7 @@ class StatManualRecordsController extends Controller
         $data['data'] = $list;
         $meta = null;
         if ($this->company->cdc_admin == 0 and $manual_records = $this->company->doesManualRecords) {
-            $meta['ccrp']['needs']['stat_manual_records'] = !(bool)$manual_records->isDone();
+            $meta['ccrp']['needs']['stat_manual_records'] = $manual_records->needRecord();
         }
         $data['meta'] = $meta;
         $data['meta']['ccrp']['now'] = [
@@ -47,7 +47,7 @@ class StatManualRecordsController extends Controller
         $this->check();
         $company = $this->company;
         if ($company->cdc_admin == 0 and $manual_records = $company->doesManualRecords) {
-            $need_temp_record = $manual_records->needRecord();
+            $need_temp_record = $manual_records->needRecord(true);
             if ($need_temp_record['status']) {
                 $meta['needs']['stat_manual_records'] = true;
                 $meta['signature']['app'] = 'ccrp';
