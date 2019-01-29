@@ -24,13 +24,15 @@ class StatManualRecord extends Coldchain2Model
         return $this->belongsTo(Cooler::class);
     }
 
-    public static function getListByMonth($company_id, $year = null, $month = null)
+    public static function getListByMonth($company_id, $month = null)
     {
         if ($month == null) {
             $year = date('Y');
             $month = date('m');
-        }else{
-            $month = str_pad($month, 2, "0", STR_PAD_LEFT);
+        } else {
+            $date = explode('-', $month);
+            $year = $date[0];
+            $month = str_pad($date[1], 2, "0", STR_PAD_LEFT);
         }
         $reports = self::where('company_id', $company_id)->where('year', $year)->where('month', $month)->select("year", "month", "day", "sign_time_a", "company_id", DB::raw("count(1) as cnt"))->groupBy('company_id', 'year', 'month', 'day', 'sign_time_a')->get();
 

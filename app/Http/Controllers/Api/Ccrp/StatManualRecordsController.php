@@ -15,10 +15,18 @@ class StatManualRecordsController extends Controller
 {
     Use ControllerUploader;
 
-    public function index($year = null, $month = null)
+    public function index($month = null)
     {
         $this->check();
-        $list = StatManualRecord::getListByMonth($this->company->id, $year, $month);
+        $list = StatManualRecord::getListByMonth($this->company->id,$month);
+        $data = ['data' => $list];
+        return $this->response->array($data);
+    }
+
+    public function show($year, $month, $day, $session)
+    {
+        $this->check();
+        $list = StatManualRecord::getListByMonth($this->company->id, $year, $month, $day, $session);
         $data = ['data' => $list];
         return $this->response->array($data);
     }
