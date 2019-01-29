@@ -125,6 +125,7 @@ $api->version('v1', [
                 //人工测温记录,查看或者签名
                 $api->get('stat_manual_records','StatManualRecordsController@create')->name('api.ccrp.stat_manual_records.create');
                 $api->post('stat_manual_records','StatManualRecordsController@store')->name('api.ccrp.stat_manual_records.store');
+                $api->get('stat_manual_records/list/{year?}/{month?}','StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
 
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){

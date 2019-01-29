@@ -16,9 +16,12 @@ class UploadsController extends Controller
         return $this->response->item($upload, new UploadTransformer());
     }
 
-    public function store(UploadRequest $request, $app = 'ccrp', $action = 'images', $unit_id = 0)
+    public function store(UploadRequest $request)
     {
         $file = $request->file('file');
+        $app = $request->app;
+        $action = $request->action;
+        $unit_id = $request->unit_id;
         if ($file->isValid()) {
             try {
                 $upload = new Upload();

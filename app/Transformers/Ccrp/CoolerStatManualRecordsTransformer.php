@@ -49,6 +49,7 @@ class CoolerStatManualRecordsTransformer extends TransformerAbstract
         $collectors_error = $cooler->collectorsTempTypeError->count();
         $data['collector_type_error'] = $collectors_error;
         $data['need_note'] = (bool)$need_note;
+        $data['sign_note'] = '';
         return $data;
     }
 
