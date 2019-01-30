@@ -13,6 +13,7 @@ class TopicTransformer extends TransformerAbstract
         $rs = [
             'id' => $topic->id,
             'title' => $topic->title,
+            'image' => $topic->image,
             'excerpt' => $topic->excerpt,
             'body' => $topic->body ,
             'category_id' => $topic->category_id ,

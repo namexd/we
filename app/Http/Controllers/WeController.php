@@ -222,7 +222,12 @@ class WeController extends Controller
         $user = $token = Auth::guard('api')->user();
         echo '2. 读取用户信息：';
         echo '<pre>';
-        dump($user->toArray());
+        if($user)
+        {
+            dump($user->toArray());
+        }else{
+            dump('token无效');
+        }
         echo '</pre>';
         echo '<hr>3. 如何扫码登录到指定地址？<br/>传递一个base64_encode(URL)给qrcode，如跳到百度：`<b>https://we.coldyun.net/we/qrcode/aHR0cDovL3d3dy5iYWlkdS5jb20=</b>`<hr>';
 

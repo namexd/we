@@ -61,7 +61,7 @@ class StatManualRecordsController extends Controller
                 $meta['needs']['stat_manual_records'] = false;
                 $meta['signature']['tips'] = $need_temp_record['tips'];
                 $data['data'] = [];
-                $data['meta'] = $meta;
+                $data['meta']['ccrp'] = $meta;
                 return $this->response->array($data);
             }
         }

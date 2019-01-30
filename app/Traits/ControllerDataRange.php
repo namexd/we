@@ -92,7 +92,7 @@ trait ControllerDataRange
                 break;
             case '本年':
                 $start = Carbon::now()->startOfYear()->toDateTimeString();
-                $end = Carbon::now()->lastOfYear()->startOfYear()->toDateTimeString();
+                $end = Carbon::now()->lastOfYear()->toDateTimeString();
                 break;
             case '去年':
                 $start = Carbon::now()->subYear(1)->startOfYear()->toDateTimeString();

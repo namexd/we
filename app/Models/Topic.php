@@ -23,4 +23,9 @@ class Topic extends Model
     {
         return $this->belongsTo(User::class,'last_reply_user_id');
     }
+
+    public function getImageAttribute($value)
+    {
+        return config('filesystems.disks.admin.url').'/'.$value;
+    }
 }
