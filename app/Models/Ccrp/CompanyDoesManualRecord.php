@@ -38,7 +38,7 @@ class CompanyDoesManualRecord extends Coldchain2Model
                     $result = ['status' => false, 'tips' => '请在' . current(self::签名时间下午) . '点~' . last(self::签名时间下午) . '点时间记录'];
                 } else {
                     $am_record = $this->hasRecords(null, null, null, 'AM')->first();
-                    if (time() - $am_record->sign_time < (self::签名间隔小时 * 3600)) {
+                    if ($am_record and time() - $am_record->sign_time < (self::签名间隔小时 * 3600)) {
                         $result = ['status' => false, 'tips' => '距离上午记录时间（' . date('H:i', $am_record->sign_time) . '）还没有超过6小时，预计' . (date('H:i', $am_record->sign_time + 6 * 3600) . '可以记录')];
                     }
                 }
