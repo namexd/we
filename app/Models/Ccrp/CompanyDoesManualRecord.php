@@ -6,8 +6,8 @@ class CompanyDoesManualRecord extends Coldchain2Model
 {
 
     const 签名间隔小时 = 6;
-    const 签名时间上午 = [6, 7, 8, 9, 10, 11];
-    const 签名时间下午 = [12, 13, 14, 15, 16, 17, 18];
+    const 上午签名时间 = [6, 7, 8, 9, 10, 11];
+    const 下午签名时间 = [12, 13, 14, 15, 16, 17, 18];
     const 设备类型 =
         [
             Cooler::设备类型_冷藏冰箱,
@@ -29,13 +29,13 @@ class CompanyDoesManualRecord extends Coldchain2Model
             $result = ['status' => false, 'tips' => '已经签过了'];
         } else {
             if (date('A') == 'AM') {
-                if (!in_array(date('H'), self::签名时间上午)) {
-                    $result = ['status' => false, 'tips' => '请在' . current(self::签名时间上午) . '点~' . last(self::签名时间上午) . '点时间记录'];
+                if (!in_array(date('H'), self::上午签名时间)) {
+                    $result = ['status' => false, 'tips' => '请在' . current(self::上午签名时间) . '点~' . last(self::上午签名时间) . '点时间记录'];
                 }
             }
             if (date('A') == 'PM') {
-                if (!in_array(date('H'), self::签名时间下午)) {
-                    $result = ['status' => false, 'tips' => '请在' . current(self::签名时间下午) . '点~' . last(self::签名时间下午) . '点时间记录'];
+                if (!in_array(date('H'), self::下午签名时间)) {
+                    $result = ['status' => false, 'tips' => '请在' . current(self::下午签名时间) . '点~' . last(self::下午签名时间) . '点时间记录'];
                 } else {
                     $am_record = $this->hasRecords(null, null, null, 'AM')->first();
                     if ($am_record and time() - $am_record->sign_time < (self::签名间隔小时 * 3600)) {

@@ -17,7 +17,7 @@ class HomeController extends Controller
         $ads = AdCategory::where('types',$is_mobile ? 'mobile' : 'web')->with('ads')->get()->toArray();
         $data['data']['ads'] = $ads;
 
-        $topics = Topic::orderBy('id','desc')->limit(5)->select('id','title','excerpt','slug','created_at','updated_at')->get();
+        $topics = Topic::orderBy('id','desc')->limit(5)->select('id','title','image','excerpt','slug','created_at','updated_at')->get();
         $data['data']['topics'] = $topics;
 
         return $this->response->array($data);
