@@ -1,12 +1,15 @@
 <?php
 
 use Illuminate\Http\Request;
-
 $api = app('Dingo\Api\Routing\Router');
 $api->version('v1', [
     'namespace' => 'App\Http\Controllers\Api',
     'middleware' => ['serializer:array', 'bindings']
 ], function ($api) {
+//    $api->get('{path}', function (Request $request) use ($api) {
+////拿到路由，查数据库/缓存，想怎么渲染就怎渲染
+//        return $request->getPathInfo();
+//    })->where('path', '.*');
     // 短信验证码，1分钟，1次
     $api->group([
         'middleware' => ['api.throttle', 'api.auth'],
