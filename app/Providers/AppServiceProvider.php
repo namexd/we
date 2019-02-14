@@ -15,6 +15,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Carbon::setLocale('zh');
+        app('view')->prependNamespace('admin', resource_path('views/laravel-admin'));
         //
     }
 

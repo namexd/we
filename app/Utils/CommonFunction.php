@@ -20,7 +20,7 @@ function array_trim($arr, $trim = true)
     return $arr;
 }
 
-function format_value($value,$suffix='')
+function format_value($value, $suffix = '')
 {
     if ($value !== '' and $value !== NULL and $value <> -999) return sprintf("%.1f", round($value, 3)) . $suffix;
     else return '-';
@@ -29,15 +29,15 @@ function format_value($value,$suffix='')
 /*
  * 阿里云短信-发送验证码
  */
-function send_vcode($phone,$code,$product='冷链资源管理系统')
+function send_vcode($phone, $code, $product = '冷链资源管理系统')
 {
     $smsService = \App::make(\Curder\LaravelAliyunSms\AliyunSms::class);
     $tplId = env('ALIYUN_SMS_CODE_VCODE');
     $params = [
-        'code'=>$code,
-        'product'=>$product,
+        'code' => $code,
+        'product' => $product,
     ];
-    $rs = $smsService->send(strval($phone), $tplId , $params);
+    $rs = $smsService->send(strval($phone), $tplId, $params);
     return $rs;
 }
 
@@ -49,7 +49,7 @@ function send_vcode($phone,$code,$product='冷链资源管理系统')
  * @param string $format
  * @return array
  */
-function get_last_months($length = 6, $year_month = null,$format="Ym")
+function get_last_months($length = 6, $year_month = null, $format = "Ym")
 {
     if ($year_month == null) $year_month = date("Ym");
     $year = substr($year_month, 0, 4);
@@ -61,30 +61,30 @@ function get_last_months($length = 6, $year_month = null,$format="Ym")
     }
     return $arr;
 }
-function get_month_first($date=null)
+
+function get_month_first($date = null)
 {
-    if($date==null){
-        $date =  date('Y-m-01');
-    }elseif($date=='this')
-    {
-        return  date('Y-m-01');
+    if ($date == null) {
+        $date = date('Y-m-01');
+    } elseif ($date == 'this') {
+        return date('Y-m-01');
     }
-    $timestamp=strtotime($date);
-    $firstday = date('Y-m-01',strtotime(date('Y',$timestamp).'-'.(date('m',$timestamp)-1).'-01'));
+    $timestamp = strtotime($date);
+    $firstday = date('Y-m-01', strtotime(date('Y', $timestamp) . '-' . (date('m', $timestamp) - 1) . '-01'));
     return $firstday;
 }
-function get_month_last($date=null)
+
+function get_month_last($date = null)
 {
-    if($date==null){
-        $date =  date('Y-m-01');
-    }elseif($date=='this')
-    {
-        $firstday= date('Y-m-01');
-        return  date('Y-m-d',strtotime("$firstday +1 month -1 day"));
+    if ($date == null) {
+        $date = date('Y-m-01');
+    } elseif ($date == 'this') {
+        $firstday = date('Y-m-01');
+        return date('Y-m-d', strtotime("$firstday +1 month -1 day"));
     }
-    $timestamp=strtotime($date);
-    $firstday=date('Y-m-01',strtotime(date('Y',$timestamp).'-'.(date('m',$timestamp)-1).'-01'));
-    $lastday=date('Y-m-d',strtotime("$firstday +1 month -1 day"));
+    $timestamp = strtotime($date);
+    $firstday = date('Y-m-01', strtotime(date('Y', $timestamp) . '-' . (date('m', $timestamp) - 1) . '-01'));
+    $lastday = date('Y-m-d', strtotime("$firstday +1 month -1 day"));
     return $lastday;
 }
 
@@ -95,12 +95,38 @@ function get_month_last($date=null)
  * @param $value
  * @return string
  */
-function add_query_param($url, $key, $value) {
-    $url=preg_replace('/(.*)(?|&)'.$key.'=[^&]+?(&)(.*)/i','$1$2$4',$url.'&');
-    $url=substr($url,0,-1);
-    if(strpos($url,'?') === false){
-        return ($url.'?'.$key.'='.$value);
+function add_query_param($url, $key, $value)
+{
+    $url = preg_replace('/(.*)(?|&)' . $key . '=[^&]+?(&)(.*)/i', '$1$2$4', $url . '&');
+    $url = substr($url, 0, -1);
+    if (strpos($url, '?') === false) {
+        return ($url . '?' . $key . '=' . $value);
     } else {
-        return ($url.'&'.$key.'='.$value);
+        return ($url . '&' . $key . '=' . $value);
     }
+}
+
+/**
+ * @param  $form_fields
+ * @return array
+ */
+function form_fields_trans($form_fields)
+{
+    $form = [];
+    foreach ($form_fields as $field) {
+
+        $options = $field->getOptions();
+
+        $form_item = $options;
+        $form_item['type'] = $field->getType();
+        unset($form_item['wrapper']);
+        unset($form_item['help_block']);
+        unset($form_item['label_attr']);
+        unset($form_item['errors']);
+        unset($form_item['wrapperAttrs']);
+        unset($form_item['errorAttrs']);
+        unset($form_item['attr']['class']);
+        $form[] = $form_item;
+    }
+    return $form;
 }

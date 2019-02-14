@@ -186,6 +186,10 @@ return [
         //阿里云OSS
         Jacobcyl\AliOSS\AliOssServiceProvider::class,
 
+        //表单生成器
+//        Distilleries\FormBuilder\FormBuilderServiceProvider::class,
+//        Kris\LaravelFormBuilder\FormBuilderServiceProvider::class,
+        LaravelFormBuilder\FormBuilderProvider::class,
 
     ],
 
@@ -237,6 +241,8 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
 
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+//        'FormBuilder'       => Distilleries\FormBuilder\Facades\FormBuilder::class,
+//        'FormBuilder' => Kris\LaravelFormBuilder\Facades\FormBuilder::class,
 
     ],
 

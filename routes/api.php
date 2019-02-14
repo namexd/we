@@ -29,6 +29,7 @@ $api->version('v1', [
             return response(['version' => 'v1.02']);
         });
 
+        $api->get('test','TestController@index');
         //微信jssdk的配置信息
         $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
 
@@ -52,7 +53,9 @@ $api->version('v1', [
         $api->delete('authorizations/current', 'AuthorizationsController@destroy')
             ->name('api.authorizations.destroy');
         //测试
-        $api->get('test', 'TestController@index')->name('api.test');
+        $api->get('test/form', 'TestController@form')->name('api.test.form');
+        $api->get('test/form/preview', 'TestController@formPreview')->name('api.test.form.preview');
+        $api->get('test/ajax', 'TestController@ajax')->name('api.test.ajax');
         // 使用手机号和验证码登录,未测试
         $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
             ->name('api.users.phoneStore');

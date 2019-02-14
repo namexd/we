@@ -10,6 +10,7 @@
         "barryvdh/laravel-ide-helper": "^2.5",
         "curder/laravel-aliyun-sms": "^1.0",
         "dingo/api": "^2.0.0-alpha2",
+        "distilleries/form-builder": "2.*",
         "doctrine/dbal": " ~2.3",
         "encore/laravel-admin": "^1.6",
         "fideloper/proxy": "~3.3",
@@ -36,7 +37,8 @@
     "autoload": {
         "classmap": [
             "database/seeds",
-            "database/factories"
+            "database/factories",
+            "app/LIbs/lonycn"
         ],
         "psr-4": {
             "App\\": "app/"

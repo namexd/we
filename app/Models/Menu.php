@@ -21,11 +21,16 @@ class Menu extends Model
         ModelTree::boot as treeBoot;
     }
 
-    private $topid=[
-        'mobile'=>1,
-        'web'=>8,
-        'web.ccms'=>9,
-        'web.bpms'=>0,
+    const 移动端 = 1;
+    const 网页端 = 8;
+    const 网页端冷链监测 = 9;
+    const 网页端生物制品 = 0;
+    const 网页端办公系统 = 28;
+    const sytems = [
+        'web_oa' => self::网页端办公系统,
+        'web_ccrp' => self::网页端冷链监测,
+        'web_bpms' => self::网页端生物制品,
+        'mobile' => self::移动端,
     ];
 
     /**
@@ -33,7 +38,7 @@ class Menu extends Model
      *
      * @var array
      */
-    protected $fillable = ['parent_id', 'order', 'title','types','slug', 'icon','icon_img', 'uri', 'permission'];
+    protected $fillable = ['parent_id', 'order', 'title', 'types', 'slug', 'icon', 'icon_img', 'uri', 'permission'];
 
 
     public function getTypesAttribute($value)
@@ -51,7 +56,7 @@ class Menu extends Model
      *
      * @return BelongsToMany
      */
-    public function roles() : BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_has_menus', 'menu_id', 'role_id');
     }
@@ -59,11 +64,11 @@ class Menu extends Model
     /**
      * @return array
      */
-    public function allNodes() : array
+    public function allNodes(): array
     {
         $orderColumn = DB::getQueryGrammar()->wrap($this->orderColumn);
 
-        $byOrder = $orderColumn.' = 0,'.$orderColumn;
+        $byOrder = $orderColumn . ' = 0,' . $orderColumn;
 
         return static::with('roles')->orderByRaw($byOrder)->get()->toArray();
     }
@@ -75,7 +80,7 @@ class Menu extends Model
      */
     public function withPermission()
     {
-        return (bool) true;
+        return (bool)true;
     }
 
 
@@ -87,7 +92,7 @@ class Menu extends Model
     public function withRoles($role_ids)
     {
         return $this->whereHas('hasRoles', function ($query) use ($role_ids) {
-            $query->whereIn('role_id',$role_ids);
+            $query->whereIn('role_id', $role_ids);
         });
     }
 
@@ -106,16 +111,20 @@ class Menu extends Model
         });
     }
 
-    public function listTree($user,$is_mobile)
+    public function listTree($user, $is_mobile, $topid = null)
     {
         $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
-        if($is_mobile)
-        {
-            $pid = $this->topid['mobile'];
-        }else{
-            $pid = $this->topid['web.ccms'];
+
+        if ($topid) {
+            $pid = $topid;
+        } else {
+            if ($is_mobile) {
+                $pid = self::移动端;
+            } else {
+                $pid = self::网页端冷链监测;
+            }
         }
-        $menus = $this->toTree($menus->toArray(),$pid);
+        $menus = $this->toTree($menus->toArray(), $pid);
         return $menus;
 
     }

@@ -11,16 +11,17 @@ use Request;
 
 class MenusController extends Controller
 {
-    private $topid=[
-        'mobile'=>1,
-        'web'=>8,
-        'web.ccms'=>9,
-        'web.bpms'=>0,
-    ];
-    public function index()
+    public function index($system = null)
     {
+        if ($system) {
+            if (in_array($system, Menu::sytems)) {
+                $system = Menu::sytems[$system];
+            } else {
+                $system = null;
+            }
+        }
         $is_mobile = Agent::isMobile();
-        $menus = (new Menu())->listTree($this->user(),$is_mobile);
+        $menus = (new Menu())->listTree($this->user(), $is_mobile, $system);
         $data['data'] = $menus;
         return $this->response->array($data);
     }
