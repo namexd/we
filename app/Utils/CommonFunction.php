@@ -105,28 +105,3 @@ function add_query_param($url, $key, $value)
         return ($url . '&' . $key . '=' . $value);
     }
 }
-
-/**
- * @param  $form_fields
- * @return array
- */
-function form_fields_trans($form_fields)
-{
-    $form = [];
-    foreach ($form_fields as $field) {
-
-        $options = $field->getOptions();
-
-        $form_item = $options;
-        $form_item['type'] = $field->getType();
-        unset($form_item['wrapper']);
-        unset($form_item['help_block']);
-        unset($form_item['label_attr']);
-        unset($form_item['errors']);
-        unset($form_item['wrapperAttrs']);
-        unset($form_item['errorAttrs']);
-        unset($form_item['attr']['class']);
-        $form[] = $form_item;
-    }
-    return $form;
-}
