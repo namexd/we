@@ -14,8 +14,8 @@ class MenusController extends Controller
     public function index($system = null)
     {
         if ($system) {
-            if (in_array($system, Menu::sytems)) {
-                $system = Menu::sytems[$system];
+            if (in_array($system, Menu::SYTEMS)) {
+                $system = Menu::SYTEMS[$system];
             } else {
                 $system = null;
             }

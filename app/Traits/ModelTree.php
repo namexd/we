@@ -147,9 +147,9 @@ trait ModelTree
     {
         $branch = [];
 
-        if (empty($nodes)) {
-            $nodes = $this->allNodes();
-        }
+//        if (empty($nodes)) {
+//            $nodes = $this->allNodes();
+//        }
 
         foreach ($nodes as $node) {
             if ($node[$this->parentColumn] == $parentId) {

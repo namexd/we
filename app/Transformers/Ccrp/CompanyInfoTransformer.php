@@ -20,6 +20,7 @@ class CompanyInfoTransformer extends TransformerAbstract
             'address_lon' => $company->address_lon,
             "category_count" => $company->category_count,
             "category_count_has_cooler" => $company->category_count_has_cooler,
+            "cdc_admin" => $company->cdc_admin,
             "shebei_install" => $company->shebei_install,
             "shebei_install_type1" => $company->shebei_install_type1,
             "shebei_install_type2" => $company->shebei_install_type2,

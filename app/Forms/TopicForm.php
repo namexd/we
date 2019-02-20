@@ -19,6 +19,35 @@ class TopicForm extends Form
             time()
         );
         $checkbox_options = [
+            ['value' => '1', 'label' => '选项一', 'disabled' => false],
+            ['value' => '2', 'label' => '选项二', 'disabled' => true]
+        ];
+        $items['check_box'] = Form::checkbox('categories', '表单', [])->options($checkbox_options)->col(Form::col(12));
+
+        $select_options = [
+            ['value' => 'red', 'label' => '红色'],
+            ['value' => 'blue', 'label' => '蓝色']
+        ];
+        $items['select'] = Form::select('color', '颜色', [])->options($select_options);
+
+        $form = Form::create('', $items);
+        $api = $form->buildFilter();
+        return $api;
+    }
+
+    public static function form()
+    {
+        //input组件
+        $items['name'] = Form::input('name', '用户名');
+        $items['password'] = Form::password('password', '密码');
+        //日期区间选择组件
+        $items['date_range'] = Form::dateRange(
+            'date_range',
+            '区间日期',
+            strtotime('- 10 day'),
+            time()
+        );
+        $checkbox_options = [
             ['value' => '1', 'label' => '好用', 'disabled' => false],
             ['value' => '2', 'label' => '方便', 'disabled' => true]
         ];
@@ -38,7 +67,6 @@ class TopicForm extends Form
 //创建form
         $form = Form::create('/save.php', $items);
         $api = $form
-            ->setTitle('编辑商品')
             ->formRow(Form::row(10))
             ->formApi();
         return $api;

@@ -20,7 +20,6 @@ use EasyWeChat\Factory;
  */
 class WeController extends Controller
 {
-    private $weapp_id = Weapp::智慧冷链公众号;
     private $﻿redirect_url = '/we/qrcode/home';
 
     public function test()
@@ -30,6 +29,10 @@ class WeController extends Controller
         dd($list);
     }
 
+    /**
+     * 微信网页授权登录
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
     public function oauth()
     {
         $scopes = 'snsapi_base';//'snsapi_userinfo';//
@@ -48,6 +51,10 @@ class WeController extends Controller
         return $oauth->redirect();
     }
 
+    /**
+     * 微信网页授权登录回调
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
     public function callback()
     {
         $app = Factory::officialAccount(config('wechat.official_account.default'));
@@ -58,7 +65,7 @@ class WeController extends Controller
         $userInfo = $wxuser->toArray();
 
         // 检测we.openid 是否存
-        $hasWeuser = WeappHasWeuser::where('weapp_id', $this->weapp_id)->where('openid', $userInfo['original']['openid'])->first();
+        $hasWeuser = WeappHasWeuser::where('weapp_id', Weapp::智慧冷链公众号)->where('openid', $userInfo['original']['openid'])->first();
         //如果简单版本的snsapi_base获取到的openid不存着数据库中，需要再次请求获取用户全部资料
         if (!$hasWeuser and !isset($userInfo['original']['unionid'])) {
             return redirect('/we/oauth?scopes=snsapi_userinfo');
@@ -69,7 +76,7 @@ class WeController extends Controller
             // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
             if ($hasWeuser) {
                 $new_weappHasWeuser = [
-                    'weapp_id' => $this->weapp_id,
+                    'weapp_id' => Weapp::智慧冷链公众号,
                     'weuser_id' => $hasWeuser->weuser_id,
                     'openid' => $userInfo['original']['openid'],
                     'unionid' => $userInfo['original']['unionid'],
@@ -105,7 +112,7 @@ class WeController extends Controller
             $weuser = new Weuser($new_weuser);
             $user->weuser()->save($weuser);
             $new_weappHasWeuser = [
-                'weapp_id' => $this->weapp_id,
+                'weapp_id' => Weapp::智慧冷链公众号,
                 'openid' => $userInfo['original']['openid'],
                 'unionid' => $userInfo['original']['unionid'],
                 'weuser_id' => $user->weuser->id,
@@ -127,6 +134,11 @@ class WeController extends Controller
 
     }
 
+    /**
+     * 扫码登录
+     * @param null $redirect_url
+     * @return mixed|\Psr\Http\Message\ResponseInterface
+     */
     public function qrcode($redirect_url = null)
     {
         $redirect_url = $redirect_url ?? base64_encode($this->﻿redirect_url);
@@ -146,6 +158,10 @@ class WeController extends Controller
         return $result; //返回页面
     }
 
+    /**
+     * 扫码登录回调
+     * @return \Illuminate\Http\RedirectResponse
+     */
     public function qrback()
     {
         $code = request()->code ?? null;
@@ -183,7 +199,7 @@ class WeController extends Controller
                 // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
                 if ($hasWeuser) {
                     $new_weappHasWeuser = [
-                        'weapp_id' => $this->weapp_id,
+                        'weapp_id' => Weapp::智慧冷链用户中心,
                         'weuser_id' => $hasWeuser->weuser_id,
                         'openid' => $userInfo['openid'],
                         'unionid' => $userInfo['unionid'],
@@ -212,20 +228,22 @@ class WeController extends Controller
         }
     }
 
+    /**
+     * 扫码登录测试
+     */
     public function qrhome()
     {
         echo '<h1>测试·扫码结果页面</h1><hr>';
         echo '1. 获取到token：<hr>';
         echo '<pre>';
-        dump( request()->token);
+        dump(request()->token);
         echo '</pre>';
         $user = $token = Auth::guard('api')->user();
         echo '2. 读取用户信息：';
         echo '<pre>';
-        if($user)
-        {
+        if ($user) {
             dump($user->toArray());
-        }else{
+        } else {
             dump('token无效');
         }
         echo '</pre>';

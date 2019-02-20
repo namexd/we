@@ -26,7 +26,7 @@ class Menu extends Model
     const 网页端冷链监测 = 9;
     const 网页端生物制品 = 0;
     const 网页端办公系统 = 28;
-    const sytems = [
+    const SYTEMS = [
         'web_oa' => self::网页端办公系统,
         'web_ccrp' => self::网页端冷链监测,
         'web_bpms' => self::网页端生物制品,
@@ -91,9 +91,10 @@ class Menu extends Model
 
     public function withRoles($role_ids)
     {
-        return $this->whereHas('hasRoles', function ($query) use ($role_ids) {
+        $rs = $this->whereHas('hasRoles', function ($query) use ($role_ids) {
             $query->whereIn('role_id', $role_ids);
         });
+        return $rs;
     }
 
 
@@ -114,7 +115,6 @@ class Menu extends Model
     public function listTree($user, $is_mobile, $topid = null)
     {
         $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
-
         if ($topid) {
             $pid = $topid;
         } else {

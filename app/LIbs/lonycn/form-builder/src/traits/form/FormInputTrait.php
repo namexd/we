@@ -26,7 +26,7 @@ trait FormInputTrait
      * @param string $type
      * @return Input
      */
-    public static function input($field, $title, $value = '', $type = Input::TYPE_TEXT)
+    public static function input($field, $title = '', $value = '', $type = Input::TYPE_TEXT)
     {
         $input = new Input($field, $title, (string)$value);
         $input->type($type);

@@ -10,6 +10,17 @@ namespace LaravelFormBuilder;
 
 class Form extends \FormBuilder\Form
 {
+
+    const TEXT = 'text';
+    const PASSWORD = 'password';
+    const NUMBER = 'number';
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $filters = [];
+
     /**
      * Form constructor.
      * @param string $action

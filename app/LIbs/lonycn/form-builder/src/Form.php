@@ -176,7 +176,7 @@ class Form
      * Form constructor.
      *
      * @param string $action 提交地址
-     * @param array  $components 组件
+     * @param array $components 组件
      */
     public function __construct($action = '', array $components = [])
     {
@@ -564,7 +564,7 @@ class Form
      * 生成表单快捷方法
      *
      * @param string $action
-     * @param array  $components
+     * @param array $components
      * @return Form
      */
     public static function create($action, array $components = [])
@@ -573,12 +573,14 @@ class Form
     }
 
 
-    /**
-     * 获取生成表单的js代码
-     *
-     * @return string
-     */
-    public function formApi()
+    public function buildFilter()
+    {
+        $form = $this;
+        $api['rule'] = $form->getRules();
+        return $api;
+    }
+
+    public function buildForm()
     {
         $form = $this;
         $api['rule'] = $form->getRules();
@@ -589,6 +591,5 @@ class Form
         $api['action'] = $form->getAction();
         $api['method'] = $form->getMethod();
         return $api;
-
     }
 }

@@ -13,8 +13,9 @@ class TestController extends Controller
 {
     public function form()
     {
-        $filter = TopicForm::filter();
         $model = Topic::orderBy('id', 'desc');
+        $filter = Topic::filter();
+
         $topics = $model->paginate($request->pagesize ?? $this->pagesize);
 
         return $this->response->paginator($topics, new TopicListTransformer())->addMeta('filter', $filter);
