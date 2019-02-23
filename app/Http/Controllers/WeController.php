@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Api\Request;
+use App\Models\App;
 use App\Models\User;
 use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
@@ -21,6 +22,7 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     private $﻿redirect_url = '/we/qrcode/home';
+    private $﻿redirect_app = '';
 
     public function test()
     {
@@ -141,7 +143,14 @@ class WeController extends Controller
      */
     public function qrcode($redirect_url = null)
     {
-        $redirect_url = $redirect_url ?? base64_encode($this->﻿redirect_url);
+        $apps = App::pluck('app_url', 'slug')->toArray();
+        if ($redirect_url and in_array($redirect_url, array_keys($apps))) {
+            $redirect_url = ['app' => $redirect_url];
+        } elseif (base64_decode($redirect_url)) {
+            $redirect_url = ['url' => $redirect_url];
+        } else {
+            $redirect_url = ['url' => base64_encode($this->﻿redirect_url)];
+        }
         request()->session()->put('qrback_url', $redirect_url);
         $redirect_uri = route('we.qrback', ['redirect_url' => $redirect_url]);
         $redirect_uri = urlencode($redirect_uri);//该回调需要url编码
@@ -169,7 +178,13 @@ class WeController extends Controller
         $secret = config('wechat.open_platform.weixinweb.secret');
         $token = '';
         if (session('qrback_url')) {
-            $this->﻿redirect_url = session('qrback_url');
+            $redirect = session('qrback_url');
+            if (isset($redirect['app'])) {
+                $this->﻿redirect_app = $redirect['app'];
+            }
+            if (isset($redirect['url'])) {
+                $this->﻿redirect_url = $redirect['url'];
+            }
         }
         if (!empty($code))  //有code
         {
@@ -218,6 +233,10 @@ class WeController extends Controller
                 $weuser = $hasWeuser->weuser;
                 $user = $weuser->user;
                 $token = Auth::guard('api')->fromUser($user);
+                if ($this->﻿redirect_app) {
+                    $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
+                    $this->﻿redirect_url = base64_encode($user_info['login_url'] .'?access=' .$user_info['access']);
+                }
             }
             $url = base64_decode($this->﻿redirect_url);
             $url = add_query_param($url, 'token', $token);

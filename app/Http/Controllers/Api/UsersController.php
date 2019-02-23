@@ -164,30 +164,8 @@ class UsersController extends Controller
 
     public function appsLoginUrl($app_slug)
     {
-
-        $app = App::where('slug', $app_slug)->first();
         $user = $this->user();
-        $bindApp = $user->hasApps->where('app_id', $app->id)->first();
-
-        $array['login_url'] = '';
-        $array['app_url'] = '';
-        $res = [];
-        if ($bindApp) {
-            $res['app'] = $app->slug;
-            $res['username'] = $bindApp->app_username;
-            $res['userid'] = $bindApp->app_userid;
-            $res['unitid'] = $bindApp->app_unitid;
-            $res['ucenter_user_id'] = $bindApp->user_id;
-
-            $array['app_url'] = $app->app_url;
-            $array['login_url'] = $app->login_url;
-
-            $res = app_access_encode($app->appkey, $app->appsecret, $res);
-
-        } else {
-            $res = [];
-        }
-        $array['access'] = $res;
+        $array = (new App())->userBindedLoginInfo($app_slug, $user);
         return $this->response->array($array);
     }
 

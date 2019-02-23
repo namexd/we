@@ -56,16 +56,17 @@ class User extends Authenticatable implements JWTSubject
         return [];
     }
 
-    public function roles() : BelongsToMany
+    public function roles(): BelongsToMany
     {
         return $this->belongsToMany(Role::class, 'role_has_users', 'user_id', 'role_id');
     }
 
-    public function permissions() : BelongsToMany
+    public function permissions(): BelongsToMany
     {
         return $this->belongsToMany(Permission::class, 'user_has_permissions', 'user_id', 'permission_id');
     }
-    public function apps() : BelongsToMany
+
+    public function apps(): BelongsToMany
     {
         return $this->belongsToMany(App::class, 'user_has_apps', 'user_id', 'app_id');
     }
@@ -83,7 +84,8 @@ class User extends Authenticatable implements JWTSubject
     public function withRole($role_id = Role::LENGWANG_ROLE_ID)
     {
         return $this->whereHas('hasRoles', function ($query) use ($role_id) {
-            $query->where('role_id',$role_id);
+            $query->where('role_id', $role_id);
         });
     }
+
 }
