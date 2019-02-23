@@ -13,8 +13,10 @@ use App\Models\User;
 use App\Models\UserHasApp;
 use App\Transformers\UserHasAppTransformer;
 use App\Transformers\UserTransformer;
+use function App\Utils\app_access_encode;
 use Dingo\Api\Auth\Auth;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
+use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsersController extends Controller
 {
@@ -103,7 +105,7 @@ class UsersController extends Controller
     {
         $user = $this->user();
         if (!$user->phone or !$user->phone_verified) {
-            return $this->response->error('您的手机号没有验证',456);
+            return $this->response->error('您的手机号没有验证', 456);
         }
         $binded = $user->hasApps->where('app_id', $request->app_id)->first();
         if ($binded) {
@@ -135,12 +137,10 @@ class UsersController extends Controller
 
         $rs = $user->hasApps()->create($data);
         //更新角色
-        $role = Role::where('slug',$app->slug)->first();
-        if($role)
-        {
-            if(!$user->hasRoles->where('role_id',$role->id)->count())
-            {
-                $user->hasRoles()->create(['role_id'=>$role->id]);
+        $role = Role::where('slug', $app->slug)->first();
+        if ($role) {
+            if (!$user->hasRoles->where('role_id', $role->id)->count()) {
+                $user->hasRoles()->create(['role_id' => $role->id]);
             }
         }
         return $this->response->created(null, $rs->toArray());
@@ -154,13 +154,41 @@ class UsersController extends Controller
         if (!$app) {
             return $this->response->error('管理系统选择错误', 422);
         }
-        UserHasApp::where('app_id',$app_id)->where('user_id',$user->id)->delete();
-        $role = Role::where('slug',$app->slug)->first();
-        if($role)
-        {
-            RoleHasUser::where('role_id',$role->id)->where('user_id',$user->id)->delete();
+        UserHasApp::where('app_id', $app_id)->where('user_id', $user->id)->delete();
+        $role = Role::where('slug', $app->slug)->first();
+        if ($role) {
+            RoleHasUser::where('role_id', $role->id)->where('user_id', $user->id)->delete();
         }
         return $this->response->noContent();
+    }
+
+    public function appsLoginUrl($app_slug)
+    {
+
+        $app = App::where('slug', $app_slug)->first();
+        $user = $this->user();
+        $bindApp = $user->hasApps->where('app_id', $app->id)->first();
+
+        $array['login_url'] = '';
+        $array['app_url'] = '';
+        $res = [];
+        if ($bindApp) {
+            $res['app'] = $app->slug;
+            $res['username'] = $bindApp->app_username;
+            $res['userid'] = $bindApp->app_userid;
+            $res['unitid'] = $bindApp->app_unitid;
+            $res['ucenter_user_id'] = $bindApp->user_id;
+
+            $array['app_url'] = $app->app_url;
+            $array['login_url'] = $app->login_url;
+
+            $res = app_access_encode($app->appkey, $app->appsecret, $res);
+
+        } else {
+            $res = [];
+        }
+        $array['access'] = $res;
+        return $this->response->array($array);
     }
 
 }

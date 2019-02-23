@@ -26,11 +26,13 @@ class Menu extends Model
     const 网页端冷链监测 = 9;
     const 网页端生物制品 = 0;
     const 网页端办公系统 = 28;
+    const 用户中心 = 30;
     const SYTEMS = [
         'web_oa' => self::网页端办公系统,
         'web_ccrp' => self::网页端冷链监测,
         'web_bpms' => self::网页端生物制品,
         'mobile' => self::移动端,
+        'ucenter' => self::用户中心,
     ];
 
     /**

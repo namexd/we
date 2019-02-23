@@ -80,6 +80,7 @@ $api->version('v1', [
             //小程序更新手机号，未使用
             $api->put('users/phone', 'UsersController@updatePhone')->name('api.users.updatePhone');
             //用户绑定的系统信息
+            $api->get('users/apps/{app_slug?}/login_url', 'UsersController@appsLoginUrl')->name('api.users.apps.login_url');
             $api->get('users/apps', 'UsersController@apps')->name('api.users.apps');
             $api->put('users/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
             $api->delete('users/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');

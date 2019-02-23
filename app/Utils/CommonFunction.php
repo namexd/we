@@ -105,3 +105,43 @@ function add_query_param($url, $key, $value)
         return ($url . '&' . $key . '=' . $value);
     }
 }
+
+/**
+ * 加密
+ * @param $data
+ * @param $key
+ * @return string
+ */
+function encrypt($data, $key)
+{
+    $char = $str = '';
+    $key = md5($key);
+    $x = 0;
+    $len = strlen($data);
+    $l = strlen($key);
+    for ($i = 0; $i < $len; $i++) {
+        if ($x == $l) {
+            $x = 0;
+        }
+        $char .= $key{$x};
+        $x++;
+    }
+    for ($i = 0; $i < $len; $i++) {
+        $str .= chr(ord($data{$i}) + (ord($char{$i})) % 256);
+    }
+    return base64_encode($str);
+}
+
+
+/**
+ * app加密认证
+ * @param $appkey
+ * @param $appsecret
+ * @param $info
+ * @return string
+ */
+function app_access_encode($appkey, $appsecret, $info)
+{
+    return encrypt(time() . '|||' . strtoupper($appkey) . '|||' . strtoupper($appsecret) . '|||' . json_encode($info), $appkey);
+}
+
