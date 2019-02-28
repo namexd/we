@@ -43,7 +43,8 @@ class App extends Model
         $bindApp = $user->hasApps->where('app_id', $app->id)->first();
         $array['login_url'] = '';
         $array['app_url'] = '';
-        $res = [];
+        $array['app_name'] = $app['name'];
+        $res = false;
         if ($bindApp) {
             $res['app'] = $app->slug;
             $res['username'] = $bindApp->app_username;
@@ -54,7 +55,7 @@ class App extends Model
             $array['login_url'] = $app->login_url;
             $res = app_access_encode($app->appkey, $app->appsecret, $res);
         } else {
-            $res = [];
+            $res = false;
         }
         $array['access'] = $res;
         return $array;

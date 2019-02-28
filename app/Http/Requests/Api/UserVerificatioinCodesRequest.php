@@ -32,4 +32,14 @@ class UserVerificatioinCodesRequest extends FormRequest
             'realname' => '姓名',
         ];
     }
+    public function messages()
+    {
+        return [
+            'verification_key.required' => '还未获取验证码。',
+            'verification_code.required' => '验证码没有输入。',
+            'verification_code.min' => '验证码输入有误。',
+            'verification_code.max' => '验证码输入有误。',
+            'realname.required' => '姓名还没有输入。',
+        ];
+    }
 }

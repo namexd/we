@@ -23,11 +23,12 @@ class WeController extends Controller
 {
     private $﻿redirect_url = '/we/qrcode/home';
     private $﻿redirect_app = '';
+    private $﻿redirect_ucenter = 'http://localhost:8080/#/login';
 
     public function test()
     {
         $app = Factory::officialAccount(config('wechat.official_account.default'));
-        $list = $app->customer_service->list();
+        $list = $app->material->list('news', 0, 1);
         dd($list);
     }
 
@@ -204,7 +205,6 @@ class WeController extends Controller
             $infoResult = $client->get($infoUrl);
             $userInfo = json_decode($infoResult->getBody(), true);
 
-
             //登录或创建用户
             // 检测we.openid 是否存
             $hasWeuser = WeappHasWeuser::where('weapp_id', Weapp::智慧冷链用户中心)->where('openid', $userInfo['openid'])->first();
@@ -232,16 +232,38 @@ class WeController extends Controller
 
                 $weuser = $hasWeuser->weuser;
                 $user = $weuser->user;
+
+                //生成token、
                 $token = Auth::guard('api')->fromUser($user);
-                if ($this->﻿redirect_app) {
+                //检查用户是否验证过手机号
+                if ($user->phone_verified == 0) {
+                    $url = $this->﻿redirect_ucenter;
+                    $url = add_query_param($url, 'need_phone_verified', 1);
+                    $url = add_query_param($url, 'token', $token);
+                    $url = add_query_param($url, '_t', time());
+                    $url = add_query_param($url, 'message', '手机号未验证');
+                } elseif ($this->﻿redirect_app) {
+                    // 自动登录到第三方系统，追加access
                     $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
-                    $this->﻿redirect_url = base64_encode($user_info['login_url'] .'?access=' .$user_info['access']);
+                    if($user_info and $user_info['access'])
+                    {
+                        $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                    }else{
+                        $url = $this->﻿redirect_ucenter;
+                        $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
+                        $url = add_query_param($url, 'token', $token);
+                        $url = add_query_param($url, '_t', time());
+                        $url = add_query_param($url, 'message', ($user_info['app_name']??"").'系统未绑定');
+                    }
+                }else{
+                    $url = base64_decode($this->﻿redirect_url);
+                    $url = add_query_param($url, 'token', $token);
+                    $url = add_query_param($url, '_t', time());
                 }
+                return Redirect::away($url);
+            } else {
+                abort(302, '微信授权失败了 ：(');
             }
-            $url = base64_decode($this->﻿redirect_url);
-            $url = add_query_param($url, 'token', $token);
-            $url = add_query_param($url, '_t', time());
-            return Redirect::away($url);
         } else {
             abort(302, '微信授权失败 ：(');
         }

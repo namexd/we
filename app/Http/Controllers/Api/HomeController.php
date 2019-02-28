@@ -19,6 +19,7 @@ class HomeController extends Controller
 
         $topics = Topic::orderBy('id','desc')->limit(5)->select('id','title','image','excerpt','slug','created_at','updated_at')->get();
         $data['data']['topics'] = $topics;
+        $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000;">您可能没有<b class="label label-primary">绑定系统</b>，<br></br>请绑定后查看所拥有的功能。：）</div>';
 
         return $this->response->array($data);
     }

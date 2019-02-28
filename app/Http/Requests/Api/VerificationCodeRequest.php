@@ -25,4 +25,12 @@ class VerificationCodeRequest extends FormRequest
 
         return $rule;
     }
+
+    public function messages()
+    {
+        return [
+            'phone.required'=> '手机号码未录入。',
+            'phone.regex'=> '手机号码录入不正确。',
+        ];
+    }
 }
