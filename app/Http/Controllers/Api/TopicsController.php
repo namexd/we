@@ -31,7 +31,11 @@ class TopicsController extends Controller
     {
         $topic->view_count++;
         $topic->save();
-        return $this->response->item($topic, new TopicTransformer());
+        $next = $topic->next();
+        $previous = $topic->previous();
+        $meta['next'] = $next;
+        $meta['previous'] = $previous;
+        return $this->response->item($topic, new TopicTransformer())->addMeta('more', $meta);
     }
 
 }
