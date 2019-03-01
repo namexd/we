@@ -11,27 +11,33 @@ class Role extends Model
      *
      * @var array
      */
+
+    const 冷链用户 = 'ccrp';
+    const 冷链疾控用户 = 'ccrp.cdc';
+    const 生物制品用户 = 'bpms';
+
     protected $fillable = [
         'name', 'slug'
     ];
 
-    const LENGWANG_ROLE_ID=5;
+    const LENGWANG_ROLE_ID = 5;
 
     public function users()
     {
         return $this->belongsToMany(User::class, 'role_has_users', 'role_id', 'user_id');
     }
 
-    public function isRole(string $role) : bool
+    public function isRole(string $role): bool
     {
         return $this->pluck('slug')->contains($role);
     }
+
     public function permissions()
     {
         return $this->belongsToMany(Permission::class, 'role_has_permissions', 'role_id', 'permission_id');
     }
 
-    public function can(string $permission) : bool
+    public function can(string $permission): bool
     {
         return $this->permissions()->where('slug', $permission)->exists();
     }
@@ -43,7 +49,7 @@ class Role extends Model
      *
      * @return bool
      */
-    public function cannot(string $permission) : bool
+    public function cannot(string $permission): bool
     {
         return !$this->can($permission);
     }

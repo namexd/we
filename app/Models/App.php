@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class App extends Model
 {
+    const 冷链监测系统 = 'ccrp';
+    const 疫苗追溯系统 = 'bpms';
     protected $fillable = [
         'name',
         'slug',

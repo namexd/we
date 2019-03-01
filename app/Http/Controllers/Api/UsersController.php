@@ -137,7 +137,14 @@ class UsersController extends Controller
 
         $rs = $user->hasApps()->create($data);
         //更新角色
-        $role = Role::where('slug', $app->slug)->first();
+        $role_slug = $app->slug;
+        if ($role_slug == Role::冷链用户) {
+            $userCompany = $login->userCompany;
+            if ($userCompany->cdc_admin == 1) {
+                $role_slug = Role::冷链疾控用户;
+            }
+        }
+        $role = Role::where('slug', $role_slug)->first();
         if ($role) {
             if (!$user->hasRoles->where('role_id', $role->id)->count()) {
                 $user->hasRoles()->create(['role_id' => $role->id]);

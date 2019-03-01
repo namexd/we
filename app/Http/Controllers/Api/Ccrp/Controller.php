@@ -36,7 +36,7 @@ class Controller extends BaseController
             {
                 $company_id = $user->company_id;
             }else{
-                $user_company = $user->user_company;
+                $user_company = $user->userCompany;
                 if(!$user_company)
                 {
                     return $this->response->error('系统账号验证错误', 403);

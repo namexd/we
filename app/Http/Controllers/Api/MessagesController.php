@@ -26,7 +26,7 @@ class MessagesController extends Controller
                                 $user_app = UserHasApp::where('user_id', $user->id)->where('app_id', $app->id)->first();
                                 if ($user_app) {
                                     $ccrp_user = User::where('id', $user_app->app_userid)->where('status', 1)->first();
-                                    $ccrp_company = $ccrp_user->user_company;
+                                    $ccrp_company = $ccrp_user->userCompany;
                                     if ($ccrp_company) {
                                         $company_ids = $ccrp_company->ids();
                                         $total += $message['ccrp']['warning_events']['overtemp'] = WarningEvent::whereIn('company_id', $company_ids)->where('handled', 0)->count();
