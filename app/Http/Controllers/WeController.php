@@ -7,6 +7,7 @@ use App\Models\App;
 use App\Models\User;
 use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
+use App\Models\WechatMedia;
 use App\Models\Weuser;
 use function App\Utils\add_query_param;
 use GuzzleHttp\Client;
@@ -28,8 +29,37 @@ class WeController extends Controller
     public function test()
     {
         $app = Factory::officialAccount(config('wechat.official_account.default'));
-        $list = $app->material->list('news', 0, 1);
-        dd($list);
+        $data = $app->material->list('news', 0, 20);
+        dd($data);
+//return;
+        $medias = [];
+        if ($data) {
+            foreach ($data['item'] as $item) {
+                $media_id = $item['media_id'];
+                $content = $item['content'];
+                $create_time = $content['create_time'];
+                $update_time = $content['update_time'];
+                foreach ($content['news_item'] as $new_item) {
+                    $meida = [];
+                    $media['media_id'] = $media_id;
+                    $media['create_time'] = $create_time;
+                    $media['update_time'] = $update_time;
+                    $media['title'] = $new_item['title'];
+                    $media['author'] = $new_item['author'];
+                    $media['digest'] = $new_item['digest'];
+                    $media['content'] = $new_item['content'];
+                    $media['content_source_url'] = $new_item['content_source_url'];
+                    $media['thumb_media_id'] = $new_item['thumb_media_id'];
+                    $media['show_cover_pic'] = $new_item['show_cover_pic'];
+                    $media['url'] = $new_item['url'];
+                    $media['thumb_url'] = $new_item['thumb_url'];
+                    $mediaer = WechatMedia::create($media);
+                    $medias[] = $mediaer;
+
+                }
+            }
+            dd(count($medias));
+        }
     }
 
     /**
@@ -245,17 +275,16 @@ class WeController extends Controller
                 } elseif ($this->﻿redirect_app) {
                     // 自动登录到第三方系统，追加access
                     $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
-                    if($user_info and $user_info['access'])
-                    {
+                    if ($user_info and $user_info['access']) {
                         $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
-                    }else{
+                    } else {
                         $url = $this->﻿redirect_ucenter;
                         $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
                         $url = add_query_param($url, 'token', $token);
                         $url = add_query_param($url, '_t', time());
-                        $url = add_query_param($url, 'message', ($user_info['app_name']??"").'系统未绑定');
+                        $url = add_query_param($url, 'message', ($user_info['app_name'] ?? "") . '系统未绑定');
                     }
-                }else{
+                } else {
                     $url = base64_decode($this->﻿redirect_url);
                     $url = add_query_param($url, 'token', $token);
                     $url = add_query_param($url, '_t', time());

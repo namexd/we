@@ -3,9 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Topic;
+use App\Models\TopicCategory;
+use App\Transformers\TopicCategoryTransformer;
 use App\Transformers\TopicListTransformer;
 use App\Transformers\TopicTransformer;
 use Illuminate\Http\Request;
+
 class TopicsController extends Controller
 {
 
@@ -16,12 +19,11 @@ class TopicsController extends Controller
      */
     public function index(Request $request)
     {
-        $model = Topic::orderBy('id','desc');
-        if($request->category_id)
-        {
-            $model->where('category_id',$request->category_id);
+        $model = Topic::where('status', 1)->orderBy('id', 'desc');
+        if ($request->category_id) {
+            $model->where('category_id', $request->category_id);
         }
-        $topics = $model->paginate($request->pagesize??$this->pagesize);
+        $topics = $model->paginate($request->pagesize ?? $this->pagesize);
         return $this->response->paginator($topics, new TopicListTransformer());
     }
 

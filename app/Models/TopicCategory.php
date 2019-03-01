@@ -13,6 +13,11 @@ class TopicCategory extends Model
         return $this->hasMany(Topic::class,'category_id');
     }
 
+    public function lastTopics()
+    {
+        return $this->hasMany(Topic::class,'category_id')->limit(10)->orderBy('id','desc');
+    }
+
     public function getUpdatedAtColumn()
     {
         return null;

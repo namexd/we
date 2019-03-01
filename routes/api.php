@@ -28,7 +28,7 @@ $api->version('v1', [
             return response(['version' => 'v1.02']);
         });
 
-        $api->get('test','TestController@index');
+        $api->get('test', 'TestController@index');
         //微信jssdk的配置信息
         $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
 
@@ -69,6 +69,8 @@ $api->version('v1', [
             //文章
             $api->get('topics', 'TopicsController@index')->name('topics.index');
             $api->get('topics/{topic}', 'TopicsController@show')->name('topics.show');
+            $api->get('topic_categories', 'TopicCategoriesController@index')->name('topics_categories.index');
+            $api->get('topic_categories/{category}', 'TopicCategoriesController@show')->name('topics_categories.show');
             //首页
             $api->get('home/mobile', 'HomeController@mobile')->name('api.home.mobile');
             //获取菜单
