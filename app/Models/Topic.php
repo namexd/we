@@ -45,6 +45,6 @@ class Topic extends Model
 
     public function getImageAttribute($value)
     {
-        return config('filesystems.disks.admin.url') . '/' . $value;
+        return $value?config('filesystems.disks.admin.url') . '/' . $value:'';
     }
 }

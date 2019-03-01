@@ -128,28 +128,7 @@ class UsersController extends Controller
         if (!$users->checkPassword($login, $password)) {
             return $this->response->error('密码错误', 422);
         }
-        $data = [
-            'app_id' => $app_id,
-            'app_username' => $login->username,
-            'app_userid' => $login->id,
-            'app_unitid' => $login->unitid
-        ];
-
-        $rs = $user->hasApps()->create($data);
-        //更新角色
-        $role_slug = $app->slug;
-        if ($role_slug == Role::冷链用户) {
-            $userCompany = $login->userCompany;
-            if ($userCompany->cdc_admin == 1) {
-                $role_slug = Role::冷链疾控用户;
-            }
-        }
-        $role = Role::where('slug', $role_slug)->first();
-        if ($role) {
-            if (!$user->hasRoles->where('role_id', $role->id)->count()) {
-                $user->hasRoles()->create(['role_id' => $role->id]);
-            }
-        }
+        $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
         return $this->response->created(null, $rs->toArray());
     }
 

@@ -493,5 +493,11 @@ class Company extends Coldchain2Model
         return $this->hasOne(CompanyDoesManualRecord::class);
     }
 
+    //是否是疾控
+    public function cdcLevel()
+    {
+        return $this->cdc_admin;
+    }
+
 
 }

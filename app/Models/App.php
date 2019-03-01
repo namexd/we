@@ -63,4 +63,36 @@ class App extends Model
         return $array;
     }
 
+    public function bind($user, $app_username, $app_userid, $app_unitid)
+    {
+
+        $app_id = $this->id;
+        $data = [
+            'app_id' => $app_id,
+            'app_username' => $app_username,
+            'app_userid' => $app_userid,
+            'app_unitid' => $app_unitid
+        ];
+
+        $app = self::find($app_id);
+        //更新角色
+        $role_slug = $app->slug;
+        if ($role_slug == Role::冷链用户) {
+            $app_user = \App\Models\Ccrp\User::find($app_userid);
+            $userCompany = $app_user->userCompany;
+            if ($userCompany->cdcLevel() >= 1) {
+                $role_slug = Role::冷链疾控用户;
+            }
+        }
+        $role = Role::where('slug', $role_slug)->first();
+        if ($role) {
+            if (!$user->hasRoles->where('role_id', $role->id)->count()) {
+                $user->hasRoles()->create(['role_id' => $role->id]);
+            }
+        }
+        //添加绑定关系
+        $rs = $user->hasApps()->create($data);
+        return $rs;
+    }
+
 }
