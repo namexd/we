@@ -22,9 +22,8 @@ class Ad extends Model
     {
         return $this->belongsTo(AdCategory::class);
     }
-
     public function getImageAttribute($value)
     {
-        return config('filesystems.disks.admin.url').'/'.$value;
+        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
     }
 }

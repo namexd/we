@@ -15,6 +15,7 @@ class TopicCategoryTransformer extends TransformerAbstract
             'id' => $category->id,
             'name' => $category->name,
             'slug' => $category->slug,
+            'image' => $category->image,
             'description' => $category->description,
             'count' => $category->topics()->count()
         ];

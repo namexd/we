@@ -87,6 +87,7 @@ class CompaniesController extends Controller
         {
             $id = $this->company->id;
         }
+        $month = $month-1; //TODO 临时用一下。月初1号没有数据。
 //        Cache::forget('stat_manage_'.$id.'_'.$year.'_'.$month);
         $value = Cache::remember('stat_manage_' . $id . '_' . $year . '_' . $month, 60 * 24 * 30, function () use ($year, $month) {
             $companies = $this->company->children();

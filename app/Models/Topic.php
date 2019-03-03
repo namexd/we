@@ -45,7 +45,7 @@ class Topic extends Model
 
     public function getImageAttribute($value)
     {
-        return $value ? config('filesystems.disks.admin.url') . '/' . $value : '';
+        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
     }
 
     // 获取 上一篇 的 ID

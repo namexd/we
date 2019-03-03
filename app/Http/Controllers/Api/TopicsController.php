@@ -19,7 +19,7 @@ class TopicsController extends Controller
      */
     public function index(Request $request)
     {
-        $model = Topic::where('status', 1)->orderBy('id', 'desc');
+        $model = Topic::where('status', 1)->orderBy('created_at', 'desc');
         if ($request->category_id) {
             $model->where('category_id', $request->category_id);
         }

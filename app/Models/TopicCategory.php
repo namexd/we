@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class TopicCategory extends Model
 {
-    protected $fillable=['name','slug','description','post_count'];
+    protected $fillable=['name','slug','image','description','post_count'];
 
     public function topics()
     {
@@ -36,5 +36,10 @@ class TopicCategory extends Model
     public function setCreatedAt($value)
     {
         return null;
+    }
+
+    public function getImageAttribute($value)
+    {
+        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
     }
 }
