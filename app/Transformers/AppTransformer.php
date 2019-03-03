@@ -13,6 +13,7 @@ class AppTransformer extends TransformerAbstract
             'id' => $app->id,
             'name' => $app->name,
             'slug' => $app->slug,
+            'image' => $app->image??env('DEFAULT_IMAGE'),
             'note' => $app->note,
             'status' => $app->status,
             'created_at' => $app->created_at->toDateTimeString(),
