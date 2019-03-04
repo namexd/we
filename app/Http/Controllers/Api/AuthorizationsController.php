@@ -113,10 +113,12 @@ class AuthorizationsController extends Controller
         // 找到 openid 对应的用户
         $openid = $data['openid'];
         $hasWeuser = WeappHasWeuser::where('openid', $openid)->first();
-
         if (!$hasWeuser) {
             // 改用检测we.unionid 是否存
-            $hasWeuser = WeappHasWeuser::where('unionid', $data['unionid'])->first();
+            if(isset($data['unionid']))
+            {
+                $hasWeuser = WeappHasWeuser::where('unionid', $data['unionid'])->first();
+            }
             // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
             if ($hasWeuser) {
                 $new_weappHasWeuser = [
@@ -167,7 +169,7 @@ class AuthorizationsController extends Controller
             $user = $hasWeuser->weuser->user;
         }
         $token = Auth::guard('api')->fromUser($user);
-        return $this->respondWithToken($token,['info`'=>$data])->setStatusCode(201);
+        return $this->respondWithToken($token,['info'=>$data])->setStatusCode(201);
     }
 
     //网页api认证接口

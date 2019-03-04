@@ -16,7 +16,7 @@ class TopicTransformer extends TransformerAbstract
             'author' => $topic->author,
             'image' => $topic->image,
             'excerpt' => $topic->excerpt,
-            'body' => $topic->content ,
+            'content' => $topic->content ,
             'category_id' => $topic->category_id ,
             'category'=>$topic->category->name,
             'view_count'=>$topic->view_count,

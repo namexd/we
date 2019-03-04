@@ -136,7 +136,7 @@ class UsersController extends Controller
     {
         $user = $this->user();
         $app_id = $request->app_id;
-        $app = App::where('id', $app_id)->where('status', 1)->first();
+        $app = App::where('id', $app_id)->first();
         if (!$app) {
             return $this->response->error('管理系统选择错误', 422);
         }

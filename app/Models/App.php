@@ -12,10 +12,15 @@ class App extends Model
     protected $fillable = [
         'name',
         'slug',
+        'image',
         'note',
         'status',
     ];
 
+    public function getImageAttribute($value)
+    {
+        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
+    }
     public function HasUser()
     {
         return $this->hasMany(UserHasApp::class);
