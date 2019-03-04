@@ -116,7 +116,8 @@ class App extends Model
         if ($role) {
             RoleHasUser::where('role_id', $role->id)->where('user_id', $user->id)->delete();
         }
-        $user_has_app->delete();
+        $rs = $user_has_app->delete();
+        return $rs;
     }
 
 }

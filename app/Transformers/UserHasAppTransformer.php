@@ -7,11 +7,12 @@ use League\Fractal\TransformerAbstract;
 
 class UserHasAppTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = 'app';
+//    protected $availableIncludes = 'app';
 
     public function transform(UserHasApp $hasApp)
     {
-        return [
+        dd($hasApp->app);
+        $rs= [
             'user_id' => $hasApp->user_id,
             'app_id' => $hasApp->app_id,
             'app_name' => $hasApp->app->name,
@@ -22,10 +23,12 @@ class UserHasAppTransformer extends TransformerAbstract
             'created_at' => $hasApp->created_at->toDateTimeString(),
             'updated_at' => $hasApp->updated_at->toDateTimeString(),
         ];
+        return $rs;
+
     }
 
-    public function includeApp(UserHasApp $hasApp)
-    {
-        return $this->item($hasApp->app, new AppTransformer());
-    }
+//    public function includeApp(UserHasApp $hasApp)
+//    {
+//        return $this->item($hasApp->app, new AppTransformer());
+//    }
 }
