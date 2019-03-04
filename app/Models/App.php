@@ -21,6 +21,7 @@ class App extends Model
     {
         return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
     }
+
     public function HasUser()
     {
         return $this->hasMany(UserHasApp::class);
@@ -98,6 +99,24 @@ class App extends Model
         //添加绑定关系
         $rs = $user->hasApps()->create($data);
         return $rs;
+    }
+
+    public function unbind($user)
+    {
+        $user_has_app = UserHasApp::where('app_id', $this->id)->where('user_id', $user->id)->first();
+        $role_slug = $this->slug;
+        if ($role_slug == Role::冷链用户) {
+            $app_user = \App\Models\Ccrp\User::find($user_has_app->app_userid);
+            $userCompany = $app_user->userCompany;
+            if ($userCompany->cdcLevel() >= 1) {
+                $role_slug = Role::冷链疾控用户;
+            }
+        }
+        $role = Role::where('slug', $role_slug)->first();
+        if ($role) {
+            RoleHasUser::where('role_id', $role->id)->where('user_id', $user->id)->delete();
+        }
+        $user_has_app->delete();
     }
 
 }

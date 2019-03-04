@@ -140,11 +140,7 @@ class UsersController extends Controller
         if (!$app) {
             return $this->response->error('管理系统选择错误', 422);
         }
-        UserHasApp::where('app_id', $app_id)->where('user_id', $user->id)->delete();
-        $role = Role::where('slug', $app->slug)->first();
-        if ($role) {
-            RoleHasUser::where('role_id', $role->id)->where('user_id', $user->id)->delete();
-        }
+        $app->unbild($user);
         return $this->response->noContent();
     }
 
