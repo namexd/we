@@ -6,6 +6,8 @@ use App\Http\Requests\Api\PhoneAuthorizationRequest;
 use App\Http\Requests\Api\SocialAuthorizationRequest;
 use App\Http\Requests\Api\WeappAuthorizationRequest;
 use App\Http\Requests\Api\WeAuthorizationRequest;
+use App\Models\ApiLoginLog;
+use App\Models\ApilogUserAgent;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
 use Auth;
@@ -28,9 +30,8 @@ class AuthorizationsController extends Controller
             return $this->response->errorUnauthorized('验证码错误');
         }
         $phone = $verifyData['phone'];
-        $user = User::where('phone',$phone)->where('phone_verified',1)->first();
-        if(!$user)
-        {
+        $user = User::where('phone', $phone)->where('phone_verified', 1)->first();
+        if (!$user) {
             return $this->response->errorUnauthorized('用户不存在');
         }
         // 清除验证码缓存
@@ -39,6 +40,7 @@ class AuthorizationsController extends Controller
         $token = Auth::guard('api')->fromUser($user);
         return $this->respondWithToken($token)->setStatusCode(201);
     }
+
     //通过第三方登录插件登录（需要openid
     public function socialStore($type, SocialAuthorizationRequest $request)
     {
@@ -115,8 +117,7 @@ class AuthorizationsController extends Controller
         $hasWeuser = WeappHasWeuser::where('openid', $openid)->first();
         if (!$hasWeuser) {
             // 改用检测we.unionid 是否存
-            if(isset($data['unionid']))
-            {
+            if (isset($data['unionid'])) {
                 $hasWeuser = WeappHasWeuser::where('unionid', $data['unionid'])->first();
             }
             // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
@@ -130,13 +131,12 @@ class AuthorizationsController extends Controller
                 $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                 $new_weappHasWeuser->save();
                 $user = $hasWeuser->weuser->user;
-            }else{
-                if($request->userInfo)
-                {
+            } else {
+                if ($request->userInfo) {
                     $userInfo = $request->userInfo;
                     // 如果openid不存在，创建user,
                     $new_user = [
-                        'name'=>$userInfo['nickName']
+                        'name' => $userInfo['nickName']
                     ];
                     $user = new User($new_user);
                     $user->save();
@@ -161,7 +161,7 @@ class AuthorizationsController extends Controller
                     ];
                     $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                     $weappHasWeuser->save();
-                }else{
+                } else {
                     return $this->response->errorUnauthorized('用户不存在');
                 }
             }
@@ -169,7 +169,9 @@ class AuthorizationsController extends Controller
             $user = $hasWeuser->weuser->user;
         }
         $token = Auth::guard('api')->fromUser($user);
-        return $this->respondWithToken($token,['info'=>$data])->setStatusCode(201);
+
+        ApiLoginLog::addLog($request, $user);
+        return $this->respondWithToken($token, ['info' => $data])->setStatusCode(201);
     }
 
     //网页api认证接口
@@ -183,6 +185,7 @@ class AuthorizationsController extends Controller
             $user = $hasUser->weuser->user;
         }
         $token = Auth::guard('api')->fromUser($user);
+        ApiLoginLog::addLog($request, $user);
         return $this->respondWithToken($token)->setStatusCode(201);
     }
 
@@ -239,7 +242,7 @@ class AuthorizationsController extends Controller
         return $this->response->noContent();
     }
 
-    protected function respondWithToken($token,$withInfo=null)
+    protected function respondWithToken($token, $withInfo = null)
     {
         $data = [
             'access_token' => $token,
@@ -247,9 +250,8 @@ class AuthorizationsController extends Controller
             'expires_in' => Auth::guard('api')->factory()->getTTL() * 60
         ];
 
-        if($withInfo)
-        {
-            $data = array_merge ($data,$withInfo);
+        if ($withInfo) {
+            $data = array_merge($data, $withInfo);
         }
         return $this->response->array($data);
     }
