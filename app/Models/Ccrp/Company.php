@@ -520,6 +520,10 @@ class Company extends Coldchain2Model
         return WarningEvent::whereIn('company_id', $this->ids())->whereBetween('warning_event_time', [strtotime($start), strtotime($end)])->count();
     }
 
+    /**
+     * 是否需要人工测温
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne
+     */
     public function doesManualRecords()
     {
         return $this->hasOne(CompanyHasFunction::class)->where('function_id',CompanyFunction::人工签名ID);
