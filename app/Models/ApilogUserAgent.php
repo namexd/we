@@ -5,18 +5,17 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Apilog extends Authenticatable
+class ApilogUserAgent extends Authenticatable
 {
     use Notifiable;
 
-    protected $connection = 'pgccsc';
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id','method','uri','query','params','route_name','user_agent_id','user_agent','ip'
+        'user_agent','is_mobile'
     ];
 
     /**
@@ -27,8 +26,8 @@ class Apilog extends Authenticatable
     protected $hidden = [ ];
 
 
-    public function user()
+    public function apilogs()
     {
-        return $this->belongsTo(User::class);
+        return $this->hasMany(Apilog::class,'user_agent_id','id');
     }
 }

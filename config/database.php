@@ -100,6 +100,18 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
+        'pgccsc' => [
+            'driver' => env('PG_CCSC_CONNECTION','pgsql'),
+            'host' => env('PG_CCSC_HOST', '127.0.0.1'),
+            'port' => env('PG_CCSC_PORT', '5432'),
+            'database' => env('PG_CCSC_DATABASE', 'forge'),
+            'username' => env('PG_CCSC_USERNAME', 'forge'),
+            'password' => env('PG_CCSC_PASSWORD', ''),
+            'charset' => 'utf8',
+            'prefix' =>  env('PG_CCSC_PREFIX', ''),
+            'schema' => 'public',
+            'sslmode' => 'prefer',
+        ],
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),

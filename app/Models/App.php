@@ -9,13 +9,7 @@ class App extends Model
 {
     const 冷链监测系统 = 'ccrp';
     const 疫苗追溯系统 = 'bpms';
-    protected $fillable = [
-        'name',
-        'slug',
-        'image',
-        'note',
-        'status',
-    ];
+    protected $fillable=['name','slug','image','appkey','appsecret','status'];
 
     public function getImageAttribute($value)
     {

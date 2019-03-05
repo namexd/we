@@ -25,6 +25,38 @@ class Company extends Coldchain2Model
         $this->setOrderColumn('sort');
     }
 
+    const 状态禁用 = 0;
+    const 状态正常 = 1;
+    const  ONLINE_DOMAIN = [
+        '_yiyuan' => 'yy.coldyun.com', //医院
+        '_www2' => 'www2.coldyun.com', //冷王
+        '_cdc' => 'cdc.coldyun.com', //冷王
+        '_tjcdc' => 'tjcdc.coldyun.com', //冷王
+        '_jscdc' => 'jscdc.coldyun.com', //冷王
+        '_weixin' => 'weixin.coldyun.com', //冷王
+        '_shishi' => 'ss.coldyun.com', //冷王
+        '_xunjian' => 'xunjian.coldyun.com', //冷王
+        '_back' => 'back.coldyun.com', //冷王
+        '_lw' => 'lw.coldyun.com', //冷王
+        '_adc' => 'adc.coldyun.com', //冷王
+        '_shadc' => 'shadc.coldyun.com', //冷王
+        '_scadc' => 'scadc.coldyun.com', //冷王
+        '_scdc' => 'scdc.coldyun.com', //冷王
+        '_bc' => 'bc.coldyun.com', //血液
+        '_cardinal' => 'cardinal.coldyun.com', //冷王
+        '_ltcc' => 'ltcc.coldyun.com', //冷王
+        '_yanshi' => 'yanshi.coldyun.com', //冷王
+        '_newland' => 'newland.coldyun.com', //冷王
+        '_newdemo' => 'nlsense.coldyun.com', //冷王
+        '_meiling' => 'meiling.coldyun.com', //冷王
+        '_simt' => 'simt.coldyun.com', //冷王
+        '_kabu' => 'kabu.coldyun.com', //冷王
+        '_vod' => 'vod.coldyun.com', //冷王
+        '_dongwu' => 'dongwu.coldyun.com', //冷王
+        '_mckintey' => 'mckintey.coldyun.com', //冷王
+        '_eman' => 'eman.coldyun.com', //翊曼
+        '_labscare' => 'labscare.coldyun.com', //翊曼
+    ];
     const COMPANY_TYPE = array(
         0 => '未分类',
         1 => '综合医院',

@@ -2,6 +2,8 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\ApilogUserAgent;
+use function App\Utils\is_mobile;
 use Closure;
 use Illuminate\Support\Facades\Input;
 
@@ -50,10 +52,23 @@ class ApiLog
         }
         $data['params'] =   ($request->query() and current($request->query()))?json_encode($request->query()):'';
         $data['route_name'] = $request->route()->getName();
-        $data['user_agent'] = $request->userAgent();
+        $user_agent = $request->userAgent();
+        $user_agents = ApilogUserAgent::where('user_agent',$user_agent)->first();
+        if(!$user_agents)
+        {
+            $agent['user_agent'] = $user_agent;
+            $agent['is_mobile'] = is_mobile();
+            $user_agents = ApilogUserAgent::create($agent);
+        }
+        $data['user_agent_id'] = $user_agents->id;
         $data['ip'] = $request->ip();
         try{
-            \App\Models\Apilog::create($data);
+            if($data['method']=='GET')
+            {
+                $rs = \App\Models\Apigetlog::create($data);
+            }else{
+                \App\Models\Apilog::create($data);
+            }
         }catch (\Exception $exception)
         {
 

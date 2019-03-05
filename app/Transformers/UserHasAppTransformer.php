@@ -11,7 +11,6 @@ class UserHasAppTransformer extends TransformerAbstract
 
     public function transform(UserHasApp $hasApp)
     {
-        dd($hasApp->app);
         $rs= [
             'user_id' => $hasApp->user_id,
             'app_id' => $hasApp->app_id,
