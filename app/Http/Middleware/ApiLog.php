@@ -2,7 +2,7 @@
 
 namespace App\Http\Middleware;
 
-use App\Models\Apiauthlog;
+use App\Models\ApiAuthLog;
 use App\Models\ApilogUserAgent;
 use function App\Utils\is_mobile;
 use Closure;
@@ -69,12 +69,12 @@ class ApiLog
         $data['ip'] = $request->ip();
         try {
             if ($data['method'] == 'GET') {
-                \App\Models\Apigetlog::create($data);
+                \App\Models\ApiGetLog::create($data);
             } else {
-                if (in_array($data['route_name'], Apiauthlog::AUTH_ROUTES)) {
-                    \App\Models\Apiauthlog::create($data);
+                if (in_array($data['route_name'], ApiAuthLog::AUTH_ROUTES)) {
+                    \App\Models\ApiAuthLog::create($data);
                 } else {
-                    \App\Models\Apilog::create($data);
+                    \App\Models\ApiOprateLog::create($data);
                 }
             }
         } catch (\Exception $exception) {

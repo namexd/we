@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Apilog extends Authenticatable
+class ApiOprateLog extends Authenticatable
 {
     use Notifiable;
 

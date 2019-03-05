@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Apigetlog extends Authenticatable
+class ApiGetLog extends Authenticatable
 {
     use Notifiable;
 

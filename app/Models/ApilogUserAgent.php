@@ -28,6 +28,6 @@ class ApilogUserAgent extends Authenticatable
 
     public function apilogs()
     {
-        return $this->hasMany(Apilog::class,'user_agent_id','id');
+        return $this->hasMany(ApiOprateLog::class,'user_agent_id','id');
     }
 }
