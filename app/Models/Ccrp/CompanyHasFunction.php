@@ -2,13 +2,13 @@
 
 namespace App\Models\Ccrp;
 
-class CompanyDoesManualRecord extends Coldchain2Model
+class CompanyHasFunction extends Coldchain2Model
 {
 
     const 签名间隔小时 = 6;
-    const 上午签名时间 = [6, 7, 8, 9, 10, 11];
-    const 下午签名时间 = [12, 13, 14, 15, 16, 17, 18];
-    const 设备类型 =
+    const 签名上午时间 = [6, 7, 8, 9, 10, 11];
+    const 签名下午时间 = [12, 13, 14, 15, 16, 17, 18];
+    const 签名设备类型 =
         [
             Cooler::设备类型_冷藏冰箱,
             Cooler::设备类型_冷冻冰箱,
@@ -22,20 +22,25 @@ class CompanyDoesManualRecord extends Coldchain2Model
         return $this->belongsTo(Company::class);
     }
 
-    public function needRecord($with_tips = false)
+    public function function ()
+    {
+        return $this->belongsTo(CompanyFunction::class, 'id', 'function_id');
+    }
+
+    public function needManualRecord($with_tips = false)
     {
         $result = ['status' => true, 'tips' => '疫苗储存和运输管理规范（2017年版），第十一条规定："每天上午和下午至少各进行一次人工温度记录（间隔不少于6小时）"； 建议上午8~9:00，下午16~17:00进行记录'];
         if ((bool)$this->hasRecords()->count()) {
             $result = ['status' => false, 'tips' => '已经签过了'];
         } else {
             if (date('A') == 'AM') {
-                if (!in_array(date('H'), self::上午签名时间)) {
-                    $result = ['status' => false, 'tips' => '请在' . current(self::上午签名时间) . '点~' . last(self::上午签名时间) . '点时间记录'];
+                if (!in_array(date('H'), self::签名上午时间)) {
+                    $result = ['status' => false, 'tips' => '请在' . current(self::签名上午时间) . '点~' . last(self::签名上午时间) . '点时间记录'];
                 }
             }
             if (date('A') == 'PM') {
-                if (!in_array(date('H'), self::下午签名时间)) {
-                    $result = ['status' => false, 'tips' => '请在' . current(self::下午签名时间) . '点~' . last(self::下午签名时间) . '点时间记录'];
+                if (!in_array(date('H'), self::签名下午时间)) {
+                    $result = ['status' => false, 'tips' => '请在' . current(self::签名下午时间) . '点~' . last(self::签名下午时间) . '点时间记录'];
                 } else {
                     $am_record = $this->hasRecords(null, null, null, 'AM')->first();
                     if ($am_record and time() - $am_record->sign_time < (self::签名间隔小时 * 3600)) {

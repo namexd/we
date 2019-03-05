@@ -522,7 +522,7 @@ class Company extends Coldchain2Model
 
     public function doesManualRecords()
     {
-        return $this->hasOne(CompanyDoesManualRecord::class);
+        return $this->hasOne(CompanyHasFunction::class)->where('function_id',CompanyFunction::人工签名ID);
     }
 
     //是否是疾控

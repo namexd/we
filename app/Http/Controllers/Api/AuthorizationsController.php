@@ -144,11 +144,11 @@ class AuthorizationsController extends Controller
                     $new_weuser = [
                         'nickname' => $userInfo['nickName'],
                         'sex' => $userInfo['gender'],
-                        'language' => $userInfo['language'],
-                        'city' => $userInfo['city'],
-                        'province' => $userInfo['province'],
-                        'country' => $userInfo['country'],
-                        'headimgurl' => $userInfo['avatarUrl'],
+                        'language' => $userInfo['language']??"",
+                        'city' => $userInfo['city']??"",
+                        'province' => $userInfo['province']??"",
+                        'country' => $userInfo['country']??"",
+                        'headimgurl' => $userInfo['avatarUrl']??"",
                         'privilege' => ''
                     ];
                     $weuser = new Weuser($new_weuser);
@@ -156,7 +156,7 @@ class AuthorizationsController extends Controller
                     $new_weappHasWeuser = [
                         'weapp_id' => 2,
                         'openid' => $data['openid'],
-                        'unionid' => $data['unionid'],
+                        'unionid' => $data['unionid']??null,
                         'weuser_id' => $user->weuser->id,
                     ];
                     $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);

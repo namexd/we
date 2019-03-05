@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Ccrp;
 
 use App\Http\Requests\Api\Ccrp\StatManualRecordRequest;
-use App\Models\Ccrp\CompanyDoesManualRecord;
+use App\Models\Ccrp\CompanyHasFunction;
 use App\Models\Ccrp\Signature;
 use App\Models\Ccrp\StatManualRecord;
 use App\Traits\ControllerUploader;
@@ -23,7 +23,7 @@ class StatManualRecordsController extends Controller
         $data['data'] = $list;
         $meta = null;
         if ($this->company->cdc_admin == 0 and $manual_records = $this->company->doesManualRecords) {
-            $meta['ccrp']['needs']['stat_manual_records'] = $manual_records->needRecord();
+            $meta['ccrp']['needs']['stat_manual_records'] = $manual_records->needManualRecord();
         }
         $data['meta'] = $meta;
         $data['meta']['ccrp']['now'] = [
@@ -47,14 +47,14 @@ class StatManualRecordsController extends Controller
         $this->check();
         $company = $this->company;
         if ($company->cdc_admin == 0 and $manual_records = $company->doesManualRecords) {
-            $need_temp_record = $manual_records->needRecord(true);
+            $need_temp_record = $manual_records->needManualRecord(true);
             if ($need_temp_record['status']) {
                 $meta['needs']['stat_manual_records'] = true;
                 $meta['signature']['app'] = 'ccrp';
                 $meta['signature']['unit_id'] = $this->company->id;
                 $meta['signature']['action'] = 'sign';
                 $meta['signature']['tips'] = $need_temp_record['tips'];
-                $coolers = $company->coolersOnline->whereIn('cooler_type', CompanyDoesManualRecord::设备类型);
+                $coolers = $company->coolersOnline->whereIn('cooler_type', CompanyHasFunction::签名设备类型);
                 return $this->response->collection($coolers, new CoolerStatManualRecordsTransformer())
                     ->addMeta('ccrp', $meta);
             } else {
