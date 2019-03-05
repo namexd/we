@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\Apiauthlog;
 use App\Models\ApilogUserAgent;
 use function App\Utils\is_mobile;
 use Closure;
@@ -27,7 +28,12 @@ class ApiLog
 
     private function apilog($request)
     {
-        $data['user_id'] = (int)$request->user()->id;
+        if($request->user())
+        {
+            $data['user_id'] = (int)$request->user()->id;
+        }else{
+            $data['user_id'] = 0;
+        }
         $data['method'] = $request->method();
         $data['uri'] = $uri = $request->route()->uri;
         $segments = $request->segments();
@@ -50,28 +56,28 @@ class ApiLog
             }
             $data['query'] = json_encode($diffrent);
         }
-        $data['params'] =   ($request->query() and current($request->query()))?json_encode($request->query()):'';
+        $data['params'] = ($request->query() and current($request->query())) ? json_encode($request->query()) : json_encode($request->all()) ;
         $data['route_name'] = $request->route()->getName();
         $user_agent = $request->userAgent();
-        $user_agents = ApilogUserAgent::where('user_agent',$user_agent)->first();
-        if(!$user_agents)
-        {
+        $user_agents = ApilogUserAgent::where('user_agent', $user_agent)->first();
+        if (!$user_agents) {
             $agent['user_agent'] = $user_agent;
             $agent['is_mobile'] = is_mobile();
             $user_agents = ApilogUserAgent::create($agent);
         }
         $data['user_agent_id'] = $user_agents->id;
         $data['ip'] = $request->ip();
-        try{
-            if($data['method']=='GET')
-            {
-                $rs = \App\Models\Apigetlog::create($data);
-            }else{
-                \App\Models\Apilog::create($data);
+        try {
+            if ($data['method'] == 'GET') {
+                \App\Models\Apigetlog::create($data);
+            } else {
+                if (in_array($data['route_name'], Apiauthlog::AUTH_ROUTES)) {
+                    \App\Models\Apiauthlog::create($data);
+                } else {
+                    \App\Models\Apilog::create($data);
+                }
             }
-        }catch (\Exception $exception)
-        {
-
+        } catch (\Exception $exception) {
         }
     }
 }

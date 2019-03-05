@@ -27,24 +27,31 @@ $api->version('v1', [
         $api->get('version', function () {
             return response(['version' => 'v1.02']);
         });
-
+        $api->group([
+            'middleware' => ['apilog']
+        ], function ($api) {
+            // 登录
+            $api->post('authorizations', 'AuthorizationsController@store')
+                ->name('api.authorizations.store');
+            // 小程序登录
+            $api->post('weapp/authorizations', 'AuthorizationsController@weappStore')
+                ->name('api.weapp.authorizations.store');
+            // 第三方登录
+            $api->post('socials/{social_type}/authorizations', 'AuthorizationsController@socialStore')
+                ->name('api.socials.authorizations.store');
+            // 微信使用openid直接登录
+            $api->post('we/authorizations', 'AuthorizationsController@weStore')
+                ->name('api.we.authorizations.store');
+            // 使用手机号和验证码登录,未测试
+            $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
+                ->name('api.users.phoneStore');
+        });
         $api->get('test', 'TestController@index');
         //微信jssdk的配置信息
         $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');
 
         $api->get('time', 'CheckController@index')->name('api.check.time');
-        // 登录
-        $api->post('authorizations', 'AuthorizationsController@store')
-            ->name('api.authorizations.store');
-        // 小程序登录
-        $api->post('weapp/authorizations', 'AuthorizationsController@weappStore')
-            ->name('api.weapp.authorizations.store');
-        // 第三方登录
-        $api->post('socials/{social_type}/authorizations', 'AuthorizationsController@socialStore')
-            ->name('api.socials.authorizations.store');
-        // 微信使用openid直接登录
-        $api->post('we/authorizations', 'AuthorizationsController@weStore')
-            ->name('api.we.authorizations.store');
+
         // 刷新token
         $api->put('authorizations/current', 'AuthorizationsController@update')
             ->name('api.authorizations.update');
@@ -55,9 +62,6 @@ $api->version('v1', [
         $api->get('test/form', 'TestController@form')->name('api.test.form');
         $api->get('test/form/preview', 'TestController@formPreview')->name('api.test.form.preview');
         $api->get('test/ajax', 'TestController@ajax')->name('api.test.ajax');
-        // 使用手机号和验证码登录,未测试
-        $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
-            ->name('api.users.phoneStore');
         // 查看文件信息
         $api->get('uploads/{uniqid}', 'UploadsController@show')->name('api.uploads.show');
         // 需要 token 验证的接口
