@@ -32,7 +32,7 @@ function format_value($value, $suffix = '')
 function send_vcode($phone, $code, $product = '冷链资源管理系统')
 {
     $smsService = \App::make(\Curder\LaravelAliyunSms\AliyunSms::class);
-    $tplId = env('ALIYUN_SMS_CODE_VCODE');
+    $tplId = config('api.defaults.sms.aliyun.template.vcode');
     $params = [
         'code' => $code,
         'product' => $product,

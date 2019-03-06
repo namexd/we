@@ -45,20 +45,20 @@ class Topic extends Model
 
     public function getImageAttribute($value)
     {
-        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
+        return $value ? config('api.defaults.image.host') . '/' . $value : '';
     }
 
     // 获取 上一篇 的 ID
     public function next()
     {
-        $next_id = self::where('id', '>', $this->id)->where('category_id', $this->category_id)->where('status',1)->min('id');
+        $next_id = self::where('id', '>', $this->id)->where('category_id', $this->category_id)->where('status', 1)->min('id');
         return $next_id ? self::find($next_id, ['id', 'title']) : null;
     }
 
     // 同理，获取 下一篇 的 ID
     public function previous()
     {
-        $previous_id = self::where('id', '<', $this->id)->where('category_id', $this->category_id)->where('status',1)->max('id');
+        $previous_id = self::where('id', '<', $this->id)->where('category_id', $this->category_id)->where('status', 1)->max('id');
         return $previous_id ? self::find($previous_id, ['id', 'title']) : null;
     }
 

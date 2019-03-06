@@ -13,7 +13,7 @@ class AppTransformer extends TransformerAbstract
             'id' => $app->id,
             'name' => $app->name,
             'slug' => $app->slug,
-            'image' => $app->image??env('DEFAULT_IMAGE'),
+            'image' => $app->image ?? config('api.defaults.image.logo.default'),
             'note' => $app->note,
             'status' => $app->status,
             'created_at' => $app->created_at->toDateTimeString(),

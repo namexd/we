@@ -9,11 +9,11 @@ class App extends Model
 {
     const 冷链监测系统 = 'ccrp';
     const 疫苗追溯系统 = 'bpms';
-    protected $fillable=['name','slug','image','appkey','appsecret','status'];
+    protected $fillable = ['name', 'slug', 'image', 'appkey', 'appsecret', 'status'];
 
     public function getImageAttribute($value)
     {
-        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
+        return $value ? config('api.defaults.image.host') . '/' . $value : '';
     }
 
     public function HasUser()

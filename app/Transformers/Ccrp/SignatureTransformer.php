@@ -14,9 +14,9 @@ class SignatureTransformer extends TransformerAbstract
         if ($row->file_uniqid) {
             $url = route('uploads.show', ['uniqid' => $row->file_uniqid]);
         } elseif ($row->img_name) {
-            $url = env('SIGNATURE_IMAGE_NAME_URL') . $row->img_name;
+            $url = config('api.defaults.signature.signature_image_name_url') . $row->img_name;
         } else {
-            $url = env('SIGNATURE_ID_URL') . $row->id;
+            $url = config('api.defaults.signature.signature_id_url') . $row->id;
         }
         return [
             'id' => $row->id,

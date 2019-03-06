@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\AdCategory;
+use App\Models\Ccrp\User;
 use App\Models\Menu;
 use App\Models\Topic;
+use App\Models\UserHasApp;
+use App\Transformers\Ccrp\CompanyInfoTransformer;
 
 class HomeController extends Controller
 {
@@ -36,7 +39,8 @@ class HomeController extends Controller
     public function ccrp()
     {
         $is_mobile = 0;
-        $menus = (new Menu())->listTree($this->user(), $is_mobile, Menu::网页端冷链监测);
+        $user= $this->user();
+        $menus = (new Menu())->listTree($user, $is_mobile, Menu::网页端冷链监测);
         $data['data']['menus'] = $menus;
 
         if ($menus == []) {
@@ -49,7 +53,27 @@ class HomeController extends Controller
         } else {
             $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">感谢使用，功能陆续开放中。如遇到问题，请联系客服。</div>';
         }
-        $data['meta']['user'] = $this->user();
+
+        $data['data']['user'] = $user;
+
+        $apps = $user->apps;
+        if ($apps) {
+            foreach ($apps as $app) {
+                switch ($app->slug) {
+                    case  'ccrp':
+                        $user_app = UserHasApp::where('user_id', $user->id)->where('app_id', $app->id)->first();
+                        if ($user_app) {
+                            $ccrp_user = User::where('id', $user_app->app_userid)->where('status', 1)->first();
+                            $ccrp_company = $ccrp_user->userCompany;
+                            if ($ccrp_company) {
+                                $company = (new CompanyInfoTransformer)->transform($ccrp_company);
+                                $data['data']['company'] = $company;
+                            }
+                        }
+                        break;
+                }
+            }
+        }
 
         return $this->response->array($data);
     }

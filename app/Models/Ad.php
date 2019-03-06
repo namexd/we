@@ -24,6 +24,6 @@ class Ad extends Model
     }
     public function getImageAttribute($value)
     {
-        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
+        return $value ? config('api.defaults.image.host'). '/' . $value : '';
     }
 }

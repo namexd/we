@@ -10,7 +10,7 @@ class CompanyInfoTransformer extends TransformerAbstract
 {
     public function transform(Company $company)
     {
-        return [
+        $info= [
             'id' => $company->id,
             'pid' => $company->pid,
             'title' => $company->title,
@@ -30,6 +30,10 @@ class CompanyInfoTransformer extends TransformerAbstract
             "shebei_install_type6" => $company->shebei_install_type6,
             "shebei_install_type7" => $company->shebei_install_type7,
             "shebei_install_type8" => $company->shebei_install_type8,
+            "shebei_install_type9" => $company->shebei_install_type9,
+            "shebei_install_type10" => $company->shebei_install_type10,
+            "shebei_install_type11" => $company->shebei_install_type11,
+            "shebei_install_type12" => $company->shebei_install_type12,
             "shebei_install_type100" => $company->shebei_install_type100,
             "shebei_install_type101" => $company->shebei_install_type101,
             "shebei_actived" => $company->shebei_actived,
@@ -41,11 +45,22 @@ class CompanyInfoTransformer extends TransformerAbstract
             "shebei_actived_type6" => $company->shebei_actived_type6,
             "shebei_actived_type7" => $company->shebei_actived_type7,
             "shebei_actived_type8" => $company->shebei_actived_type8,
+            "shebei_actived_type9" => $company->shebei_actived_type9,
+            "shebei_actived_type10" => $company->shebei_actived_type10,
+            "shebei_actived_type11" => $company->shebei_actived_type11,
+            "shebei_actived_type12" => $company->shebei_actived_type12,
             "shebei_actived_type100" => $company->shebei_actived_type100,
             "shebei_actived_type101" => $company->shebei_actived_type101,
             "alerms_all" => $company->alerms_all,
             "alerms_today" => $company->alerms_today,
             "alerms_new" => $company->alerms_new,
         ];
+
+        $info['image'] = config('api.defaults.image.logo.default');
+        if($company->cdcLevel()>0)
+        {
+            $info['image'] = config('api.defaults.image.logo.cdc');
+        }
+        return $info;
     }
 }

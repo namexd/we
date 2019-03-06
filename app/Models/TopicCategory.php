@@ -6,16 +6,16 @@ use Illuminate\Database\Eloquent\Model;
 
 class TopicCategory extends Model
 {
-    protected $fillable=['name','slug','image','description','post_count'];
+    protected $fillable = ['name', 'slug', 'image', 'description', 'post_count'];
 
     public function topics()
     {
-        return $this->hasMany(Topic::class,'category_id');
+        return $this->hasMany(Topic::class, 'category_id');
     }
 
     public function lastTopics()
     {
-        return $this->hasMany(Topic::class,'category_id')->limit(10)->orderBy('id','desc');
+        return $this->hasMany(Topic::class, 'category_id')->limit(10)->orderBy('id', 'desc');
     }
 
     public function getUpdatedAtColumn()
@@ -40,6 +40,6 @@ class TopicCategory extends Model
 
     public function getImageAttribute($value)
     {
-        return $value ? env('ALIYUN_OSS_URL') . '/' . $value : '';
+        return $value ? config('api.defaults.image.host') . '/' . $value : '';
     }
 }

@@ -236,17 +236,37 @@ return [
         // 访问频率限制，次数/分钟
         'access' => [
             'expires' => env('RATE_LIMITS_EXPIRES', 1),
-            'limit'  => env('RATE_LIMITS', 60),
+            'limit' => env('RATE_LIMITS', 60),
         ],
         // 登录相关，次数/分钟
         'sign' => [
             'expires' => env('SIGN_RATE_LIMITS_EXPIRES', 1),
-            'limit'  => env('SIGN_RATE_LIMITS', 10),
+            'limit' => env('SIGN_RATE_LIMITS', 10),
         ],
         // 发送短信验证码，次数/分钟
         'sms' => [
             'expires' => env('SMS_RATE_LIMITS_EXPIRES', 1),
-            'limit'  => env('SMS_RATE_LIMITS', 10),
+            'limit' => env('SMS_RATE_LIMITS', 10),
         ],
+    ],
+    'defaults' => [
+        'image' => [
+            'host' => env('ALIYUN_OSS_URL'),
+            'logo' => [
+                'default' => env('DEFAULT_IMAGE'),
+                'cdc' => env('DEFAULT_IMAGE'),
+            ],
+            'signature'=>[
+                'signature_id_url' => env('SIGNATURE_ID_URL'),
+                'signature_image_name_url' => env('SIGNATURE_IMAGE_NAME_URL'),
+            ]
+        ],
+        'sms' => [
+            'aliyun' => [
+                'template' => [
+                    'vcode' => env('ALIYUN_SMS_CODE_VCODE'),
+                ],
+            ],
+        ]
     ],
 ];
