@@ -77,6 +77,7 @@ $api->version('v1', [
             $api->get('topic_categories/{category}', 'TopicCategoriesController@show')->name('topics_categories.show');
             //首页
             $api->get('home/mobile', 'HomeController@mobile')->name('api.home.mobile');
+            $api->get('home/ccrp', 'HomeController@ccrp')->name('api.home.ccrp');
             //获取菜单
             $api->get('menus/{system?}', 'MenusController@index')->name('api.menus.index');
             // 当前登录用户信息

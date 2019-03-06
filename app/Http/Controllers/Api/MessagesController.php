@@ -31,7 +31,8 @@ class MessagesController extends Controller
                                         $company_ids = $ccrp_company->ids();
                                         $total += $message['ccrp']['warning_events']['overtemp'] = WarningEvent::whereIn('company_id', $company_ids)->where('handled', 0)->count();
                                         $total += $message['ccrp']['warning_events']['poweroff'] = WarningSenderEvent::whereIn('company_id', $company_ids)->where('handled', 0)->count();
-                                        if ($ccrp_company->cdc_admin == 0 and $manual_records = $ccrp_company->doesManualRecords) {
+                                        if ($ccrp_company->needManualRecords()) {
+                                            $manual_records = $ccrp_company->doesManualRecords;
                                             $message['ccrp']['needs']['stat_manual_records'] = $manual_records->needManualRecord();
                                         }
                                     }

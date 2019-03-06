@@ -522,11 +522,23 @@ class Company extends Coldchain2Model
 
     /**
      * 是否需要人工测温
+     */
+    public function needManualRecords()
+    {
+        if ($this->cdcLevel() == 0 and $this->doesManualRecords) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * 是否需要人工测温
      * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
     public function doesManualRecords()
     {
-        return $this->hasOne(CompanyHasFunction::class)->where('function_id',CompanyFunction::人工签名ID);
+        return $this->hasOne(CompanyHasFunction::class)->where('function_id', CompanyFunction::人工签名ID);
     }
 
     //是否是疾控

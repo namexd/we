@@ -21,7 +21,7 @@ class SignatureTransformer extends TransformerAbstract
         return [
             'id' => $row->id,
             'deliverorder' => $row->deliverorder,
-            'company_id' => $row->ischarging,
+            'company_id' => $row->company_id,
             'sign_time' => $row->sign_time ? Carbon::createFromTimestamp($row->sign_time)->toDateTimeString() : '',
             'img_name' => $row->img_name,
             'file_uniqid' => $row->file_uniqid,

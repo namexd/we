@@ -5,6 +5,8 @@ namespace App\Models\Ccrp;
 class CompanyHasFunction extends Coldchain2Model
 {
 
+
+
     const 签名间隔小时 = 6;
     const 签名上午时间 = [6, 7, 8, 9, 10, 11];
     const 签名下午时间 = [12, 13, 14, 15, 16, 17, 18];
