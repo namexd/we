@@ -24,12 +24,12 @@ class Controller extends BaseController
 
         if($user_app ==null)
         {
-            return $this->response->error('系统账号绑定错误', 403);
+            return $this->response->error('系统账号绑定错误', 457);
         }
         $user = User::where('id',$user_app->app_userid)->first();
 
         if ($user->status == 0) {
-            return $this->response->error('系统账号验证错误', 403);
+            return $this->response->error('系统账号验证错误', 457);
         } else {
 
             if($company_id == null)
@@ -39,7 +39,7 @@ class Controller extends BaseController
                 $user_company = $user->userCompany;
                 if(!$user_company)
                 {
-                    return $this->response->error('系统账号验证错误', 403);
+                    return $this->response->error('系统账号验证错误', 457);
                 }
                 $user_company_ids = $user_company->ids();
                 if(!in_array($company_id,$user_company_ids))
