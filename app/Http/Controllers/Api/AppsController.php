@@ -13,5 +13,10 @@ class AppsController extends Controller
         $apps = App::where('status',1)->get();
         return $this->response->collection($apps,new AppTransformer());
     }
+    public function show($slug)
+    {
+        $apps = App::where('status',1)->where('slug',$slug)->first();
+        return $this->response->item($apps,new AppTransformer());
+    }
 
 }

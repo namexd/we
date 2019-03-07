@@ -97,6 +97,7 @@ $api->version('v1', [
             $api->get('weusers', 'WeusersController@show')->name('api.weusers.show');
             $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');
             //系统信息
+            $api->get('apps/{slug}', 'AppsController@show')->name('api.apps.show');
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
             //消息统计
             $api->get('messages/count/{type?}', 'MessagesController@Count')->name('api.messages.count');

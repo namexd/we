@@ -30,7 +30,7 @@ class UsersController extends Controller
         $user = $this->user();
 
         if ($user->roles->contains(Role::LENGWANG_ROLE_ID)) {
-            $users = (new User())->withRole(Role::LENGWANG_ROLE_ID)->get();
+            $users = (new User())->withRole(Role::LENGWANG_ROLE_ID)->orderBy('realname','asc')->get();
         } else {
             $users = null;
         }

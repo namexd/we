@@ -8,6 +8,7 @@ use App\Models\Menu;
 use App\Models\Topic;
 use App\Models\UserHasApp;
 use App\Transformers\Ccrp\CompanyInfoTransformer;
+use App\Transformers\UserTransformer;
 
 class HomeController extends Controller
 {
@@ -39,12 +40,12 @@ class HomeController extends Controller
     public function ccrp()
     {
         $is_mobile = 0;
-        $user= $this->user();
+
+        $user = $this->user();
         $menus = (new Menu())->listTree($user, $is_mobile, Menu::网页端冷链监测);
         $data['data']['menus'] = $menus;
 
         if ($menus == []) {
-            $user = $this->user();
             if (count($user->hasApps)) {
                 $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您绑定的 <b style="color:blue">' . (implode(',', $user->apps->pluck('name')->toArray())) . '</b> ，功能仍正在陆续开发中，敬请期待。</br></div>';
             } else {
@@ -54,7 +55,6 @@ class HomeController extends Controller
             $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">感谢使用，功能陆续开放中。如遇到问题，请联系客服。</div>';
         }
 
-        $data['data']['user'] = $user;
 
         $apps = $user->apps;
         if ($apps) {
@@ -74,6 +74,8 @@ class HomeController extends Controller
                 }
             }
         }
+        $user->weuser;
+        $data['meta']['user'] = (new UserTransformer())->transform($user);
 
         return $this->response->array($data);
     }
