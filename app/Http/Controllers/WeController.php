@@ -263,30 +263,37 @@ class WeController extends Controller
                 $weuser = $hasWeuser->weuser;
                 $user = $weuser->user;
 
+                if($user->status==0)
+                {
+                    abort(302, '账号状态被禁用 ：(');
+                }
                 //生成token、
                 $token = Auth::guard('api')->fromUser($user);
                 $expires_in = Auth::guard('api')->factory()->getTTL() * 60;
                 if ($this->﻿redirect_app) {
-                    // 自动登录到第三方系统，追加access
-                    $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
-                    if ($user_info and $user_info['access']) {
-                        $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
-                    } else {
+                    //检查用户是否验证过手机号
+                    if ($user->phone_verified == 0) {
                         $url = $this->﻿redirect_ucenter;
-                        $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
+                        $url = add_query_param($url, 'need_phone_verified', 1);
                         $url = add_query_param($url, 'token', $token);
                         $url = add_query_param($url, 'expires_in', $expires_in);
                         $url = add_query_param($url, '_t', time());
-                        $url = add_query_param($url, 'message', ($user_info['app_name'] ?? "") . '系统未绑定');
+                        $url = add_query_param($url, 'message', '手机号未验证');
+                    } else {
+                        // 自动登录到第三方系统，追加access
+                        $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
+                        if ($user_info and $user_info['access']) {
+                            $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                        } else {
+                            $url = $this->﻿redirect_ucenter;
+                            $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
+                            $url = add_query_param($url, 'token', $token);
+                            $url = add_query_param($url, 'expires_in', $expires_in);
+                            $url = add_query_param($url, '_t', time());
+                            $url = add_query_param($url, 'message', ($user_info['app_name'] ?? "") . '系统未绑定');
+                        }
                     }
-                } elseif ($user->phone_verified == 0) {
-                    //检查用户是否验证过手机号
-                    $url = $this->﻿redirect_ucenter;
-                    $url = add_query_param($url, 'need_phone_verified', 1);
-                    $url = add_query_param($url, 'token', $token);
-                    $url = add_query_param($url, 'expires_in', $expires_in);
-                    $url = add_query_param($url, '_t', time());
-                    $url = add_query_param($url, 'message', '手机号未验证');
+
                 } else {
                     $url = base64_decode($this->﻿redirect_url);
                     $url = add_query_param($url, 'token', $token);

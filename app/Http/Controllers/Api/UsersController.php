@@ -30,7 +30,7 @@ class UsersController extends Controller
         $user = $this->user();
 
         if ($user->roles->contains(Role::LENGWANG_ROLE_ID)) {
-            $users = (new User())->withRole(Role::LENGWANG_ROLE_ID)->orderBy('realname','asc')->get();
+            $users = (new User())->withRole(Role::LENGWANG_ROLE_ID)->orderBy('realname', 'asc')->get();
         } else {
             $users = null;
         }
@@ -132,11 +132,30 @@ class UsersController extends Controller
         return $this->response->created(null, $rs->toArray());
     }
 
+    public function checkApps($slug)
+    {
+        $user = $this->user();
+        if (!$user->phone or !$user->phone_verified) {
+            return $this->response->error('您的手机号没有验证', 456);
+        }
+
+        $app = App::where('slug', $slug)->first();
+        if (!$app) {
+            return $this->response->error('系统请求错误', 422);
+        }
+        $binded = $user->hasApps->where('app_id', $app->id)->first();
+        if (!$binded) {
+            return $this->response->error('未绑定系统', 457);
+        }
+
+        return $this->response->created();
+    }
+
     public function unbindApps(UserAppRequest $request)
     {
         $user = $this->user();
         $app_id = $request->app_id;
-        $app =  App::where('id', $app_id)->first();
+        $app = App::where('id', $app_id)->first();
         if (!$app) {
             return $this->response->error('管理系统选择错误', 422);
         }

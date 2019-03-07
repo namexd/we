@@ -88,8 +88,10 @@ $api->version('v1', [
             $api->put('users/phone', 'UsersController@updatePhone')->name('api.users.updatePhone');
             //用户绑定的系统信息
             $api->get('users/apps/{app_slug?}/login_url', 'UsersController@appsLoginUrl')->name('api.users.apps.login_url');
+            //检测用户已经绑定信息的权限
             $api->get('users/apps', 'UsersController@apps')->name('api.users.apps');
             $api->put('users/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
+            $api->get('users/apps/{app_slug?}/check', 'UsersController@checkApps')->name('api.users.apps.check');
             $api->delete('users/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
             // 可查看的用户列表（通讯录）
             $api->get('users/list', 'UsersController@index')->name('api.users.index');
