@@ -104,17 +104,20 @@ class UsersController extends Controller
     public function bindApps(UserAppRequest $request)
     {
         $user = $this->user();
+        if ($user->status==0) {
+            return $this->response->error('您的账号被禁用。', 401);
+        }
         if (!$user->phone or !$user->phone_verified) {
-            return $this->response->error('您的手机号没有验证', 456);
+            return $this->response->error('您的手机号没有验证。', 456);
         }
         $binded = $user->hasApps->where('app_id', $request->app_id)->first();
         if ($binded) {
-            return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑', 422);
+            return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
         }
         $app_id = $request->app_id;
         $app = App::where('id', $app_id)->where('status', 1)->first();
         if (!$app) {
-            return $this->response->error('管理系统选择错误', 422);
+            return $this->response->error('管理系统选择错误。', 422);
         }
 
         $folder = ucfirst(strtolower($app->slug));
@@ -123,10 +126,10 @@ class UsersController extends Controller
         $username = $request->username;
         $password = $request->password;
         if (!$login = $users->checkUsername($username)) {
-            return $this->response->error('用户名不存在', 422);
+            return $this->response->error('用户名不存在。', 422);
         }
         if (!$users->checkPassword($login, $password)) {
-            return $this->response->error('密码错误', 422);
+            return $this->response->error('密码错误。', 422);
         }
         $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
         return $this->response->created(null, $rs->toArray());
@@ -136,16 +139,16 @@ class UsersController extends Controller
     {
         $user = $this->user();
         if (!$user->phone or !$user->phone_verified) {
-            return $this->response->error('您的手机号没有验证', 456);
+            return $this->response->error('您的手机号没有验证。', 456);
         }
 
         $app = App::where('slug', $slug)->first();
         if (!$app) {
-            return $this->response->error('系统请求错误', 422);
+            return $this->response->error('系统请求错误。', 422);
         }
         $binded = $user->hasApps->where('app_id', $app->id)->first();
         if (!$binded) {
-            return $this->response->error('未绑定系统', 457);
+            return $this->response->error('未绑定系统。', 457);
         }
 
         return $this->response->created();
