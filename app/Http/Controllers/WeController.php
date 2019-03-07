@@ -262,11 +262,6 @@ class WeController extends Controller
 
                 $weuser = $hasWeuser->weuser;
                 $user = $weuser->user;
-
-                if($user->status==0)
-                {
-                    abort(302, '账号状态被禁用 ：(');
-                }
                 //生成token、
                 $token = Auth::guard('api')->fromUser($user);
                 $expires_in = Auth::guard('api')->factory()->getTTL() * 60;
@@ -302,10 +297,12 @@ class WeController extends Controller
                 }
                 return Redirect::away($url);
             } else {
-                abort(302, '微信授权失败了 ：(');
+                echo '<h1>微信授权失败</h1><hr>';
+//                abort(302, '微信授权失败了 ：(');
             }
         } else {
-            abort(302, '微信授权失败 ：(');
+            echo '<h1>微信授权失败</h1><hr>';
+//            abort(302, '微信授权失败 ：(');
         }
     }
 
