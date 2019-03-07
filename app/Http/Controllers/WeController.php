@@ -265,11 +265,13 @@ class WeController extends Controller
 
                 //生成token、
                 $token = Auth::guard('api')->fromUser($user);
+                $expires_in =  Auth::guard('api')->factory()->getTTL() * 60;
                 //检查用户是否验证过手机号
                 if ($user->phone_verified == 0) {
                     $url = $this->﻿redirect_ucenter;
                     $url = add_query_param($url, 'need_phone_verified', 1);
                     $url = add_query_param($url, 'token', $token);
+                    $url = add_query_param($url, 'expires_in', $expires_in);
                     $url = add_query_param($url, '_t', time());
                     $url = add_query_param($url, 'message', '手机号未验证');
                 } elseif ($this->﻿redirect_app) {
@@ -281,12 +283,14 @@ class WeController extends Controller
                         $url = $this->﻿redirect_ucenter;
                         $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
                         $url = add_query_param($url, 'token', $token);
+                        $url = add_query_param($url, 'expires_in', $expires_in);
                         $url = add_query_param($url, '_t', time());
                         $url = add_query_param($url, 'message', ($user_info['app_name'] ?? "") . '系统未绑定');
                     }
                 } else {
                     $url = base64_decode($this->﻿redirect_url);
                     $url = add_query_param($url, 'token', $token);
+                    $url = add_query_param($url, 'expires_in', $expires_in);
                     $url = add_query_param($url, '_t', time());
                 }
                 return Redirect::away($url);
