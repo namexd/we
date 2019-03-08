@@ -95,12 +95,12 @@ class AuthorizationsController extends Controller
         return $this->respondWithToken($token)->setStatusCode(201);
     }
 
-    public function weappStore(WeappAuthorizationRequest $request)
+    public function weappStore($weapp='default',WeappAuthorizationRequest $request)
     {
         $code = $request->code;
 
         // 根据 code 获取微信 openid 和 session_key
-        $miniProgram = \EasyWeChat::miniProgram();
+        $miniProgram = \EasyWeChat::miniProgram($weapp);
         $data = $miniProgram->auth->session($code);
 //  "session_key" => "EcIPGiWJDW7zueqgnJgyJA=="
 //  "expires_in" => 7200

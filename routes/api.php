@@ -34,7 +34,7 @@ $api->version('v1', [
             $api->post('authorizations', 'AuthorizationsController@store')
                 ->name('api.authorizations.store');
             // 小程序登录
-            $api->post('weapp/authorizations', 'AuthorizationsController@weappStore')
+            $api->post('weapp/authorizations/{weapp?}', 'AuthorizationsController@weappStore')
                 ->name('api.weapp.authorizations.store');
             // 第三方登录
             $api->post('socials/{social_type}/authorizations', 'AuthorizationsController@socialStore')

@@ -103,6 +103,12 @@ return [
             'token' => env('WECHAT_MINI_PROGRAM_TOKEN', ''),
             'aes_key' => env('WECHAT_MINI_PROGRAM_AES_KEY', ''),
         ],
+        'fangyi' => [
+            'app_id' => env('FY_WECHAT_MINI_PROGRAM_APPID', ''),
+            'secret' => env('FY_WECHAT_MINI_PROGRAM_SECRET', ''),
+            'token' => env('FY_WECHAT_MINI_PROGRAM_TOKEN', ''),
+            'aes_key' => env('FY_WECHAT_MINI_PROGRAM_AES_KEY', ''),
+        ],
     ],
 
     /*
