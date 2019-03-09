@@ -8,6 +8,7 @@ use App\Http\Requests\Api\WeappAuthorizationRequest;
 use App\Http\Requests\Api\WeAuthorizationRequest;
 use App\Models\ApiLoginLog;
 use App\Models\ApilogUserAgent;
+use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
 use Auth;
@@ -123,7 +124,7 @@ class AuthorizationsController extends Controller
             // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
             if ($hasWeuser) {
                 $new_weappHasWeuser = [
-                    'weapp_id' => 2,
+                    'weapp_id' => Weapp::miniProgram[$weapp],
                     'weuser_id' => $hasWeuser->weuser_id,
                     'openid' => $data['openid'],
                     'unionid' => $data['unionid'],
@@ -154,7 +155,7 @@ class AuthorizationsController extends Controller
                     $weuser = new Weuser($new_weuser);
                     $user->weuser()->save($weuser);
                     $new_weappHasWeuser = [
-                        'weapp_id' => 2,
+                        'weapp_id' => Weapp::miniProgram[$weapp],
                         'openid' => $data['openid'],
                         'unionid' => $data['unionid']??null,
                         'weuser_id' => $user->weuser->id,
