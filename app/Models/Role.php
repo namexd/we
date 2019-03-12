@@ -54,6 +54,14 @@ class Role extends Model
         return !$this->can($permission);
     }
 
+    public function manuals()
+    {
+        return $this->belongsToMany(Manual::class, 'role_has_manuals', 'role_id','manual_id' );
+    }
+    public function manual_categories()
+    {
+        return $this->belongsToMany(ManualCategory::class,'role_has_manual_categories', 'role_id' ,'manual_category_id' );
+    }
     protected static function boot()
     {
         parent::boot();
