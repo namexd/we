@@ -29,6 +29,8 @@ Route::get('we/qrcode/callback', 'WeController@qrback')->name('we.qrback');
 Route::get('we/qrcode/home', 'WeController@qrhome')->name('we.qrhome');
 //扫码页面
 Route::get('we/qrcode/{redirect_url?}', 'WeController@qrcode')->name('we.qrcode');
+//跳转登录
+Route::get('we/jumpto/{app?}', 'WeController@jumpLogin')->name('we.jump_login');
 //跳转到oss文件
 Route::get('files/{uniqid}', 'UploadsController@show')->name('uploads.show');
 

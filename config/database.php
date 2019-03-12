@@ -112,6 +112,17 @@ return [
             'schema' => 'public',
             'sslmode' => 'prefer',
         ],
+        'dbocenter' => array(
+            'driver' =>  env('DB_OCENTER_CONNECTION','mysql'),
+            'host' => env('DB_OCENTER_HOST', '127.0.0.1'),
+            'port' => env('DB_OCENTER_PORT', '3306'),
+            'database' => env('DB_OCENTER_DATABASE', 'forge'),
+            'username' => env('DB_OCENTER_USERNAME', 'forge'),
+            'password' => env('DB_OCENTER_PASSWORD', ''),
+            'prefix' => env('DB_OCENTER_PREFIX', ''),
+            'strict' => true,
+            'engine' => null,
+        ),
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', '127.0.0.1'),

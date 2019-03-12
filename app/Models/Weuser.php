@@ -25,4 +25,8 @@ class Weuser extends Model
     {
         return $this->hasOne(WeappHasWeuser::class);
     }
+    public function weappHasWeusers()
+    {
+        return $this->hasMany(WeappHasWeuser::class);
+    }
 }

@@ -63,6 +63,13 @@ class App extends Model
         return $array;
     }
 
+    /**
+     * @param $user User
+     * @param $app_username
+     * @param $app_userid
+     * @param $app_unitid
+     * @return mixed
+     */
     public function bind($user, $app_username, $app_userid, $app_unitid)
     {
 

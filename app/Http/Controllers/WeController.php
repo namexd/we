@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Api\Request;
 use App\Models\App;
+use App\Models\Ccrp\Company;
+use App\Models\Ocenter\WxMember;
 use App\Models\User;
+use App\Models\UserHasApp;
 use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
 use App\Models\WechatMedia;
 use App\Models\Weuser;
 use function App\Utils\add_query_param;
+use function App\Utils\app_access_decode;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
@@ -22,9 +26,9 @@ use EasyWeChat\Factory;
  */
 class WeController extends Controller
 {
-    private $﻿redirect_url = '/we/qrcode/home';
+    private $﻿redirect_url = 'home';
     private $﻿redirect_app = '';
-    private $﻿redirect_ucenter = 'http://localhost:8080/#/login';
+    private $﻿redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
 
     public function test()
     {
@@ -163,7 +167,7 @@ class WeController extends Controller
 //        header("Location:".$url);exit();
         return Redirect::away($url);
         // 跳转ucenter，并传入openid，ucenter主要维护绑定的手机号,绑定的系统账户等信息
-        return redirect('https://www.baidu.com/s?wd=' . urlencode($url));
+//        return redirect('https://www.baidu.com/s?wd=' . urlencode($url));
 
     }
 
@@ -185,6 +189,7 @@ class WeController extends Controller
         request()->session()->put('qrback_url', $redirect_url);
         $redirect_uri = route('we.qrback', ['redirect_url' => $redirect_url]);
         $redirect_uri = urlencode($redirect_uri);//该回调需要url编码
+
         $appID = config('wechat.open_platform.weixinweb.app_id');
         $scope = "snsapi_login";//写死，微信暂时只支持这个值
 //准备向微信发请求
@@ -217,7 +222,7 @@ class WeController extends Controller
                 $this->﻿redirect_url = $redirect['url'];
             }
         }
-        if (!empty($code))  //有code
+        if ($code)  //有code
         {
             //通过code获得 access_token + openid
             $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid
@@ -266,6 +271,7 @@ class WeController extends Controller
                 $token = Auth::guard('api')->fromUser($user);
                 $expires_in = Auth::guard('api')->factory()->getTTL() * 60;
                 if ($this->﻿redirect_app) {
+
                     //检查用户是否验证过手机号
                     if ($user->phone_verified == 0) {
                         $url = $this->﻿redirect_ucenter;
@@ -278,7 +284,12 @@ class WeController extends Controller
                         // 自动登录到第三方系统，追加access
                         $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
                         if ($user_info and $user_info['access']) {
-                            $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                            if ($user_info['login_url'] != '') {
+                                $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                            } else {
+                                echo '<h1>应用未开启扫码登录地址 :(</h1><hr>';
+                                exit();
+                            }
                         } else {
                             $url = $this->﻿redirect_ucenter;
                             $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
@@ -301,7 +312,7 @@ class WeController extends Controller
 //                abort(302, '微信授权失败了 ：(');
             }
         } else {
-            echo '<h1>微信授权失败</h1><hr>';
+            echo '<h1>微信授权失败 :(</h1><hr>';
 //            abort(302, '微信授权失败 ：(');
         }
     }
@@ -311,6 +322,48 @@ class WeController extends Controller
      */
     public function qrhome()
     {
+        $need_bind_app = request()->need_bind_app ?? false;
+        if ($need_bind_app) {
+            switch ($need_bind_app) {
+                case 'ccrp':
+                    //check 是否已经绑定了微信公众号的旧版冷链系统
+                    $user = Auth::guard('api')->user();
+                    $weuser = $user->weuser;
+                    $weixin = $weuser->weappHasWeuser;
+                    if ($weixin) {
+                        $unionid = $weixin->unionid;
+                        if ($unionid) {
+                            $wxmember = WxMember::where('unionid', $unionid)->where('status', 1)->first();
+                            if ($wxmember) {
+                                $ccrp_user = \App\Models\Ccrp\User::where('username', $wxmember->username)->first();
+                                $ccrp_company = Company::find($ccrp_user->company_id);
+                                if ($ccrp_user->status and $ccrp_company->status) {
+                                    $app = App::where('slug', App::冷链监测系统)->first();
+                                    $bind = $app->bind($user, $ccrp_user->username, $ccrp_user->id, $ccrp_company->id);
+                                    if ($bind) {
+                                        $user_info = (new App())->userBindedLoginInfo(App::冷链监测系统, $user);
+                                        $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+
+                                        return Redirect::away($url);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    break;
+            }
+        }
+        $token = request()->token ?? '';
+        $expires_in = request()->expires_in ?? '';
+        $message = request()->message ?? '';
+        $url = $this->﻿redirect_ucenter;
+        $url = add_query_param($url, 'need_bind_app', $need_bind_app);
+        $url = add_query_param($url, 'token', $token);
+        $url = add_query_param($url, 'expires_in', $expires_in);
+        $url = add_query_param($url, '_t', time());
+        $url = add_query_param($url, 'message', $message);
+        return Redirect::away($url);
+        //
         echo '<h1>测试·扫码结果页面</h1><hr>';
         echo '1. 获取到token：<hr>';
         echo '<pre>';
@@ -329,4 +382,38 @@ class WeController extends Controller
 
     }
 
+    public function jumpLogin($app = 'ccrp')
+    {
+
+        $access = request()->get('access')??'';
+        $app = App::where('slug', $app)->first();
+        if (!$app) {
+            echo '<h1>' . '登录失败，access不正确' . '</h1><hr>';
+            exit();
+        }
+        $data = app_access_decode($app->appkey, $app->appsecret, $access);
+        if (!$data) {
+            echo '<h1>'.'登录失败，access不正确'.'</h1><hr>';
+            exit();
+        }
+
+        $res['app_id'] = $app->id;
+        $res['app_username'] = $data['username']??'';
+        $res['app_userid'] = $data['userid']??'';
+        $res['app_unitid'] = $data['unitid']??'';
+        $user_has_app = UserHasApp::where('app_id',$app->id)
+            ->where('app_username',$res['app_username'])
+            ->where('app_userid',$res['app_userid'])
+            ->where('app_unitid',$res['app_unitid'])
+            ->first();
+        if ($user_has_app) {
+                $user = $user_has_app->user;
+                $user_info = (new App())->userBindedLoginInfo($app->slug, $user);
+                $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                return Redirect::away($url);
+        }else{
+            return redirect(route('we.qrcode',['redirect_url'=>$app]));
+        }
+
+    }
 }
