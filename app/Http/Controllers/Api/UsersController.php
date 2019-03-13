@@ -12,6 +12,7 @@ use App\Models\RoleHasUser;
 use App\Models\User;
 use App\Models\UserHasApp;
 use App\Transformers\UserHasAppTransformer;
+use App\Transformers\UserQrcodeTransformer;
 use App\Transformers\UserTransformer;
 use function App\Utils\app_access_encode;
 use Dingo\Api\Auth\Auth;
@@ -104,7 +105,7 @@ class UsersController extends Controller
     public function bindApps(UserAppRequest $request)
     {
         $user = $this->user();
-        if ($user->status==0) {
+        if ($user->status == 0) {
             return $this->response->error('您的账号被禁用。', 401);
         }
         if (!$user->phone or !$user->phone_verified) {
@@ -171,6 +172,18 @@ class UsersController extends Controller
         $user = $this->user();
         $array = (new App())->userBindedLoginInfo($app_slug, $user);
         return $this->response->array($array);
+    }
+
+    /**
+     * 用户生成二维码等数据
+     * @return \Dingo\Api\Http\Response
+     */
+    public function qrcode()
+    {
+        if ($this->user()->phone_verified == 0) {
+            return $this->response->error('手机号未验证', 456);
+        }
+        return $this->response->item($this->user(), new UserQrcodeTransformer());
     }
 
 }
