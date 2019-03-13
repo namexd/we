@@ -75,6 +75,7 @@ class Cooler extends Coldchain2Model
         if ($cooler->install_time > 0 and $cooler->install_time > $start_time) {
             $start_time = $cooler->install_time;
         }
+
         foreach ($cooler->collectors as $key=>&$collector) {
             $_start_time = $start_time;
             $_end_time = $end_time;
