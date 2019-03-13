@@ -2,8 +2,14 @@
 
 namespace App\Models\Ccrp;
 
+use App\Traits\ControllerDataRange;
+
 class Cooler extends Coldchain2Model
 {
+
+    use ControllerDataRange;
+    public $default_date = '今日';
+
     protected $table = 'cooler';
     protected $primaryKey = 'cooler_id';
     protected $fillable = ['cooler_id', 'cooler_sn', 'cooler_name', 'cooler_type', 'cooler_img', 'cooler_brand', 'cooler_size', 'cooler_size2', 'cooler_model', 'is_medical', 'door_type', 'cooler_starttime', 'cooler_fillingtime', 'category_id', 'company_id', 'update_time', 'install_time', 'install_uid', 'uninstall_time', 'collector_num', 'come_from', 'status', 'sort'];

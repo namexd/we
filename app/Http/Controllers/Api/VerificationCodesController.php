@@ -32,7 +32,7 @@ class VerificationCodesController extends Controller
         return $this->response->array([
             'key' => $key,
             'expired_at' => $expiredAt->toDateTimeString(),
-            'test_code'=>$code,
+//            'test_code'=>$code,
             'user'=>auth('api')->user()
         ])->setStatusCode(201);
     }

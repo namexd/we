@@ -433,11 +433,20 @@ class WeController extends Controller
         if ($user_has_app) {
             $user = $user_has_app->user;
             $user_info = (new App())->userBindedLoginInfo($to_app->slug, $user);
-            $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
-            return Redirect::away($url);
+            if ($user_info and $user_info['access']) {
+                if ($user_info['login_url'] != '') {
+                    $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                    return Redirect::away($url);
+                } else {
+                    echo '<h1>应用未开启扫码登录地址 :(</h1><hr>';
+                    exit();
+                }
+            }else{
+                request()->session()->put('auto_bind_app', $res);
+                return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
+            }
         } else {
             request()->session()->put('auto_bind_app', $res);
-
             return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
         }
 
