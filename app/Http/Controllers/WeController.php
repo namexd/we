@@ -322,6 +322,13 @@ class WeController extends Controller
      */
     public function qrhome()
     {
+        $auto_bind_app = session('auto_bind_app')??fales;
+        if($auto_bind_app)
+        {
+            $app = App::where('id', $auto_bind_app['app_id'])->first();
+            $user = Auth::guard('api')->user();
+            $app->bind($user, $app['app_username'], $app['app_userid'], $app['app_unitid']);
+        }
         $need_bind_app = request()->need_bind_app ?? false;
         if ($need_bind_app) {
             switch ($need_bind_app) {
@@ -382,37 +389,43 @@ class WeController extends Controller
 
     }
 
-    public function jumpLogin($app = 'ccrp')
+    /**
+     * 生物制品跳转到冷链系统
+     * @param string $app
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function jumpLogin($from = 'bpms', $to = 'ccrp')
     {
-
-        $access = request()->get('access')??'';
-        $app = App::where('slug', $app)->first();
-        if (!$app) {
+        $access = request()->get('access') ?? '';
+        $from_app = App::where('slug', $from)->first();
+        $to_app = App::where('slug', $to)->first();
+        if (!$from_app or !$to_app) {
+            echo '<h1>' . '登录失败，access不正确。' . '</h1><hr>';
+            exit();
+        }
+        $data = app_access_decode($from_app->appkey, $from_app->appsecret, $access);
+        if (!$data) {
             echo '<h1>' . '登录失败，access不正确' . '</h1><hr>';
             exit();
         }
-        $data = app_access_decode($app->appkey, $app->appsecret, $access);
-        if (!$data) {
-            echo '<h1>'.'登录失败，access不正确'.'</h1><hr>';
-            exit();
-        }
 
-        $res['app_id'] = $app->id;
-        $res['app_username'] = $data['username']??'';
-        $res['app_userid'] = $data['userid']??'';
-        $res['app_unitid'] = $data['unitid']??'';
-        $user_has_app = UserHasApp::where('app_id',$app->id)
-            ->where('app_username',$res['app_username'])
-            ->where('app_userid',$res['app_userid'])
-            ->where('app_unitid',$res['app_unitid'])
+        $res['app_id'] = $from_app['app_id'] ?? '';
+        $res['app_username'] = $data['username'] ?? '';
+        $res['app_userid'] = $data['userid'] ?? '';
+        $res['app_unitid'] = $data['unitid'] ?? '';
+        $user_has_app = UserHasApp::where('app_id', $res['app_id'])
+            ->where('app_username', $res['app_username'])
+            ->where('app_userid', $res['app_userid'])
+            ->where('app_unitid', $res['app_unitid'])
             ->first();
         if ($user_has_app) {
-                $user = $user_has_app->user;
-                $user_info = (new App())->userBindedLoginInfo($app->slug, $user);
-                $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
-                return Redirect::away($url);
-        }else{
-            return redirect(route('we.qrcode',['redirect_url'=>$app]));
+            $user = $user_has_app->user;
+            $user_info = (new App())->userBindedLoginInfo($to_app->slug, $user);
+            $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+            return Redirect::away($url);
+        } else {
+            request()->session()->flash('auto_bind_app', $res);
+            return redirect(route('we.qrcode', ['redirect_url' => $to_app]));
         }
 
     }
