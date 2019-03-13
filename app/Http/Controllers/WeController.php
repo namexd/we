@@ -27,6 +27,7 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     private $﻿redirect_url = 'home';
+    private $﻿redirect_home = 'home';
     private $﻿redirect_app = '';
     private $﻿redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
 
@@ -267,6 +268,23 @@ class WeController extends Controller
 
                 $weuser = $hasWeuser->weuser;
                 $user = $weuser->user;
+
+                //自动绑定
+                $auto_bind_app = session('auto_bind_app')??false;
+                if($auto_bind_app)
+                {
+
+                    $user_has_app = UserHasApp::where('app_id', $auto_bind_app['app_id'])
+                        ->where('user_id', $user->id)
+                        ->first();
+                    if(!$user_has_app)
+                    {
+                        $app = App::where('id', $auto_bind_app['app_id'])->first();
+                        $app->bind($user, $auto_bind_app['app_username'], $auto_bind_app['app_userid'], $auto_bind_app['app_unitid']);
+                        request()->session()->forget('auto_bind_app');
+                    }
+                }
+
                 //生成token、
                 $token = Auth::guard('api')->fromUser($user);
                 $expires_in = Auth::guard('api')->factory()->getTTL() * 60;
@@ -291,7 +309,7 @@ class WeController extends Controller
                                 exit();
                             }
                         } else {
-                            $url = $this->﻿redirect_ucenter;
+                            $url = $this->﻿redirect_home;
                             $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
                             $url = add_query_param($url, 'token', $token);
                             $url = add_query_param($url, 'expires_in', $expires_in);
@@ -322,13 +340,6 @@ class WeController extends Controller
      */
     public function qrhome()
     {
-        $auto_bind_app = session('auto_bind_app')??fales;
-        if($auto_bind_app)
-        {
-            $app = App::where('id', $auto_bind_app['app_id'])->first();
-            $user = Auth::guard('api')->user();
-            $app->bind($user, $app['app_username'], $app['app_userid'], $app['app_unitid']);
-        }
         $need_bind_app = request()->need_bind_app ?? false;
         if ($need_bind_app) {
             switch ($need_bind_app) {
@@ -409,7 +420,7 @@ class WeController extends Controller
             exit();
         }
 
-        $res['app_id'] = $from_app['app_id'] ?? '';
+        $res['app_id'] = $from_app->id ?? '';
         $res['app_username'] = $data['username'] ?? '';
         $res['app_userid'] = $data['userid'] ?? '';
         $res['app_unitid'] = $data['unitid'] ?? '';
@@ -418,14 +429,16 @@ class WeController extends Controller
             ->where('app_userid', $res['app_userid'])
             ->where('app_unitid', $res['app_unitid'])
             ->first();
+
         if ($user_has_app) {
             $user = $user_has_app->user;
             $user_info = (new App())->userBindedLoginInfo($to_app->slug, $user);
             $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
             return Redirect::away($url);
         } else {
-            request()->session()->flash('auto_bind_app', $res);
-            return redirect(route('we.qrcode', ['redirect_url' => $to_app]));
+            request()->session()->put('auto_bind_app', $res);
+
+            return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
         }
 
     }
