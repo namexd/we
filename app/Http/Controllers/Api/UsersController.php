@@ -183,7 +183,23 @@ class UsersController extends Controller
         if ($this->user()->phone_verified == 0) {
             return $this->response->error('手机号未验证', 456);
         }
-        return $this->response->item($this->user(), new UserQrcodeTransformer());
+        $user = $this->user();
+        $info = ['id' => $user->id];
+        return $this->response->array(
+            [
+                'code' => \App\Utils\encrypt(json_encode($info), 'qrcode'),
+                'image' => $user->weuser->headimgurl
+            ]);
+    }
+
+    public function qrcodeShow($code)
+    {
+        $info = json_decode(\App\Utils\decrypt($code, 'qrcode'), true);
+        if ($info['id']) {
+            $user = User::find($info['id']);
+            return $this->response->item($user, new UserQrcodeTransformer());
+        }
+        return $this->response->noContent();
     }
 
 }

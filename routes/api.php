@@ -64,6 +64,8 @@ $api->version('v1', [
         $api->get('test/ajax', 'TestController@ajax')->name('api.test.ajax');
         // 查看文件信息
         $api->get('uploads/{uniqid}', 'UploadsController@show')->name('api.uploads.show');
+        //解析二维码
+        $api->get('users/qrcode/{code}', 'UsersController@qrcodeShow')->name('api.users.qrcode_show');
         // 需要 token 验证的接口
         $api->group([
             'middleware' => ['api.auth', 'apilog']
@@ -93,7 +95,7 @@ $api->version('v1', [
             $api->put('users/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
             $api->get('users/apps/{app_slug?}/check', 'UsersController@checkApps')->name('api.users.apps.check');
             $api->delete('users/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
-            //用户二维码
+            //生成用户二维码
             $api->get('users/qrcode', 'UsersController@qrcode')->name('api.users.qrcode');
             // 可查看的用户列表（通讯录）
             $api->get('users/list', 'UsersController@index')->name('api.users.index');
