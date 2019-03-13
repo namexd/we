@@ -195,7 +195,7 @@ function app_access_decode($appkey, $appsecret, $access, $checktime = 0)
         return null;
     }
     if (isset($data[2]) and $data[2] == strtoupper($appsecret)) {
-        return json_decode($data[3]);
+        return json_decode($data[3],true);
     }
     return null;
 }
