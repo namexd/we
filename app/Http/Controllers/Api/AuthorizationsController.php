@@ -13,6 +13,7 @@ use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
 use Auth;
 use App\Models\User;
+use EasyWeChat\Factory;
 use Illuminate\Http\Request;
 use App\Http\Requests\Api\AuthorizationRequest;
 
@@ -96,12 +97,16 @@ class AuthorizationsController extends Controller
         return $this->respondWithToken($token)->setStatusCode(201);
     }
 
-    public function weappStore($weapp='default',WeappAuthorizationRequest $request)
+    public function weappStore($weapp = 'default', WeappAuthorizationRequest $request)
     {
         $code = $request->code;
 
+        $weapp_id = Weapp::miniProgram[$weapp] ?? 'default';
+        $weapp_app = Weapp::find($weapp_id);
+        $config = $weapp_app->config();
+
         // 根据 code 获取微信 openid 和 session_key
-        $miniProgram = \EasyWeChat::miniProgram($weapp);
+        $miniProgram = Factory::miniProgram($config);
         $data = $miniProgram->auth->session($code);
 //  "session_key" => "EcIPGiWJDW7zueqgnJgyJA=="
 //  "expires_in" => 7200
@@ -145,11 +150,11 @@ class AuthorizationsController extends Controller
                     $new_weuser = [
                         'nickname' => $userInfo['nickName'],
                         'sex' => $userInfo['gender'],
-                        'language' => $userInfo['language']??"",
-                        'city' => $userInfo['city']??"",
-                        'province' => $userInfo['province']??"",
-                        'country' => $userInfo['country']??"",
-                        'headimgurl' => $userInfo['avatarUrl']??"",
+                        'language' => $userInfo['language'] ?? "",
+                        'city' => $userInfo['city'] ?? "",
+                        'province' => $userInfo['province'] ?? "",
+                        'country' => $userInfo['country'] ?? "",
+                        'headimgurl' => $userInfo['avatarUrl'] ?? "",
                         'privilege' => ''
                     ];
                     $weuser = new Weuser($new_weuser);
@@ -157,7 +162,7 @@ class AuthorizationsController extends Controller
                     $new_weappHasWeuser = [
                         'weapp_id' => Weapp::miniProgram[$weapp],
                         'openid' => $data['openid'],
-                        'unionid' => $data['unionid']??null,
+                        'unionid' => $data['unionid'] ?? null,
                         'weuser_id' => $user->weuser->id,
                     ];
                     $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
