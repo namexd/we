@@ -62,9 +62,14 @@ class CompaniesController extends Controller
     public function tree($id = null)
     {
         $this->check($id);
-        $company = Company::whereIn('id', $this->company_ids)->select('id', 'pid', 'title', 'short_title')->get();
-        $menus = (new Company())->toTree($company->toArray());
-        $data['data'] = $menus==[]?$company:$menus;
+        $company = Company::whereIn('id', $this->company_ids)->where('id', '!=', $this->company->id)->select('id', 'pid', 'title', 'short_title')->get();
+        $company_array = $company->toArray();
+        $company_top = Company::where('id', $this->company->id)->select('id', 'title', 'short_title')->first();
+        $company_top_array = $company_top->toArray();
+        $company_top_array['pid'] = 0;
+        array_unshift($company_array, $company_top_array);
+        $menus = (new Company())->toTree($company_array);
+        $data['data'] = $menus == [] ? $company : $menus;
         return $this->response->array($data);
     }
 
@@ -83,11 +88,10 @@ class CompaniesController extends Controller
             $year = $month[0];
             $month = $month[1];
         }
-        if(!in_array($id,$this->company_ids))
-        {
+        if (!in_array($id, $this->company_ids)) {
             $id = $this->company->id;
         }
-        $month = $month-1; //TODO 临时用一下。月初1号没有数据。
+        $month = $month - 1; //TODO 临时用一下。月初1号没有数据。
 //        Cache::forget('stat_manage_'.$id.'_'.$year.'_'.$month);
         $value = Cache::remember('stat_manage_' . $id . '_' . $year . '_' . $month, 60 * 24 * 30, function () use ($year, $month) {
             $companies = $this->company->children();
@@ -120,27 +124,26 @@ class CompaniesController extends Controller
             $id = $this->company->id;
         }
 
-        $months = get_last_months($month,null,'Y-m-d');
-        $this_month =date('Y-m-1');
+        $months = get_last_months($month, null, 'Y-m-d');
+        $this_month = date('Y-m-1');
 
-        if(!in_array($id,$this->company_ids))
-        {
+        if (!in_array($id, $this->company_ids)) {
             $id = $this->company->id;
         }
 //        Cache::forget('stat_warnings_'. $id . '_' . $month . '_'. $this_month);
-        $value = Cache::remember('stat_warnings_' . $id . '_' . $month . '_'. $this_month, 60 * 24 * 30, function () use ($months, $this_month) {
-            for($i=0;$i<count($months);$i++){
+        $value = Cache::remember('stat_warnings_' . $id . '_' . $month . '_' . $this_month, 60 * 24 * 30, function () use ($months, $this_month) {
+            for ($i = 0; $i < count($months); $i++) {
                 $start = $months[$i];
-                if($i<count($months)-1){
-                    $end = $months[$i+1];
-                }else{
+                if ($i < count($months) - 1) {
+                    $end = $months[$i + 1];
+                } else {
                     $end = $this_month;
                 }
-                $data[]=[
-                    'start'=>$start,
-                    'end'=>$end,
-                    'name'=> date('Y年m月',strtotime($start)),
-                    'value'=>  $this->company->statWarningsCount($start, $end)
+                $data[] = [
+                    'start' => $start,
+                    'end' => $end,
+                    'name' => date('Y年m月', strtotime($start)),
+                    'value' => $this->company->statWarningsCount($start, $end)
                 ];
             }
             return $data;
