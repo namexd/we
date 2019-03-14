@@ -27,11 +27,11 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     //默认页面
-    private $﻿redirect_url = 'home';
+    private $redirect_url = 'home';
     //首页
-    private $﻿redirect_home = 'home';
-    private $﻿redirect_app = '';
-    private $﻿redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
+    private $redirect_home = 'home';
+    private $redirect_app = '';
+    private $redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
 
     public function test()
     {
@@ -82,7 +82,7 @@ class WeController extends Controller
         if (request('redirect_url')) {
             request()->session()->put('callback_url', urldecode(request('redirect_url')));
         } else {
-            request()->session('callback_url', $this->﻿redirect_url);
+            request()->session('callback_url', $this->redirect_url);
         }
         $app = Factory::officialAccount(config('wechat.official_account.default'));
 
@@ -187,7 +187,7 @@ class WeController extends Controller
         } elseif (base64_decode($redirect_url)) {
             $redirect_url = ['url' => $redirect_url];
         } else {
-            $redirect_url = ['url' => base64_encode($this->﻿redirect_url)];
+            $redirect_url = ['url' => base64_encode($this->redirect_url)];
         }
         request()->session()->put('qrback_url', $redirect_url);
         $redirect_uri = route('we.qrback', ['redirect_url' => $redirect_url]);
@@ -219,10 +219,10 @@ class WeController extends Controller
         if (session('qrback_url')) {
             $redirect = session('qrback_url');
             if (isset($redirect['app'])) {
-                $this->﻿redirect_app = $redirect['app'];
+                $this->redirect_app = $redirect['app'];
             }
             if (isset($redirect['url'])) {
-                $this->﻿redirect_url = $redirect['url'];
+                $this->redirect_url = $redirect['url'];
             }
         }
         if ($code)  //有code
@@ -234,7 +234,7 @@ class WeController extends Controller
             $jsonResult = $client->get($url);
             $resultArray = json_decode($jsonResult->getBody(), true);
             if (!isset($resultArray["access_token"])) {
-                return Redirect::route('we.qrcode', ['﻿redirect_url' => $this->﻿redirect_url]);
+                return Redirect::route('we.qrcode', ['redirect_url' => $this->redirect_url]);
             }
             $access_token = $resultArray["access_token"];
             $openid = $resultArray["openid"];
@@ -290,11 +290,11 @@ class WeController extends Controller
                 //生成token、
                 $token = Auth::guard('api')->fromUser($user);
                 $expires_in = Auth::guard('api')->factory()->getTTL() * 60;
-                if ($this->﻿redirect_app) {
+                if ($this->redirect_app) {
 
                     //检查用户是否验证过手机号
                     if ($user->phone_verified == 0) {
-                        $url = $this->﻿redirect_ucenter;
+                        $url = $this->redirect_ucenter;
                         $url = add_query_param($url, 'need_phone_verified', 1);
                         $url = add_query_param($url, 'token', $token);
                         $url = add_query_param($url, 'expires_in', $expires_in);
@@ -302,7 +302,7 @@ class WeController extends Controller
                         $url = add_query_param($url, 'message', '手机号未验证');
                     } else {
                         // 自动登录到第三方系统，追加access
-                        $user_info = (new App())->userBindedLoginInfo($this->﻿redirect_app, $user);
+                        $user_info = (new App())->userBindedLoginInfo($this->redirect_app, $user);
                         if ($user_info and $user_info['access']) {
                             if ($user_info['login_url'] != '') {
                                 $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
@@ -311,8 +311,8 @@ class WeController extends Controller
                                 exit();
                             }
                         } else {
-                            $url = $this->﻿redirect_home;
-                            $url = add_query_param($url, 'need_bind_app', $this->﻿redirect_app);
+                            $url = $this->redirect_home;
+                            $url = add_query_param($url, 'need_bind_app', $this->redirect_app);
                             $url = add_query_param($url, 'token', $token);
                             $url = add_query_param($url, 'expires_in', $expires_in);
                             $url = add_query_param($url, '_t', time());
@@ -321,7 +321,7 @@ class WeController extends Controller
                     }
 
                 } else {
-                    $url = base64_decode($this->﻿redirect_url);
+                    $url = base64_decode($this->redirect_url);
                     $url = add_query_param($url, 'token', $token);
                     $url = add_query_param($url, 'expires_in', $expires_in);
                     $url = add_query_param($url, '_t', time());
@@ -376,7 +376,7 @@ class WeController extends Controller
         $token = request()->token ?? '';
         $expires_in = request()->expires_in ?? '';
         $message = request()->message ?? '';
-        $url = $this->﻿redirect_ucenter;
+        $url = $this->redirect_ucenter;
         $url = add_query_param($url, 'need_bind_app', $need_bind_app);
         $url = add_query_param($url, 'token', $token);
         $url = add_query_param($url, 'expires_in', $expires_in);
