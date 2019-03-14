@@ -157,6 +157,7 @@ $api->version('v1', [
                 $api->get('stat_manual_records/list/{month?}', 'StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
                 $api->get('stat_manual_records/show/{day?}/{session?}', 'StatManualRecordsController@show')->name('api.ccrp.stat_manual_records.show');
 
+                //以下没有使用
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
 //                return response(['_SERVER'=>json_encode($_SERVER)]);
