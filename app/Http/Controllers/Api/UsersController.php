@@ -7,6 +7,7 @@ use App\Http\Requests\Api\UserVerificatioinCodesRequest;
 use App\Http\Requests\Api\UserRequest;
 use App\Http\Requests\Api\WeuserRequest;
 use App\Models\App;
+use App\Models\AppRedirect;
 use App\Models\Role;
 use App\Models\RoleHasUser;
 use App\Models\User;
@@ -142,7 +143,6 @@ class UsersController extends Controller
         if (!$user->phone or !$user->phone_verified) {
             return $this->response->error('您的手机号没有验证。', 456);
         }
-
         $app = App::where('slug', $slug)->first();
         if (!$app) {
             return $this->response->error('系统请求错误。', 422);
@@ -150,6 +150,11 @@ class UsersController extends Controller
         $binded = $user->hasApps->where('app_id', $app->id)->first();
         if (!$binded) {
             return $this->response->error('未绑定系统。', 457);
+        }
+        //是否设置了跳转
+        $redirect = AppRedirect::where('app_id',$app->id)->where('app_unitid',$binded->app_unitid)->first();
+        if ($redirect) {
+            return $this->response->created(null,['redirect_url'=>$redirect->redirect_url]);
         }
 
         return $this->response->created();
