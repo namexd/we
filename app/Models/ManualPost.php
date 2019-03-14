@@ -39,7 +39,7 @@ class ManualPost extends Model
     public function getDetail($category_id)
     {
         $array=[];
-        $results= self::where('category_id',$category_id)->get();
+        $results= self::where('category_id',$category_id)->with(['manual','manual_category','manual_version'])->get();
 
         foreach ($results as $key=>$v)
         {

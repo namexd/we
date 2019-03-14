@@ -15,17 +15,15 @@ class ManualsController extends Controller
 
     public function index(Request $request,Manual $manual)
     {
-//       $user=$this->user();
-        $user = User::find(38);
+       $user=$this->user();
         $manuals=$manual->lists($user,$request->pagesize ?? $this->pagesize);
         return $this->response->paginator($manuals, new ManualsTransformer());
     }
 
     public function showCategories(Request $request)
     {
-        // $user=$this->user();
+         $user=$this->user();
         $slug=$request->slug;
-        $user = User::find(28);
         $categories=(new ManualCategory())->listTree($user,$slug);
         $data['data']=$categories;
         return $this->response->array($data);
