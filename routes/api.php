@@ -30,6 +30,7 @@ $api->version('v1', [
         $api->group([
             'middleware' => ['apilog']
         ], function ($api) {
+
             // 登录
             $api->post('authorizations', 'AuthorizationsController@store')
                 ->name('api.authorizations.store');
@@ -109,6 +110,12 @@ $api->version('v1', [
             $api->get('messages/count/{type?}', 'MessagesController@Count')->name('api.messages.count');
             //上传文件
             $api->post('uploads', 'UploadsController@store')->name('api.uploads.store');
+            //角色可见的产品手册列表
+            $api->get('manuals','ManualsController@index')->name('api.manuals.index');
+            //手册功能列表
+            $api->get('manual_categories','ManualsController@showCategories')->name('api.manuals.show_categories');
+            //手册章节阅读
+            $api->get('manual_posts','ManualsController@showPosts')->name('api.manuals.show_posts');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
