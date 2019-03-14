@@ -26,7 +26,9 @@ use EasyWeChat\Factory;
  */
 class WeController extends Controller
 {
+    //默认页面
     private $﻿redirect_url = 'home';
+    //首页
     private $﻿redirect_home = 'home';
     private $﻿redirect_app = '';
     private $﻿redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
