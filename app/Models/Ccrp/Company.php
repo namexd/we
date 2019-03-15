@@ -284,29 +284,33 @@ class Company extends Coldchain2Model
         } else {
             $company = $this->find($where['pid']);
         }
+        $query = $this->where('status', 1);
         if ($company['area_level' . $company['cdc_level'] . '_id'] > 0) {
-            $maper['area_level' . $company['cdc_level'] . '_id'] = $company['area_level' . $company['cdc_level'] . '_id'];
+            $query = $query->where('area_level' . $company['cdc_level'] . '_id', $company['area_level' . $company['cdc_level'] . '_id']);
         } else {
-            $maper['pid'] = $company['id']; //父分类ID
+            $query = $query->where('pid', $company['id']);
         }
 
         if (isset($where['cdc_admin']) and $where['cdc_admin'] !== NULL) {
-            $maper['cdc_admin'] = $where['cdc_admin'];
+            $query = $query->where('cdc_admin', $where['cdc_admin']);
         }
-        $maper['status'] = 1;
-        $maper['company_group'] = $this->company_group;
+        $query = $query->where('company_group', $this->company_group);
         if (isset($where['id_not_in']) and $where['id_not_in']) {
-            $maper['id'] = array('not in', $where['id_not_in']);
+            $query = $query->whereNotIn('id', $where['id_not_in']);
         }
 
         //check user's company_type setting
-        if (isset($where['company_type_check']) and $where['company_type_check'] = true and $company['company_type'] > 0) {
-            $maper['_string'] = '( (cdc_admin =0 and company_type=' . $company['company_type'] . ') or cdc_admin =1)';
-        }
+//        if (isset($where['company_type_check']) and $where['company_type_check'] = true and $company['company_type'] > 0) {
+//            $maper['_string'] = '( (cdc_admin =0 and company_type=' . $company['company_type'] . ') or cdc_admin =1)';
+//        }
 
         //check user's company_type setting
+        if(isset($maper['shebei_actived']))
+        {
+            $query->where('shebei_actived','>',0);
+        }
 
-        $companies = $this->where($maper)->get();
+        $companies = $query->get();
         return $companies;
     }
 
