@@ -8,6 +8,6 @@ class Meeting extends Model
 {
     public function registrations()
     {
-        return $this->hasMany(MeetingRegistration::class);
+        return $this->hasMany(MeetingRegistration::class,'meeting_id','id');
     }
 }

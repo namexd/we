@@ -116,6 +116,13 @@ $api->version('v1', [
             $api->get('manual_categories','ManualsController@showCategories')->name('api.manuals.show_categories');
             //手册章节阅读
             $api->get('manual_posts','ManualsController@showPosts')->name('api.manuals.show_posts');
+            //活动列表
+            $api->get('meetings','MeetingsController@index')->name('api.meetings.index');
+            //已报名列表
+            $api->get('meeting_registrations/{meeting?}','MeetingsController@meetingRegistrations')->name('api.meetings.registrations');
+            //提交报名信息
+            $api->post('meeting_registrations','MeetingsController@postRegistration')->name('api.meetings.registrations');
+
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
