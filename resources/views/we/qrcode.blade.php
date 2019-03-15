@@ -11,7 +11,6 @@
     </style>
 </head>
 <body>
-的点点滴滴
 <div id="qrCode">
 </div>
 <script src="//res.wx.qq.com/connect/zh_CN/htmledition/js/wxLogin.js"></script>
