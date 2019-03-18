@@ -194,10 +194,17 @@ class WeController extends Controller
         $redirect_uri = urlencode($redirect_uri);//该回调需要url编码
 
         $appID = config('wechat.open_platform.weixinweb.app_id');
+
+        if((request()->get('method')) =='js')
+        {
+            return view('we/qrcode',['redirect_uri'=>$redirect_uri]);
+            exit();
+        }
+
         $scope = "snsapi_login";//写死，微信暂时只支持这个值
 //准备向微信发请求
         $url = "https://open.weixin.qq.com/connect/qrconnect?appid=" . $appID . "&redirect_uri=" . $redirect_uri
-            . "&response_type=code&scope=" . $scope . "&state=STATE#wechat_redirect";
+            . "&response_type=code&scope=" . $scope . "&state=STATE&href=data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIwMHB4O30NCi5pbXBvd2VyQm94IC50aXRsZSB7ZGlzcGxheTogbm9uZTt9DQouaW1wb3dlckJveCAuaW5mbyB7d2lkdGg6IDIwMHB4O30NCi5zdGF0dXNfaWNvbiB7ZGlzcGxheTpub25lfQ0KLmltcG93ZXJCb3ggLnN0YXR1cyB7dGV4dC1hbGlnbjogY2VudGVyO30=";
 //请求返回的结果(实际上是个html的字符串)
         $client = new Client();
         $result = $client->get($url);

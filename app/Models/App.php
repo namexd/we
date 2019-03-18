@@ -121,4 +121,9 @@ class App extends Model
         return $rs;
     }
 
+    public function redirect()
+    {
+        return $this->hasOne(AppRedirect::class);
+    }
+
 }
