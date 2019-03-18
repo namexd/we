@@ -19,7 +19,7 @@ class MeetingsController extends Controller
 
     public function meetingRegistrations(Meeting $meeting, Request $request)
     {
-        $meeting_registrations = $meeting->registrations()->paginate($request->pageSize??$this->pagesize);
+        $meeting_registrations = $meeting->registrations()->paginate($request->pagesize??$this->pagesize);
         return $this->response->paginator($meeting_registrations, new MeetingRegistrationsTransformer());
     }
 

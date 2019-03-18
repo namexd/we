@@ -15,7 +15,7 @@ class ManualsController extends Controller
 
     public function index(Request $request,Manual $manual)
     {
-       $user=$this->user();
+        $user=$this->user();
         $manuals=$manual->lists($user,$request->pagesize ?? $this->pagesize);
         return $this->response->paginator($manuals, new ManualsTransformer());
     }
