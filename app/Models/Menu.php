@@ -116,7 +116,7 @@ class Menu extends Model
 
     public function listTree($user, $is_mobile, $topid = null)
     {
-        $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->get();
+        $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order','asc')->get();
         if ($topid) {
             $pid = $topid;
         } else {
