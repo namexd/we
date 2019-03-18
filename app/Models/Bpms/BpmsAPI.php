@@ -45,6 +45,19 @@ class BpmsAPI
         return $res->getBody()->getContents();
     }
 
+    public function action($method, $function, $params)
+    {
+        switch ($method) {
+            case 'GET':
+                return $this->get($function, $params);
+                break;
+            case 'POST':
+                return $this->post($function, $params);
+                break;
+        }
+        return null;
+    }
+
     //订单扫码入库
     public function receivevaccine($qrcode)
     {

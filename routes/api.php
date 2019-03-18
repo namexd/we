@@ -182,6 +182,8 @@ $api->version('v1', [
             ], function ($api) {
                 //单位树
                 $api->get('scan', 'ScanController@index')->name('api.bpms.scan.index');
+                $api->get('get/{action}', 'ActionsController@index')->name('api.bpms.actions.index');
+                $api->post('post/{action}', 'ActionsController@index')->name('api.bpms.actions.index');
                 // 当前单位
             });
         });
