@@ -175,7 +175,15 @@ $api->version('v1', [
 //            $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
 
             });
-
+            //冷链系统数据
+            $api->group([
+                'namespace' => 'Bpms',
+                'prefix' => 'bpms',
+            ], function ($api) {
+                //单位树
+                $api->get('scan', 'ScanController@index')->name('api.bpms.scan.index');
+                // 当前单位
+            });
         });
     });
 });
