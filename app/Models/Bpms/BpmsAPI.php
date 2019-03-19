@@ -6,15 +6,14 @@ use GuzzleHttp\Client;
 
 class BpmsAPI
 {
-    const API_SERVER = 'http://dev2.lengwang.net/lib/bpmsinterface/';
-//    const API_SERVER = 'http://apis.juhe.cn/simpleWeather/query';
-    const 订单扫码入库 = 'receivevaccine';
     const 电子监管码查询 = 'vaccineinfo';
     public $access = '';
+    private $api_server = '';
 
     public function __construct($access)
     {
         $this->access = $access;
+        $this->api_server = config('api.defaults.bpms_api_server');
     }
 
     public function get($function, $params)
@@ -27,7 +26,7 @@ class BpmsAPI
             'query' => $params,
             'headers' => $header,
         ];
-        $res = $client->get(self::API_SERVER . $function, $options);
+        $res = $client->get($this->api_server . $function, $options);
         return $res->getBody()->getContents();
     }
 
@@ -41,7 +40,7 @@ class BpmsAPI
             'form_params' => $params,
             'headers' => $header,
         ];
-        $res = $client->post(self::API_SERVER . $function, $options);
+        $res = $client->post($this->api_server . $function, $options);
         return $res->getBody()->getContents();
     }
 
@@ -58,15 +57,4 @@ class BpmsAPI
         return null;
     }
 
-    //订单扫码入库
-    public function receivevaccine($qrcode)
-    {
-        return $this->get(self::订单扫码入库, ['qrcode' => $qrcode]);
-    }
-
-    //电子监管码查询
-    public function vaccineinfo($piats)
-    {
-        return $this->get(self::电子监管码查询, ['piats' => $piats]);
-    }
 }

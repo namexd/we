@@ -267,6 +267,7 @@ return [
                     'vcode' => env('ALIYUN_SMS_CODE_VCODE'),
                 ],
             ],
-        ]
+        ],
+        'bpms_api_server'=> env('BPMS_API_SERVER')
     ],
 ];
