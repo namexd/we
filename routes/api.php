@@ -124,6 +124,8 @@ $api->version('v1', [
             $api->post('meeting_registrations','MeetingsController@postRegistration')->name('api.meetings.registrations');
             //财务发票管理
             $api->resource('oa_accountant_invoices',OaAccountantInvoiceController::class);
+            //销售周报管理
+            $api->resource('oa_sales_report',OaSalesReportController::class);
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
