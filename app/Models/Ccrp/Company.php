@@ -284,12 +284,21 @@ class Company extends Coldchain2Model
         } else {
             $company = $this->find($where['pid']);
         }
-        $query = $this->where('status', 1);
-        if ($company['area_level' . $company['cdc_level'] . '_id'] > 0) {
-            $query = $query->where('area_level' . $company['cdc_level'] . '_id', $company['area_level' . $company['cdc_level'] . '_id']);
-        } else {
-            $query = $query->where('pid', $company['id']);
+        $ids = $this->getSubCompanyIds( $company['id']);
+        $ids[]=$company['id'];
+        if (isset($where['id_not_in']) and $where['id_not_in']) {
+            foreach($ids as $key=>$item)
+            {
+                if(in_array($item,$where['id_not_in']))
+                {
+                    unset($ids[$key]);
+                }
+            }
+            unset($where['id_not_in']);
         }
+
+        $query = $this->where('status', 1);
+            $query = $query->whereIn('id', $ids);
 
         if (isset($where['cdc_admin']) and $where['cdc_admin'] !== NULL) {
             $query = $query->where('cdc_admin', $where['cdc_admin']);
@@ -551,5 +560,28 @@ class Company extends Coldchain2Model
         return $this->cdc_admin;
     }
 
+    //根据pid查找id 2019-03-21
+    public function getSubCompanyIds($pids, $map = array())
+    {
+        if (is_integer($pids) or is_string($pids)) {
+            $pids = [$pids];
+        }
+//        $map['pid'] = array('in', $pids);
+//        $map['status'] = 1;
 
+        $subs = self::whereIn('pid',$pids)->select('id')->get()->toArray();
+        if ($subs) {
+            $idsArr = [];
+            foreach ($subs as $sub) {
+                $idsArr[] = $sub['id'];
+            }
+            if ($subss = $this->getSubCompanyIds($idsArr, $map)) {
+                return array_merge($idsArr, $subss);
+            } else {
+                return $idsArr;
+            }
+        } else {
+            return [];
+        }
+    }
 }
