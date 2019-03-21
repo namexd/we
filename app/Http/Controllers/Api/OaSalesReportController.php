@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\OaAccountantInvoice;
-use App\Transformers\OaAccountantInvoiceTransformer;
+use App\Models\OaSalesReport;
+use App\Transformers\OaSalesReportTransformer;
 use Illuminate\Http\Request;
 
-class OaAccountantInvoiceController extends Controller
+class OaSalesReportController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
      * @param Request $request
-     * @param OaAccountantInvoice $oaAccountantInvoice
+     * @param OaSalesReport $oaSalesReport
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request,OaAccountantInvoice $oaAccountantInvoice)
+    public function index(Request $request,OaSalesReport $oaSalesReport)
     {
         $pagesize=$request->pagesize??$this->pagesize;
-        return $this->response->paginator($oaAccountantInvoice->paginate($pagesize),new OaAccountantInvoiceTransformer());
+        return $this->response->paginator($oaSalesReport->paginate($pagesize),new OaSalesReportTransformer());
     }
 
     /**
@@ -29,10 +29,19 @@ class OaAccountantInvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $data=$request->only(['type','date','company_name','number','invoice_number','invoice_amount','tax_rate',
-            'tax_amount','price_tax_count','product','count','tax_price','express_number','manager',
-            'collect_date','collect_amount','primary']);
-        $result=OaAccountantInvoice::create($data);
+        $data=$request->only(['user_id',
+            'customer_name',
+            'customer_address',
+            'contact',
+            'phone',
+            'program_type',
+            'program_process',
+            'program_goods',
+            'program_amount',
+            'process_note',
+            'need_help',
+            'status',]);
+        $result=OaSalesReport::create($data);
         if ($request)
         {
             return $this->response->item($result)->setStatusCode(201);
@@ -50,7 +59,7 @@ class OaAccountantInvoiceController extends Controller
      */
     public function show($id)
     {
-        return $this->response->item(OaAccountantInvoice::find($id),new OaAccountantInvoiceTransformer());
+        return $this->response->item(OaSalesReport::find($id),new OaSalesReportTransformer());
     }
 
     /**
@@ -62,10 +71,19 @@ class OaAccountantInvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data=$request->only(['type','date','company_name','number','invoice_number','invoice_amount','tax_rate',
-            'tax_amount','price_tax_count','product','count','tax_price','express_number','manager',
-            'collect_date','collect_amount','primary']);
-        $result=OaAccountantInvoice::where('id',$id)->update($data);
+        $data=$request->only(['user_id',
+            'customer_name',
+            'customer_address',
+            'contact',
+            'phone',
+            'program_type',
+            'program_process',
+            'program_goods',
+            'program_amount',
+            'process_note',
+            'need_help',
+            'status',]);
+        $result=OaSalesReport::where('id',$id)->update($data);
         if ($request)
         {
             return $this->response->item($result);
