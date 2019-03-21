@@ -77,14 +77,12 @@ class CompaniesController extends Controller
     public function tree($id = null)
     {
         $this->check($id);
-
-
-        $company = Company::whereIn('id', $this->company_ids)->where('id', '!=', $this->company->id)->select('id', 'pid', 'title', 'short_title')->get();
+        $company = Company::whereIn('id', $this->company_ids)->where('id', '!=', $this->company->id)->select('id', 'pid', 'title', 'short_title')->orderBy('cdc_admin', 'asc')->orderBy('title', 'asc')->get();
         $company_array = $company->toArray();
         $company_top = Company::where('id', $this->company->id)->select('id', 'title', 'short_title')->first();
         $company_top_array = $company_top->toArray();
         $company_top_array['pid'] = 0;
-        array_unshift($company_array, $company_top_array);
+        array_push($company_array, $company_top_array);
         $menus = (new Company())->toTree($company_array);
         $data['data'] = $menus == [] ? $company : $menus;
         return $this->response->array($data);

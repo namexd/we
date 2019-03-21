@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Models\Ccrp\Company;
 use DB;
 use Illuminate\Database\Eloquent\Model;
+use Mockery\CountValidator\Exception;
 
 class EquipmentChangeApply extends Model
 {
@@ -66,9 +67,31 @@ class EquipmentChangeApply extends Model
 
     public function add($data)
     {
-        dd($this->attributesToArray());
-        DB::transaction(function () use ($data){
-           array_get($data,$this->attributesToArray());
-        });
+       try
+        {
+            $apply= DB::transaction(function () use ($data){
+                $attributes=array_only($data,$this->fillable);
+                if ($apply=self::create($attributes)){
+                    if (!is_null(json_decode($data['details'])))
+                    {
+                       $details=json_decode($data['details'],true);
+                       $apply->detail()->createMany($details);
+
+                    }
+                    if (!is_null(json_decode($data['news'])))
+                    {
+                        $news=json_decode($data['news'],true);
+                        $apply->new()->createMany($news);
+                    }
+                    return $apply;
+                }
+
+            },5);
+          return $apply;
+        }catch (Exception $exception)
+       {
+           return $exception->getMessage();
+       }
+
     }
 }

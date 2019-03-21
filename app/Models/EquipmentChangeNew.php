@@ -18,5 +18,4 @@ class EquipmentChangeNew extends Model
     ];
     protected  $casts=[
         'is_medical'=>'boolean'
-    ];
-}
+    ];}
