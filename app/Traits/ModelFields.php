@@ -43,13 +43,34 @@ trait ModelFields
      */
     protected static function getFieldTitle($field)
     {
-        if (in_array($field, self::fieldTitles())) {
+        if (isset(self::fieldTitles()[$field])) {
             return self::fieldTitles()[$field];
         } else {
             $trans_str = self::fieldTransFile() . '.' . $field;
             $trans_res = trans($trans_str);
             return ($trans_res == $trans_str) ? $field : $trans_res;
         }
+    }
+
+    /**
+     * 获取字段中文名称（数组）
+     * @param $fields
+     * @return array
+     */
+    protected static function getFieldsTitles($fields)
+    {
+        $result = [];
+        $model_titles = self::fieldTitles();
+        foreach ($fields as $key => $field) {
+            if (isset($model_titles[$field])) {
+                $result[$field] = $model_titles[$field];
+            } else {
+                $trans_str = self::fieldTransFile() . '.' . $field;
+                $trans_res = trans($trans_str);
+                $result[$field] = ($trans_res == $trans_str) ? $field : $trans_res;
+            }
+        }
+        return $result;
     }
 
     protected static function addFilter($type, $name, $options = [])

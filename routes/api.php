@@ -169,6 +169,15 @@ $api->version('v1', [
                 $api->get('stat_manual_records/list/{month?}', 'StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
                 $api->get('stat_manual_records/show/{day?}/{session?}', 'StatManualRecordsController@show')->name('api.ccrp.stat_manual_records.show');
 
+
+                //CCrp数据报表
+                $api->group([
+                    'namespace' => 'Reports',
+                    'prefix' => 'reports',
+                ], function ($api) {
+                    $api->get('devices/statistic', 'DevicesController@statistic')->name('api.ccrp.reports.devices.statistic');
+                });
+
                 //以下没有使用
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
@@ -179,7 +188,8 @@ $api->version('v1', [
 //            $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
 
             });
-            //冷链系统数据
+
+            //生物制品系统数据
             $api->group([
                 'namespace' => 'Bpms',
                 'prefix' => 'bpms',

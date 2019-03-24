@@ -2,6 +2,8 @@
 
 namespace App\Models\Ccrp;
 
+use App\Models\Ccrp\Reports\StatMange;
+use App\Traits\ModelFields;
 use App\Traits\ModelTree;
 use Carbon\Carbon;
 use Encore\Admin\Traits\AdminBuilder;
@@ -12,6 +14,11 @@ class Company extends Coldchain2Model
     use AdminBuilder, ModelTree {
         ModelTree::boot as treeBoot;
     }
+
+    /**
+     * 字段功能扩展
+     */
+    use ModelFields;
 
     protected $connection = 'dbyingyong';
     protected $table = 'user_company';
@@ -78,6 +85,48 @@ class Company extends Coldchain2Model
         5 => '特需门诊',
         6 => '犬伤门诊',
     ];
+
+
+    /**
+     * 字段中文名称
+     * @return array
+     */
+    protected static function fieldTitles()
+    {
+        return [
+            'title' => '单位名称',
+            'short_title' => '简称',
+            'shebei_install' => '安装的冷链装备',
+            'shebei_actived' => '启用的冷链装备',
+            'shebei_install_type1' => '安装的冷藏冰箱',
+            'shebei_actived_type1' => '启用的冷藏冰箱',
+            'shebei_install_type2' => '安装的冷冻冰箱',
+            'shebei_actived_type2' => '启用的冷冻冰箱',
+            'shebei_install_type3' => '安装的普通冰箱(冷藏+冷冻)',
+            'shebei_actived_type3' => '启用的普通冰箱(冷藏+冷冻)',
+            'shebei_install_type4' => '安装的深低温冰箱',
+            'shebei_actived_type4' => '启用的深低温冰箱',
+            'shebei_install_type5' => '安装的冷藏冷库',
+            'shebei_actived_type5' => '启用的冷藏冷库',
+            'shebei_install_type6' => '安装的冷冻冷库',
+            'shebei_actived_type6' => '启用的冷冻冷库',
+            'shebei_install_type8' => '安装的房间室温',
+            'shebei_actived_type8' => '启用的房间室温',
+            'shebei_install_type9' => '安装的培养箱',
+            'shebei_actived_type9' => '启用的培养箱',
+            'shebei_install_type10' => '安装的阴凉库',
+            'shebei_actived_type10' => '启用的阴凉库',
+            'shebei_install_type11' => '安装的常温库',
+            'shebei_actived_type11' => '启用的常温库',
+            'shebei_install_type12' => '安装的台式小冰箱',
+            'shebei_actived_type12' => '启用的台式小冰箱',
+            'shebei_install_type100' => '安装的移动保温箱',
+            'shebei_actived_type100' => '启用的移动保温箱',
+            'shebei_install_type101' => '安装的冷藏车',
+            'shebei_actived_type101' => '启用的冷藏车',
+        ];
+    }
+
 
     public static function getbyUnitId($unit_id)
     {
