@@ -36,4 +36,9 @@ class User extends Coldchain2Model
         }
         return '' === $str ? '' : md5(sha1($str) . $auth_key);
     }
+
+    public function avatarImage()
+    {
+        return $this->hasOne(PublicUpload::class,'id','avatar');
+    }
 }
