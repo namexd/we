@@ -2,6 +2,7 @@
 
 namespace App\Models\Ccrp;
 
+use App\Models\Ccrp\Reports\StatCooler;
 use App\Traits\ControllerDataRange;
 
 class Cooler extends Coldchain2Model
@@ -164,6 +165,20 @@ class Cooler extends Coldchain2Model
 
     }
 
+    public function getListByCompanyIdsAndMonth($companyIds,$month_start,$month_end)
+    {
+       return $this->whereIn('company_id', $companyIds)
+            ->whereRaw('((uninstall_time = 0 ) or uninstall_time >' . \App\Utils\time_clock(0, date('Y-m-d', $month_start)) . ')and (install_time is NULL or install_time=0 or  install_time <' . \App\Utils\time_clock(24, date('Y-m-d', $month_end)) . ')')
+            ->orderBy('sort','desc')
+            ->orderBy('category_id','asc')
+            ->orderBy('cooler_id','desc')
+            ->get();
+    }
+    public function statCooler()
+    {
+
+        return $this->hasMany(StatCooler::class,'cooler_id','cooler_id');
+    }
 
 
 }
