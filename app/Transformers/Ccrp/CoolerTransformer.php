@@ -3,12 +3,13 @@
 namespace App\Transformers\Ccrp;
 
 use App\Models\Ccrp\Cooler;
+use App\Transformers\Ccrp\Reports\StatCoolerTransformer;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
 class CoolerTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['collectors'];
+    protected $availableIncludes = ['collectors','statCooler'];
 
     public function transform(Cooler $cooler)
     {
@@ -31,5 +32,9 @@ class CoolerTransformer extends TransformerAbstract
     {
         return $this->collection($cooler->collectorsOnline, new CollectorIncludeTransformer());
     }
-
+    public function includeStatCooler(Cooler $cooler)
+    {
+        $date = request()->get('date')??date('Y-m', strtotime('-1 Month'));
+        return $this->collection($cooler->statCooler->where('month',$date),new StatCoolerTransformer());
+    }
 }

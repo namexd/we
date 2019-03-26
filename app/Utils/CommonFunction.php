@@ -261,4 +261,20 @@ function is_mobile()
     }
     return FALSE;
 }
- 
+
+
+function time_clock($clock = 0, $date = NULL)
+{
+    if ($date == NULL) {
+        $date = date('Y-m-d');
+    }
+    if ($clock == 0) {
+        $rs = strtotime($date . ' 00:00:00');
+    } elseif ($clock == 24) {
+        $rs = strtotime($date . ' 23:59:59') + 1;
+    } else {
+        $rs = strtotime($date . ' ' . $clock . ':00:00');
+    }
+    return $rs;
+
+}
