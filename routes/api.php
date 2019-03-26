@@ -176,6 +176,7 @@ $api->version('v1', [
                     'prefix' => 'reports',
                 ], function ($api) {
                     $api->get('devices/statistic', 'DevicesController@statistic')->name('api.ccrp.reports.devices.statistic');
+                    $api->get('stat_manages/statistic', 'StatManageController@statistic')->name('api.ccrp.reports.stat_manage.statistic');
                 });
 
                 //以下没有使用
