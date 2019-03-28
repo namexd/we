@@ -278,3 +278,36 @@ function time_clock($clock = 0, $date = NULL)
     return $rs;
 
 }
+/**
+ * 时间戳格式化
+ * @param int $time
+ * @return string 完整的时间显示
+ */
+function time_format($time = NULL, $format='Y-m-d H:i'){
+    $time = $time === NULL ? time() : intval($time);
+    return date($format, $time);
+}
+/**
+ * 获取指定日期段内每一天的日期
+ * @param  Date $startdate 开始日期
+ * @param  Date $enddate 结束日期
+ * @return Array
+ */
+function getDays($startdate, $enddate, $format = 'Y-m-d')
+{
+
+    $stimestamp = strtotime($startdate);
+    $etimestamp = strtotime($enddate);
+
+    // 计算日期段内有多少天
+    $days = ($etimestamp - $stimestamp) / 86400;
+
+    // 保存每天日期
+    $date = array();
+
+    for ($i = 0; $i < $days; $i++) {
+        $date[] = date($format, $stimestamp + (86400 * $i));
+    }
+
+    return $date;
+}

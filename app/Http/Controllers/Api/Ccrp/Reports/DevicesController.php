@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
 use App\Models\Ccrp\Company;
+use App\Models\Ccrp\Reports\StatCoolerHistoryTemp;
 use App\Transformers\Ccrp\Reports\DevicesStatisticTransformer;
 use App\Models\Ccrp\Cooler;
 use App\Transformers\Ccrp\CoolerTransformer;
 use App\Transformers\Ccrp\Reports\StatCoolerTransformer;
 use App\Models\Ccrp\Reports\StatMange;
 use App\Transformers\Ccrp\Reports\StatManageTransformer;
+use Illuminate\Support\Facades\Input;
+
 /**
  * 设备报表
  * Class DevicesController
@@ -24,12 +27,12 @@ class DevicesController extends Controller
     {
         $this->check($this->company_id);//支持URL中的?company_id=xxx的子单位的查询
         $companies = Company::whereIn('id', $this->company_ids)
-            ->where('status', 1) //状态开启
-            ->where('cdc_admin', 0) //使用的单位，非管理单位
+            ->where('status', 1)//状态开启
+            ->where('cdc_admin', 0)//使用的单位，非管理单位
             ->get();
         $transfer = new DevicesStatisticTransformer();
         return $this->response->collection($companies, $transfer)
-            ->addMeta('columns',$transfer->columns());
+            ->addMeta('columns', $transfer->columns());
     }
 
     /**
@@ -40,8 +43,8 @@ class DevicesController extends Controller
     public function statManage()
     {
         $this->check($this->company_id);
-        $date=request()->get('date')??date('Y-m');
-        $dateArr=explode('-',$date);
+        $date = request()->get('date')??date('Y-m');
+        $dateArr = explode('-', $date);
         $year = $dateArr[0];
         $month = $dateArr[1];
         $stat_manages = StatMange::whereIn('company_id', $this->company_ids)
@@ -66,9 +69,27 @@ class DevicesController extends Controller
         $month_last = date('Y-m-d H:i:s', strtotime(date('Y-m-01', strtotime($month_first)) . ' +1 month') - 1);;
         $month_start = strtotime($month_first);
         $month_end = strtotime($month_last);
-        $stat_manages = (new Cooler())->getListByCompanyIdsAndMonth($this->company_ids,$month_start,$month_end);
-        return $this->response->collection($stat_manages,new CoolerTransformer())
-            ->addMeta('columns',( new StatCoolerTransformer)->columns());
+        $stat_manages = (new Cooler())->getListByCompanyIdsAndMonth($this->company_ids, $month_start, $month_end);
+        return $this->response->collection($stat_manages, new CoolerTransformer())
+            ->addMeta('columns', (new StatCoolerTransformer)->columns());
     }
 
+    /**
+     * note：温度质量控制表
+     * author: xiaodi
+     * date: 2019/3/27 9:55
+     */
+    public function statCoolerHistoryTemp()
+    {
+        $start = Input::get('start');
+        $end = Input::get('end');
+        $point = json_decode(Input::get('point'), true);
+        $cooler_id = Input::get('cooler_id');
+        if (!$cooler_id)
+        {
+          return  $this->response->errorBadRequest('请选择冷链设备');
+        }
+        $result['data'] = (new StatCoolerHistoryTemp())->getTemp($start, $end, $point, $cooler_id);
+        return $this->response->array($result);
+    }
 }

@@ -178,6 +178,7 @@ $api->version('v1', [
                     $api->get('devices/statistic', 'DevicesController@statistic')->name('api.ccrp.reports.devices.statistic');
                     $api->get('devices/stat_manages', 'DevicesController@statManage')->name('api.ccrp.reports.devices.stat_manage');
                     $api->get('devices/stat_coolers', 'DevicesController@statCooler')->name('api.ccrp.reports.devices.stat_cooler');
+                    $api->post('devices/stat_cooler_history_temp', 'DevicesController@statCoolerHistoryTemp')->name('api.ccrp.reports.devices.stat_cooler_history_temp');
                 });
 
                 //以下没有使用
