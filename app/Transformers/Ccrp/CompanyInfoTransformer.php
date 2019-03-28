@@ -56,10 +56,16 @@ class CompanyInfoTransformer extends TransformerAbstract
             "alerms_new" => $company->alerms_new,
         ];
 
-        $info['image'] = config('api.defaults.image.logo.default');
-        if($company->cdcLevel()>0)
+        if($company->users[0] and $avatar = $company->users[0]->avatarImage)
         {
-            $info['image'] = config('api.defaults.image.logo.cdc');
+            $info['image'] = $avatar->path;
+        }else{
+            if($company->cdcLevel()>0)
+            {
+                $info['image'] = config('api.defaults.image.logo.cdc');
+            }else{
+                $info['image'] = config('api.defaults.image.logo.default');
+            }
         }
         return $info;
     }

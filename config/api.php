@@ -259,7 +259,7 @@ return [
             'signature'=>[
                 'signature_id_url' => env('SIGNATURE_ID_URL'),
                 'signature_image_name_url' => env('SIGNATURE_IMAGE_NAME_URL'),
-            ]
+            ],
         ],
         'sms' => [
             'aliyun' => [
@@ -267,6 +267,7 @@ return [
                     'vcode' => env('ALIYUN_SMS_CODE_VCODE'),
                 ],
             ],
-        ]
+        ],
+        'ccms'=>env('CCMS_URL'),
     ],
 ];
