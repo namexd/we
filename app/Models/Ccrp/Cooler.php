@@ -60,17 +60,20 @@ class Cooler extends Coldchain2Model
     {
         return $this->belongsTo(Category::class, 'category_id', 'id');
     }
+
     function collectors()
     {
         return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id');
     }
+
     function collectorsOnline()
     {
-        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', Collector::状态_正常)->orderBy('collector_name','asc');
+        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', Collector::状态_正常)->orderBy('collector_name', 'asc');
     }
+
     function collectorsTempTypeError()
     {
-        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', Collector::状态_正常)->where('temp_type',Collector::温区_未知);
+        return $this->hasMany(Collector::class, 'cooler_id', 'cooler_id')->where('status', Collector::状态_正常)->where('temp_type', Collector::温区_未知);
     }
 
     function history($start_time, $end_time)
@@ -83,7 +86,7 @@ class Cooler extends Coldchain2Model
             $start_time = $cooler->install_time;
         }
 
-        foreach ($cooler->collectors as $key=>&$collector) {
+        foreach ($cooler->collectors as $key => &$collector) {
             $_start_time = $start_time;
             $_end_time = $end_time;
             if ($collector->uninstall_time > 0 and $collector->uninstall_time < $_end_time) {
@@ -93,10 +96,9 @@ class Cooler extends Coldchain2Model
                 $_start_time = $collector->install_time;
             }
 
-            if($_start_time>$_end_time)
-            {
+            if ($_start_time > $_end_time) {
                 unset($cooler->collectors[$key]);
-            }else{
+            } else {
                 $collector->history = $collector->history($_start_time, $_end_time);
             }
 
@@ -165,19 +167,19 @@ class Cooler extends Coldchain2Model
 
     }
 
-    public function getListByCompanyIdsAndMonth($companyIds,$month_start,$month_end)
+    public function getListByCompanyIdsAndMonth($companyIds, $month_start, $month_end)
     {
-       return $this->whereIn('company_id', $companyIds)
+        return $this->whereIn('company_id', $companyIds)
             ->whereRaw('((uninstall_time = 0 ) or uninstall_time >' . \App\Utils\time_clock(0, date('Y-m-d', $month_start)) . ')and (install_time is NULL or install_time=0 or  install_time <' . \App\Utils\time_clock(24, date('Y-m-d', $month_end)) . ')')
-            ->orderBy('sort','desc')
-            ->orderBy('category_id','asc')
-            ->orderBy('cooler_id','desc')
-            ->get();
+            ->orderBy('sort', 'desc')
+            ->orderBy('category_id', 'asc')
+            ->orderBy('cooler_id', 'desc');
     }
+
     public function statCooler()
     {
 
-        return $this->hasMany(StatCooler::class,'cooler_id','cooler_id');
+        return $this->hasMany(StatCooler::class, 'cooler_id', 'cooler_id');
     }
 
 

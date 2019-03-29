@@ -54,7 +54,6 @@ class StatCoolerHistoryTemp extends Coldchain2Model
 
         $collectors = Collector::where($cmap)->whereRaw('(uninstall_time = 0 or uninstall_time >' . $time_start . ') and ( install_time <' . $time_end . ')')->orderBy('collector_name', 'asc')->get();
         // echo M()->getlastsql();
-        $query_sql = '';
         foreach ($collectors as &$collector) {
             if ($collector['status'] == 2 and (strtotime($end) > $collector['uninstall_time'])) {
                 $theend = date('Y-m-d', $collector['uninstall_time']);

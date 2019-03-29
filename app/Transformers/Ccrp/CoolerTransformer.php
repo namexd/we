@@ -9,11 +9,11 @@ use League\Fractal\TransformerAbstract;
 
 class CoolerTransformer extends TransformerAbstract
 {
-    protected $availableIncludes = ['collectors','statCooler'];
+    protected $availableIncludes = ['collectors', 'statCooler'];
 
     public function transform(Cooler $cooler)
     {
-        return [
+        $arr = [
             'id' => $cooler->cooler_id,
             'cooler_sn' => $cooler->cooler_sn,
             'cooler_name' => $cooler->cooler_name,
@@ -26,15 +26,19 @@ class CoolerTransformer extends TransformerAbstract
             'created_at' => $cooler->install_time > 0 ? Carbon::createFromTimestamp($cooler->install_time)->toDateTimeString() : 0,
             'updated_at' => $cooler->update_time > 0 ? Carbon::createFromTimestamp($cooler->update_time)->toDateTimeString() : 0,
         ];
+        if ($cooler->url)
+            $arr['url'] = $cooler->url;
+        return $arr;
     }
 
     public function includeCollectors(Cooler $cooler)
     {
         return $this->collection($cooler->collectorsOnline, new CollectorIncludeTransformer());
     }
+
     public function includeStatCooler(Cooler $cooler)
     {
         $date = request()->get('date')??date('Y-m', strtotime('-1 Month'));
-        return $this->collection($cooler->statCooler->where('month',$date),new StatCoolerTransformer());
+        return $this->collection($cooler->statCooler->where('month', $date), new StatCoolerTransformer());
     }
 }

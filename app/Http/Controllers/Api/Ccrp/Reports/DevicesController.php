@@ -29,9 +29,9 @@ class DevicesController extends Controller
         $companies = Company::whereIn('id', $this->company_ids)
             ->where('status', 1)//状态开启
             ->where('cdc_admin', 0)//使用的单位，非管理单位
-            ->get();
+            ->paginate($this->pagesize);
         $transfer = new DevicesStatisticTransformer();
-        return $this->response->collection($companies, $transfer)
+        return $this->response->paginator($companies, $transfer)
             ->addMeta('columns', $transfer->columns());
     }
 
@@ -50,9 +50,9 @@ class DevicesController extends Controller
         $stat_manages = StatMange::whereIn('company_id', $this->company_ids)
             ->where('year', $year)
             ->where('month', $month)
-            ->get();
+            ->paginate($this->pagesize);
         $transfer = new StatManageTransformer();
-        return $this->response->collection($stat_manages, $transfer)
+        return $this->response->paginator($stat_manages, $transfer)
             ->addMeta('columns', $transfer->columns());
     }
 
@@ -69,27 +69,9 @@ class DevicesController extends Controller
         $month_last = date('Y-m-d H:i:s', strtotime(date('Y-m-01', strtotime($month_first)) . ' +1 month') - 1);;
         $month_start = strtotime($month_first);
         $month_end = strtotime($month_last);
-        $stat_manages = (new Cooler())->getListByCompanyIdsAndMonth($this->company_ids, $month_start, $month_end);
-        return $this->response->collection($stat_manages, new CoolerTransformer())
+        $stat_manages = (new Cooler())->getListByCompanyIdsAndMonth($this->company_ids, $month_start, $month_end)->paginate($this->pagesize);;
+        return $this->response->paginator($stat_manages, new CoolerTransformer())
             ->addMeta('columns', (new StatCoolerTransformer)->columns());
     }
 
-    /**
-     * note：温度质量控制表
-     * author: xiaodi
-     * date: 2019/3/27 9:55
-     */
-    public function statCoolerHistoryTemp()
-    {
-        $start = Input::get('start');
-        $end = Input::get('end');
-        $point = json_decode(Input::get('point'), true);
-        $cooler_id = Input::get('cooler_id');
-        if (!$cooler_id)
-        {
-          return  $this->response->errorBadRequest('请选择冷链设备');
-        }
-        $result['data'] = (new StatCoolerHistoryTemp())->getTemp($start, $end, $point, $cooler_id);
-        return $this->response->array($result);
-    }
 }
