@@ -67,6 +67,14 @@ $api->version('v1', [
         $api->get('uploads/{uniqid}', 'UploadsController@show')->name('api.uploads.show');
         //解析二维码
         $api->get('users/qrcode/{code}', 'UsersController@qrcodeShow')->name('api.users.qrcode_show');
+        //CCrp数据报表
+        $api->group([
+            'namespace' => 'Reports',
+            'prefix' => 'reports',
+        ], function ($api) {
+            //导出报表回调地址
+            $api->get('temperatures/coolers_history_30/{cooler_id}/{month}', 'TemperatureController@CoolerHistoryShow')->name('api.ccrp.reports.coolers_history_30.show');
+        });
         // 需要 token 验证的接口
         $api->group([
             'middleware' => ['api.auth', 'apilog']
