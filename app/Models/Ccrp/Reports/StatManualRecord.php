@@ -1,7 +1,11 @@
 <?php
 
-namespace App\Models\Ccrp;
+namespace App\Models\Ccrp\Reports;
 
+use App\Models\Ccrp\Coldchain2Model;
+use App\Models\Ccrp\Company;
+use App\Models\Ccrp\Cooler;
+use App\Models\Ccrp\Signature;
 use Carbon\Carbon;
 use DB;
 
@@ -11,7 +15,7 @@ class StatManualRecord extends Coldchain2Model
 
     public function signature()
     {
-        return $this->hasOne(Signature::class, 'id','sign_id');
+        return $this->hasOne(Signature::class, 'id', 'sign_id');
     }
 
     public function company()

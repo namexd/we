@@ -94,4 +94,15 @@ class EquipmentChangeApply extends Model
        }
 
     }
+    public function getChangeType()
+    {
+        $k=0;
+        foreach (self::CHANGE_TYPE as $key=> $value)
+        {
+            $result[$k]['key']=$key;
+            $result[$k]['value']=$value;
+            $k++;
+        }
+        return $result;
+    }
 }

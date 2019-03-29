@@ -30,7 +30,7 @@ class EquipmentChangeApplyController extends Controller
 
     public function getChangeType()
     {
-        return $this->response->array(['data' => ($this->model)::CHANGE_TYPE]);
+        return $this->response->array(['data' => $this->model->getChangeType()]);
 
     }
 
@@ -60,7 +60,7 @@ class EquipmentChangeApplyController extends Controller
         $equipment_change_apply = $this->model->findOrFail($id);
         return $this->response->item($equipment_change_apply, new EquipmentChangeApplyTransformer());
     }
-    
+
 
     /**
      * Update the specified resource in storage.

@@ -169,6 +169,20 @@ $api->version('v1', [
                 $api->get('stat_manual_records/list/{month?}', 'StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
                 $api->get('stat_manual_records/show/{day?}/{session?}', 'StatManualRecordsController@show')->name('api.ccrp.stat_manual_records.show');
 
+
+                //CCrp数据报表
+                $api->group([
+                    'namespace' => 'Reports',
+                    'prefix' => 'reports',
+                ], function ($api) {
+                    $api->get('devices/statistic', 'DevicesController@statistic')->name('api.ccrp.reports.devices.statistic');
+                    $api->get('devices/stat_manages', 'DevicesController@statManage')->name('api.ccrp.reports.devices.stat_manage');
+                    $api->get('devices/stat_coolers', 'DevicesController@statCooler')->name('api.ccrp.reports.devices.stat_cooler');
+                    $api->post('devices/stat_cooler_history_temp', 'TemperatureController@statCoolerHistoryTemp')->name('api.ccrp.reports.devices.stat_cooler_history_temp');
+                    $api->get('temperatures/coolers_history_30/list/{month} ', 'TemperatureController@CoolerHistoryList')->name('api.ccrp.reports.coolers_history_30.list');
+                    $api->get('temperatures/coolers_history_30/{cooler_id}/{month}', 'TemperatureController@CoolerHistoryShow')->name('api.ccrp.reports.coolers_history_30.show');
+                });
+
                 //以下没有使用
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
@@ -179,7 +193,8 @@ $api->version('v1', [
 //            $api->post('tables_syncs', 'TablesSyncsController@index')->name('api.table_syncs.index');
 
             });
-            //冷链系统数据
+
+            //生物制品系统数据
             $api->group([
                 'namespace' => 'Bpms',
                 'prefix' => 'bpms',

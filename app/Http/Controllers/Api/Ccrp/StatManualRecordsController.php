@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Api\Ccrp;
 
 use App\Http\Requests\Api\Ccrp\StatManualRecordRequest;
 use App\Models\Ccrp\CompanyHasFunction;
+use App\Models\Ccrp\Reports\StatManualRecord;
 use App\Models\Ccrp\Signature;
-use App\Models\Ccrp\StatManualRecord;
 use App\Traits\ControllerUploader;
 use App\Transformers\Ccrp\CoolerStatManualRecordsTransformer;
 use App\Transformers\Ccrp\StatManualRecordsTransformer;
-use Illuminate\Support\Facades\Storage;
-use OSS\Core\OssException;
 
 class StatManualRecordsController extends Controller
 {
