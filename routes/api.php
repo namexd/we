@@ -192,6 +192,7 @@ $api->version('v1', [
                     $api->get('warningers/statistics', 'WarningersController@statistics')->name('api.ccrp.reports.warningers.statistics');
                     $api->get('login_logs/statistics', 'LoginLogsController@statistics')->name('api.ccrp.reports.login_logs.statistics');
                     $api->get('login_logs/list', 'LoginLogsController@list')->name('api.ccrp.reports.login_logs.list');
+                    $api->get('coolers/logs', 'CoolersController@logs')->name('api.ccrp.reports.coolers.logs');
                 });
 
                 //以下没有使用

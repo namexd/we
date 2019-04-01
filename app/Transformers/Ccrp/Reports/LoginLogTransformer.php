@@ -37,8 +37,8 @@ class LoginLogTransformer extends TransformerAbstract
         return $result;
     }
 
-    public function includeCompany(StatMange $statMange)
+    public function includeCompany(LoginLog $loginLog)
     {
-        return $this->item($statMange->company,new CompanyTransformer());
+        return $this->item($loginLog->company,new CompanyTransformer());
     }
 }
