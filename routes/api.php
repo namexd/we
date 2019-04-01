@@ -189,6 +189,7 @@ $api->version('v1', [
                     $api->post('devices/stat_cooler_history_temp', 'TemperatureController@statCoolerHistoryTemp')->name('api.ccrp.reports.devices.stat_cooler_history_temp');
                     $api->get('temperatures/coolers_history_30/list/{month} ', 'TemperatureController@CoolerHistoryList')->name('api.ccrp.reports.coolers_history_30.list');
                     $api->get('temperatures/coolers_history_30/{cooler_id}/{month}', 'TemperatureController@CoolerHistoryShow')->name('api.ccrp.reports.coolers_history_30.show');
+                    $api->get('warningers/statistics', 'WarningersController@statistics')->name('api.ccrp.reports.warningers.statistics');
                 });
 
                 //以下没有使用

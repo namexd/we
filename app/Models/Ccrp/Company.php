@@ -140,7 +140,7 @@ class Company extends Coldchain2Model
 
     public function coolers()
     {
-        return $this->hasMany(Cooler::class, 'company_id', 'id')->where('status', '!=', 4);
+        return $this->hasMany(Cooler::class, 'company_id', 'id');
     }
 
     public function coolersUninstalled()
@@ -632,5 +632,13 @@ class Company extends Coldchain2Model
         } else {
             return [];
         }
+    }
+    public function warning_sender_events()
+    {
+        return $this->hasMany(WarningSenderEvent::class,'company_id','id');
+    }
+    public function warning_events()
+    {
+        return $this->hasMany(WarningEvent::class,'company_id','id');
     }
 }
