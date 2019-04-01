@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
+use App\Http\Requests\Api\Ccrp\Report\DateRangeRequest;
 use App\Models\Ccrp\Reports\CoolerLog;
 use App\Transformers\Ccrp\Reports\CoolerLogTransformer;
 use App\Transformers\Ccrp\Reports\WarningersTransformer;
+use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Input;
 
 
@@ -15,7 +17,16 @@ use Illuminate\Support\Facades\Input;
  */
 class CoolersController extends Controller
 {
-    public function logs(CoolerLog $coolerLog)
+
+    /**
+     * note：冷链操作日志表
+     * author: xiaodi
+     * date: 2019/3/26 15:43
+     * @param DateRangeRequest $request
+     * @param CoolerLog $coolerLog
+     * @return Response
+     */
+    public function logs(DateRangeRequest $request,CoolerLog $coolerLog)
     {
         $this->check($this->company_id);
         $start = strtotime(Input::get('start'));

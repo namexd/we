@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
+use App\Http\Requests\Api\Ccrp\Report\DateRangeRequest;
 use App\Models\Ccrp\Warninger;
 use App\Transformers\Ccrp\CompanyTransformer;
 use App\Transformers\Ccrp\Reports\WarningersTransformer;
@@ -15,7 +16,15 @@ use Illuminate\Support\Facades\Input;
  */
 class WarningersController extends Controller
 {
-    public function statistics(Warninger $warninger)
+    /**
+     * note：温度质量控制表
+     * author: xiaodi
+     * date: 2019/4/01 9:55
+     * @param DateRangeRequest $request
+     * @param Warninger $warninger
+     * @return \Dingo\Api\Http\Response
+     */
+    public function statistics(DateRangeRequest $request,Warninger $warninger)
     {
         $type=Input::get('type')??1;
         $todayTime= mktime(0,0,0,date('m'),date('d'),date('Y'))+24*3600-1;
