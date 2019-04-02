@@ -26,7 +26,7 @@ class ActionsController extends Controller
             $message = $res['message'] ?? '出错啦';
         }
         if ($code < 300) {
-            $response['_debug'] = $res;
+            $response['_debug'] = json_encode($res);
             return $this->response->array($response);
         } else {
             return $this->response->error($message, $code);
