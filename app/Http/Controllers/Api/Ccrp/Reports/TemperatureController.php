@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\Ccrp\Reports;
+use App\Http\Requests\Api\Ccrp\Report\DateRangeRequest;
 use App\Models\Ccrp\Cooler;
 use App\Models\Ccrp\Reports\StatCoolerHistoryTemp;
 use App\Models\Ccrp\Reports\TemperatuesCoolerHistory;
@@ -18,8 +19,10 @@ class TemperatureController extends Controller
      * note：温度质量控制表
      * author: xiaodi
      * date: 2019/3/27 9:55
+     * @param DateRangeRequest $request
+     * @return void
      */
-    public function statCoolerHistoryTemp()
+    public function statCoolerHistoryTemp(DateRangeRequest $request)
     {
         $this->check($this->company_id);
         $start = Input::get('start');

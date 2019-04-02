@@ -2,14 +2,15 @@
 
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
+use App\Http\Requests\Api\Ccrp\Report\MonthRequest;
 use App\Models\Ccrp\Company;
-use App\Models\Ccrp\Reports\StatCoolerHistoryTemp;
 use App\Transformers\Ccrp\Reports\DevicesStatisticTransformer;
 use App\Models\Ccrp\Cooler;
 use App\Transformers\Ccrp\CoolerTransformer;
 use App\Transformers\Ccrp\Reports\StatCoolerTransformer;
 use App\Models\Ccrp\Reports\StatMange;
 use App\Transformers\Ccrp\Reports\StatManageTransformer;
+use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Input;
 
 /**
@@ -21,7 +22,7 @@ class DevicesController extends Controller
 {
     /**
      * 冷链设备一览表
-     * @return \Dingo\Api\Http\Response
+     * @return Response
      */
     public function statistic()
     {
@@ -39,11 +40,13 @@ class DevicesController extends Controller
      * note：冷链管理评估表
      * author: xiaodi
      * date: 2019/3/26 13:43
+     * @param MonthRequest $request
+     * @return Response
      */
-    public function statManage()
+    public function statManage(MonthRequest $request)
     {
         $this->check($this->company_id);
-        $date = request()->get('date')??date('Y-m');
+        $date = Input::get('month')??date('Y-m');
         $dateArr = explode('-', $date);
         $year = $dateArr[0];
         $month = $dateArr[1];
@@ -60,11 +63,13 @@ class DevicesController extends Controller
      * note：冷链设备评估表
      * author: xiaodi
      * date: 2019/3/26 13:59
+     * @param MonthRequest $request
+     * @return Response
      */
-    public function statCooler()
+    public function statCooler(MonthRequest $request)
     {
         $this->check($this->company_id);
-        $date = request()->get('date')??date('Y-m', strtotime('-1 Month'));
+        $date =Input::get('month')??date('Y-m', strtotime('-1 Month'));
         $month_first = date('Y-m-01 00:00:00', strtotime($date));
         $month_last = date('Y-m-d H:i:s', strtotime(date('Y-m-01', strtotime($month_first)) . ' +1 month') - 1);;
         $month_start = strtotime($month_first);
