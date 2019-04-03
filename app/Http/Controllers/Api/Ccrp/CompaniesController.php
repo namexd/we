@@ -7,6 +7,7 @@ use App\Models\Ccrp\Company;
 use App\Models\Ccrp\WarningEvent;
 use App\Models\Ccrp\WarningSenderEvent;
 use App\Transformers\Ccrp\CompanyInfoTransformer;
+use App\Transformers\Ccrp\CompanyListTransformer;
 use App\Transformers\Ccrp\CompanyTransformer;
 use function App\Utils\get_last_months;
 use function App\Utils\get_month_first;
@@ -49,7 +50,7 @@ class CompaniesController extends Controller
             'map_level' => $current->map_level,
         ];
 
-        return $this->response->collection($companies, new CompanyTransformer())->addMeta('current', $current_company);
+        return $this->response->collection($companies, new CompanyListTransformer())->addMeta('current', $current_company);
     }
 
     public function current($id = null)
