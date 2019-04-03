@@ -274,7 +274,9 @@ class Company extends Coldchain2Model
         if (!$pid) {
             $pid = $company['id'];
         }
-        return $this->where('pid', $pid)->get();
+        $query = $this->where('pid', $pid);
+        $query = self::cdcOrders($query);
+        return $query->get();
     }
 
     public function ids($cdc_admin = NULL, $show = '', $pid = 0, $id_not_in = NULL, $company_type_check = true)
@@ -333,13 +335,11 @@ class Company extends Coldchain2Model
         } else {
             $company = $this->find($where['pid']);
         }
-        $ids = $this->getSubCompanyIds( $company['id']);
-        $ids[]=$company['id'];
+        $ids = $this->getSubCompanyIds($company['id']);
+        $ids[] = $company['id'];
         if (isset($where['id_not_in']) and $where['id_not_in']) {
-            foreach($ids as $key=>$item)
-            {
-                if(in_array($item,$where['id_not_in']))
-                {
+            foreach ($ids as $key => $item) {
+                if (in_array($item, $where['id_not_in'])) {
                     unset($ids[$key]);
                 }
             }
@@ -347,7 +347,7 @@ class Company extends Coldchain2Model
         }
 
         $query = $this->where('status', 1);
-            $query = $query->whereIn('id', $ids);
+        $query = $query->whereIn('id', $ids);
 
         if (isset($where['cdc_admin']) and $where['cdc_admin'] !== NULL) {
             $query = $query->where('cdc_admin', $where['cdc_admin']);
@@ -363,9 +363,8 @@ class Company extends Coldchain2Model
 //        }
 
         //check user's company_type setting
-        if(isset($maper['shebei_actived']))
-        {
-            $query->where('shebei_actived','>',0);
+        if (isset($maper['shebei_actived'])) {
+            $query->where('shebei_actived', '>', 0);
         }
 
         $companies = $query->get();
@@ -618,7 +617,7 @@ class Company extends Coldchain2Model
 //        $map['pid'] = array('in', $pids);
 //        $map['status'] = 1;
 
-        $subs = self::whereIn('pid',$pids)->select('id')->get()->toArray();
+        $subs = self::whereIn('pid', $pids)->select('id')->get()->toArray();
         if ($subs) {
             $idsArr = [];
             foreach ($subs as $sub) {
@@ -633,12 +632,38 @@ class Company extends Coldchain2Model
             return [];
         }
     }
+
     public function warning_sender_events()
     {
-        return $this->hasMany(WarningSenderEvent::class,'company_id','id');
+        return $this->hasMany(WarningSenderEvent::class, 'company_id', 'id');
     }
+
     public function warning_events()
     {
-        return $this->hasMany(WarningEvent::class,'company_id','id');
+        return $this->hasMany(WarningEvent::class, 'company_id', 'id');
+    }
+
+    private static function cdcOrders($query)
+    {
+        return $query
+            ->orderBy('cdc_admin', 'desc')
+            ->orderBy('region_code', 'asc')
+            ->orderBy('company_group', 'asc')
+            ->orderBy('cdc_level', 'asc')
+            ->orderBy('pid', 'asc')
+            ->orderBy('sort', 'asc')
+            ->orderBy('company_type', 'asc')
+            ->orderBy('username', 'asc')
+            ->orderBy('id', 'asc');
+
+    }
+    public static function cdcListWithOrders($ids, $withoutId = null, $fields = ['id', 'pid', 'title', 'short_title'])
+    {
+        $query = self::whereIn('id', $ids);
+        if ($withoutId) {
+            $query = $query->where('id', '!=', $withoutId);
+        }
+        $query = self::cdcOrders($query);
+        return $query->select($fields)->get();
     }
 }

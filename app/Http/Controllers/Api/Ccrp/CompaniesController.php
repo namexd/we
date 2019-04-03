@@ -33,10 +33,9 @@ class CompaniesController extends Controller
             $current = $this->company;
         } else {
             $ids = (new Company())->getSubCompanyIds($id);
-            if(in_array($ids,$ids))
-            {
+            if (in_array($ids, $ids)) {
                 $current = Company::find($id);
-            }else{
+            } else {
                 $current = $this->company;
             }
         }
@@ -84,7 +83,8 @@ class CompaniesController extends Controller
     public function tree($id = null)
     {
         $this->check($id);
-        $company = Company::whereIn('id', $this->company_ids)->where('id', '!=', $this->company->id)->select('id', 'pid', 'title', 'short_title')->orderBy('cdc_admin', 'asc')->orderBy('shebei_install', 'desc')->orderBy('title', 'asc')->get();
+        //cdc_admin desc,region_code asc,company_group asc, cdc_level asc,pid asc,sort desc,company_type asc,username asc,id asc
+        $company = Company::cdcListWithOrders($this->company_ids, $this->company->id);
         $company_array = $company->toArray();
         $company_top = Company::where('id', $this->company->id)->select('id', 'title', 'short_title')->first();
         $company_top_array = $company_top->toArray();
@@ -113,7 +113,10 @@ class CompaniesController extends Controller
         if (!in_array($id, $this->company_ids)) {
             $id = $this->company->id;
         }
-        $month = $month - 1; //TODO 临时用一下。月初1号没有数据。
+        if (date('d') < 3) {
+            //TODO 临时用一下。月初1号没有数据。
+            $month = $month - 1;
+        }
 //        Cache::forget('stat_manage_'.$id.'_'.$year.'_'.$month);
         $value = Cache::remember('stat_manage_' . $id . '_' . $year . '_' . $month, 60 * 24 * 30, function () use ($year, $month) {
             $companies = $this->company->children();

@@ -27,6 +27,9 @@ $api->version('v1', [
         $api->get('version', function () {
             return response(['version' => 'v1.02']);
         });
+        $api->get('clear_cache', function () {
+            return Cache::flush()?'clear cache success;':'clear cache failt;';
+        });
         $api->group([
             'middleware' => ['apilog']
         ], function ($api) {
@@ -119,23 +122,23 @@ $api->version('v1', [
             //上传文件
             $api->post('uploads', 'UploadsController@store')->name('api.uploads.store');
             //角色可见的产品手册列表
-            $api->get('manuals','ManualsController@index')->name('api.manuals.index');
+            $api->get('manuals', 'ManualsController@index')->name('api.manuals.index');
             //手册功能列表
-            $api->get('manual_categories','ManualsController@showCategories')->name('api.manuals.show_categories');
+            $api->get('manual_categories', 'ManualsController@showCategories')->name('api.manuals.show_categories');
             //手册章节阅读
-            $api->get('manual_posts','ManualsController@showPosts')->name('api.manuals.show_posts');
+            $api->get('manual_posts', 'ManualsController@showPosts')->name('api.manuals.show_posts');
             //活动列表
-            $api->get('meetings','MeetingsController@index')->name('api.meetings.index');
+            $api->get('meetings', 'MeetingsController@index')->name('api.meetings.index');
             //已报名列表
-            $api->get('meeting_registrations/{meeting?}','MeetingsController@meetingRegistrations')->name('api.meetings.registrations');
+            $api->get('meeting_registrations/{meeting?}', 'MeetingsController@meetingRegistrations')->name('api.meetings.registrations');
             //提交报名信息
-            $api->post('meeting_registrations','MeetingsController@postRegistration')->name('api.meetings.registrations');
+            $api->post('meeting_registrations', 'MeetingsController@postRegistration')->name('api.meetings.registrations');
             //财务发票管理
-            $api->resource('oa_accountant_invoices',OaAccountantInvoiceController::class);
+            $api->resource('oa_accountant_invoices', OaAccountantInvoiceController::class);
             //销售周报管理
-            $api->resource('oa_sales_report',OaSalesReportController::class);
-            $api->resource('equipment_change_applies',EquipmentChangeApplyController::class);
-            $api->get('equipment_change_types','EquipmentChangeApplyController@getChangeType');
+            $api->resource('oa_sales_report', OaSalesReportController::class);
+            $api->resource('equipment_change_applies', EquipmentChangeApplyController::class);
+            $api->get('equipment_change_types', 'EquipmentChangeApplyController@getChangeType');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
