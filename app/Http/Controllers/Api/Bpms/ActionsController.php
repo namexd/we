@@ -21,7 +21,7 @@ class ActionsController extends Controller
         $response = [];
         $res = json_decode($res, true);
         if ($res) {
-            $response = $res['result'] ?? [];
+            $response = $res['result'] ?? null;
             $code = $res['code'] ?? 301;
             $message = $res['message'] ?? '出错啦';
         }
