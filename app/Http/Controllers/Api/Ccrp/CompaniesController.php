@@ -84,9 +84,9 @@ class CompaniesController extends Controller
     {
         $this->check($id);
         //cdc_admin desc,region_code asc,company_group asc, cdc_level asc,pid asc,sort desc,company_type asc,username asc,id asc
-        $company = Company::cdcListWithOrders($this->company_ids, $this->company->id);
+        $company = Company::cdcListWithOrders($this->company_ids, $this->company->id,['id', 'pid', 'title', 'short_title','leaves_count']);
         $company_array = $company->toArray();
-        $company_top = Company::where('id', $this->company->id)->select('id', 'title', 'short_title')->first();
+        $company_top = Company::where('id', $this->company->id)->select('id', 'title', 'short_title', 'leaves_count')->first();
         $company_top_array = $company_top->toArray();
         $company_top_array['pid'] = 0;
         array_push($company_array, $company_top_array);
