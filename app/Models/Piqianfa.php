@@ -39,14 +39,14 @@ class Piqianfa extends Model
         $lists = \DB::select('select year(qianfariqi) as "year" ,vaccine_id, group_concat(distinct a.vaccine_company_id) as company_ids,sum(a.piqianfashuliang) as total,concat(year(a.qianfariqi),b.name) as title from piqianfas a,vaccines b where  a.vaccine_id=b.id ' . $sql . ' group by title limit ' . $pagestart . ',' . $pagesize);
         foreach ($lists as $key=>$list)
         {
-            $list->company=$this->whereRaw('year(qianfariqi)='.$list->year.' and vaccine_id='.$list->vaccine_id.' and vaccine_company_id in ('.$list->company_ids.') ')->selectRaw('vaccine_company_id,sum(piqianfashuliang) as total')->groupBy('vaccine_company_id')->get();
+            $list->company=$this->whereRaw('year(qianfariqi)='.$list->year.' and vaccine_id='.$list->vaccine_id.' and vaccine_company_id in ('.$list->company_ids.') '.$sql)->selectRaw('vaccine_company_id,sum(piqianfashuliang) as total')->groupBy('vaccine_company_id')->get();
             $result[$key]['title']=$list->title;
             $result[$key]['total']=$list->total;
             foreach ($list->company as $k=>&$value)
             {
                  $result[$key]['company'][$k]['name']=$value->vaccine_company->name;
                  $result[$key]['company'][$k]['total']=$value->total;
-                 $result[$key]['company'][$k]['product']=$this->whereRaw('year(qianfariqi)='.$list->year.' and vaccine_id='.$list->vaccine_id.' and vaccine_company_id='. $value->vaccine_company_id)->selectRaw('substring_index(chanpinbianma,"/",1) as code,substring_index(chanpinbianma,"/",-1) as shortname,sum(piqianfashuliang) as total')->groupBy('chanpinbianma')->get()->toArray();
+                 $result[$key]['company'][$k]['product']=$this->whereRaw('year(qianfariqi)='.$list->year.' and vaccine_id='.$list->vaccine_id.' and vaccine_company_id='. $value->vaccine_company_id.$sql)->selectRaw('substring_index(chanpinbianma,"/",1) as code,substring_index(chanpinbianma,"/",-1) as shortname,sum(piqianfashuliang) as total')->groupBy('chanpinbianma')->get()->toArray();
             }
         }
         return $result;
