@@ -50,7 +50,7 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => '',
-            'strict' => true,
+            'strict' => false,
             'engine' => 'InnoDB ROW_FORMAT=DYNAMIC',
         ],
 
@@ -62,7 +62,7 @@ return [
             'username' => env('DB_YINGYONG_USERNAME', 'forge'),
             'password' => env('DB_YINGYONG_PASSWORD', ''),
             'prefix' => env('DB_YINGYONG_PREFIX', ''),
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
         ],
         'dbcaiji' => [

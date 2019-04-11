@@ -139,6 +139,13 @@ $api->version('v1', [
             $api->resource('oa_sales_report', OaSalesReportController::class);
             $api->resource('equipment_change_applies', EquipmentChangeApplyController::class);
             $api->get('equipment_change_types', 'EquipmentChangeApplyController@getChangeType');
+            //工具查询-批签发通用数据
+            $api->get('piqianfas/vaccines','PiqianfasController@vaccines');
+            $api->get('piqianfas/vaccine_companies','PiqianfasController@vaccine_companies');
+            $api->get('piqianfas/products','PiqianfasController@product');
+            $api->get('piqianfas/list','PiqianfasController@list');
+            $api->get('piqianfas/monthlist','PiqianfasController@monthList');
+            $api->get('piqianfas/detail','PiqianfasController@detail');
             //冷链系统数据
             $api->group([
                 'namespace' => 'Ccrp',
