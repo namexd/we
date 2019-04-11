@@ -31,7 +31,7 @@ class HomeController extends Controller
                 $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您可能没有<b style="color:blue">绑定系统</b>，请到【我的】页面绑定业务系统。<br>已开通的系统：冷链监测系统；</br></div>';
             }
         } else {
-            $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">感谢使用，功能陆续开放中。如遇到问题，请联系客服。</div>';
+            $data['data']['announcement'] = config('api.default.announcement');
         }
 
         return $this->response->array($data);
@@ -52,7 +52,7 @@ class HomeController extends Controller
                 $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您可能没有<b style="color:blue">绑定系统</b>，请到【我的】页面绑定业务系统。<br>已开通的系统：冷链监测系统；</br></div>';
             }
         } else {
-            $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">感谢使用，功能陆续开放中。如遇到问题，请联系客服。</div>';
+            $data['data']['announcement'] = config('api.default.announcement');
         }
 
 
