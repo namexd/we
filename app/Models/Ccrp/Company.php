@@ -633,6 +633,23 @@ class Company extends Coldchain2Model
         }
     }
 
+    public function getSonCompanyIds($pids, $map = array())
+    {
+        if (is_integer($pids) or is_string($pids)) {
+            $pids = [$pids];
+        }
+        $subs = self::whereIn('pid', $pids)->select('id')->get()->toArray();
+        if ($subs) {
+            $idsArr = [];
+            foreach ($subs as $sub) {
+                $idsArr[] = $sub['id'];
+            }
+            return $idsArr;
+        } else {
+            return [];
+        }
+    }
+
     public function warning_sender_events()
     {
         return $this->hasMany(WarningSenderEvent::class, 'company_id', 'id');
@@ -657,6 +674,7 @@ class Company extends Coldchain2Model
             ->orderBy('id', 'asc');
 
     }
+
     public static function cdcListWithOrders($ids, $withoutId = null, $fields = ['id', 'pid', 'title', 'short_title'])
     {
         $query = self::whereIn('id', $ids);
@@ -665,5 +683,14 @@ class Company extends Coldchain2Model
         }
         $query = self::cdcOrders($query);
         return $query->select($fields)->get();
+    }
+
+    public function isProvinceCdc()
+    {
+        if ($this->cdc_amdin = 1 and substr($this->region_code, 2, 4) == '0000') {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

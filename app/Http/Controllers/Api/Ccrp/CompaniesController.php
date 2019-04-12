@@ -22,11 +22,23 @@ class CompaniesController extends Controller
     public function index(CompanyRequest $request, $id = null)
     {
         $this->check($id);
-        $companies = Company::whereIn('id', $this->company_ids)->where('status', 1);
 
-        if (isset($request->hidden) and $request->hidden == 'admin') {
-            $companies->where('cdc_admin', 0);
+        if($this->company->isProvinceCdc())
+        {
+            $ids = (new Company())->getSonCompanyIds($id??$this->company->id);
+        }else{
+            $ids = $this->company_ids;
         }
+
+
+        $companies = Company::whereIn('id',$ids)->where('status', 1);
+
+        if (!$this->company->isProvinceCdc() and isset($request->hidden) and $request->hidden == 'admin') {
+            $companies->where('cdc_admin', 0);
+        }elseif($this->company->isProvinceCdc()){
+            $companies->where('cdc_admin', 1);
+        }
+
         $companies = $companies->orderBy('pid', 'asc')->orderBy('title', 'asc')->get();
 
         if ($id == null) {

@@ -8,6 +8,7 @@ use App\Http\Requests\Api\WeappAuthorizationRequest;
 use App\Http\Requests\Api\WeAuthorizationRequest;
 use App\Models\ApiLoginLog;
 use App\Models\ApilogUserAgent;
+use App\Models\Role;
 use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
 use App\Models\Weuser;
@@ -167,6 +168,15 @@ class AuthorizationsController extends Controller
                     ];
                     $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                     $weappHasWeuser->save();
+                    if(config('api.default.auto_register_tester'))
+                    {
+                        $role = Role::where('slug', 'tester')->first();
+                        if ($role) {
+                            if (!$user->hasRoles->where('role_id', $role->id)->count()) {
+                                $user->hasRoles()->create(['role_id' => $role->id]);
+                            }
+                        }
+                    }
                 } else {
                     return $this->response->errorUnauthorized('用户不存在');
                 }
