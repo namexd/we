@@ -39,6 +39,7 @@ class Piqianfa extends Model
         $lists =self::selectRaw(' year(qianfariqi) as "year" ,vaccine_id, group_concat(distinct vaccine_company_id) as company_ids,sum( piqianfashuliang) as total,concat(year( qianfariqi),vaccine_id) as title')
             ->whereRaw('1=1' . $sql)
             ->groupBy(DB::raw('concat(year( qianfariqi),vaccine_id)'))
+            ->orderByRaw('year( qianfariqi) desc')
             ->paginate($pagesize);
         foreach ($lists as $key => $list) {
             $list->company = $this->whereRaw('year(qianfariqi)=' . $list->year . ' and vaccine_id=' . $list->vaccine_id . ' and vaccine_company_id in (' . $list->company_ids . ') ' . $sql)->selectRaw('vaccine_company_id,sum(piqianfashuliang) as total')->groupBy('vaccine_company_id')->get();
