@@ -53,7 +53,7 @@ class PiqianfasController extends Controller
     public function list(Request $request)
     {
         $filter = $request->all();
-        $result['data'] = $this->piqianfa->getList($filter);
+        $result = $this->piqianfa->getList($filter,$this->pagesize);
         return $this->response->array($result);
     }
 
