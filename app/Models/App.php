@@ -105,6 +105,7 @@ class App extends Model
     public function unbind($user)
     {
         $user_has_app = UserHasApp::where('app_id', $this->id)->where('user_id', $user->id)->first();
+        if(!$user_has_app) return null;
         $role_slug = $this->slug;
         if ($role_slug == Role::冷链用户) {
             $app_user = \App\Models\Ccrp\User::find($user_has_app->app_userid);
