@@ -138,6 +138,10 @@ class AuthorizationsController extends Controller
                 $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                 $new_weappHasWeuser->save();
                 $user = $hasWeuser->weuser->user;
+                if(config('api.defaults.auto_register_tester'))
+                {
+                    $user->registerTester();
+                }
             } else {
                 if ($request->userInfo) {
                     $userInfo = $request->userInfo;
@@ -168,14 +172,9 @@ class AuthorizationsController extends Controller
                     ];
                     $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                     $weappHasWeuser->save();
-                    if(config('api.default.auto_register_tester'))
+                    if(config('api.defaults.auto_register_tester'))
                     {
-                        $role = Role::where('slug', 'tester')->first();
-                        if ($role) {
-                            if (!$user->hasRoles->where('role_id', $role->id)->count()) {
-                                $user->hasRoles()->create(['role_id' => $role->id]);
-                            }
-                        }
+                        $user->registerTester();
                     }
                 } else {
                     return $this->response->errorUnauthorized('用户不存在');

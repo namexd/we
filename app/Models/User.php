@@ -81,6 +81,40 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(RoleHasUser::class);
     }
 
+    /**
+     * 是否是体验者权限
+     * @return mixed
+     */
+    public function isTester()
+    {
+        return $this->whereHas('hasRoles', function ($query) {
+            $role = Role::where('slug', Role::测试用户)->first();
+            $query->where('role_id', $role->id)->where('user_id',$this->id);
+        })->count();
+    }
+
+    /**
+     * 添加体验者权限
+     */
+    public function registerTester()
+    {
+        if (!$this->isTester()) {
+            $role = Role::where('slug', Role::测试用户)->first();
+            $this->roles()->attach($role->id);
+        }
+    }
+
+    /**
+     * 剔除体验者权限
+     */
+    public function removeTester()
+    {
+        if ($this->isTester()) {
+            $role = Role::where('slug', Role::测试用户)->first();
+            $this->roles()->detach($role->id);
+        }
+    }
+
     public function withRole($role_id = Role::LENGWANG_ROLE_ID)
     {
         return $this->whereHas('hasRoles', function ($query) use ($role_id) {
