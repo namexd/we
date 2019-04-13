@@ -82,6 +82,18 @@ class User extends Authenticatable implements JWTSubject
     }
 
     /**
+     * 是否是冷王角色
+     * @return mixed
+     */
+    public function isLengwang()
+    {
+        return $this->whereHas('hasRoles', function ($query) {
+            $role = Role::where('slug', Role::冷王)->first();
+            $query->where('role_id', $role->id)->where('user_id',$this->id);
+        })->count();
+    }
+
+    /**
      * 是否是体验者权限
      * @return mixed
      */

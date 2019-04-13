@@ -16,6 +16,7 @@ class Role extends Model
     const 冷链疾控用户 = 'ccrp.cdc';
     const 生物制品用户 = 'bpms';
     const 测试用户 = 'tester';
+    const 冷王 = 'lengwang';
 
     protected $fillable = [
         'name', 'slug'
