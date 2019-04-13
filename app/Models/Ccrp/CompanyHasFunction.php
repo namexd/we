@@ -2,6 +2,8 @@
 
 namespace App\Models\Ccrp;
 
+use App\Models\Ccrp\Reports\StatManualRecord;
+
 class CompanyHasFunction extends Coldchain2Model
 {
 
