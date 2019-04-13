@@ -31,7 +31,13 @@ class HomeController extends Controller
                 $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您可能没有<b style="color:blue">绑定系统</b>，请到【我的】页面绑定业务系统。</br></div>';
             }
         } else {
-            $data['data']['announcement'] = config('api.defaults.announcement');
+            $user = $this->user();
+            if($user->isTester())
+            {
+                $data['data']['announcement'] = config('api.defaults.announcement_tester');
+            }else{
+                $data['data']['announcement'] = config('api.defaults.announcement');
+            }
         }
 
         return $this->response->array($data);
