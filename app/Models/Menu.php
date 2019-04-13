@@ -101,6 +101,18 @@ class Menu extends Model
 
 
     /**
+     * 是否是冷王角色
+     * @return mixed
+     */
+    public function isFree()
+    {
+        return $this->whereHas('hasRoles', function ($query) {
+            $role = Role::where('slug', Role::免费)->first();
+            $query->where('role_id', $role->id)->where('menu_id', $this->id);
+        })->count();
+    }
+
+    /**
      * Detach models from the relationship.
      *
      * @return void
@@ -116,12 +128,13 @@ class Menu extends Model
 
     public function listTree($user, $is_mobile, $topid = null)
     {
-        $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order','asc')->get();
-        if($user->isTester() and !$user->isLengwang())
-        {
-            foreach ($menus as &$menu)
-            {
-                $menu->uri = '';
+        $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+        if ($user->isTester() and !$user->isLengwang()) {
+            foreach ($menus as &$menu) {
+                if(!$menu->isFree())
+                {
+                    $menu->uri = '';
+                }
             }
         }
         if ($topid) {

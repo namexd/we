@@ -17,6 +17,7 @@ class Role extends Model
     const 生物制品用户 = 'bpms';
     const 测试用户 = 'tester';
     const 冷王 = 'lengwang';
+    const 免费 = 'free';
 
     protected $fillable = [
         'name', 'slug'
