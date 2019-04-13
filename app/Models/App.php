@@ -99,6 +99,8 @@ class App extends Model
         }
         //添加绑定关系
         $rs = $user->hasApps()->create($data);
+        //去除体验者权限
+        $user->removeTester();
         return $rs;
     }
 
