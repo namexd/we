@@ -460,4 +460,49 @@ class WeController extends Controller
         }
 
     }
+
+    /**
+     * 生物制品跳转到冷链系统
+     * @param string $app
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function jumpLoginFromUcenter($to = 'ccrp')
+    {
+        $to_app = App::where('slug', $to)->first();
+        if (!$to_app) {
+            echo '<h1>' . '登录失败，access不正确。' . '</h1><hr>';
+            exit();
+        }
+
+        $user =   Auth::guard('api')->user();
+
+        if(!$user)
+        {
+            echo '<h1>token错误，请重新登录 :(</h1><hr>';
+            exit();
+        }
+        $user_has_app = $user->getApp($to_app->id);
+
+        $res = $user_has_app->toArray();
+
+        if ($user_has_app) {
+            $user_info = (new App())->userBindedLoginInfo($to_app->slug, $user);
+            if ($user_info and $user_info['access']) {
+                if ($user_info['login_url'] != '') {
+                    $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
+                    return Redirect::away($url);
+                } else {
+                    echo '<h1>"'.$to_app->name.'"未开启扫码登录地址 :(</h1><hr>';
+                    exit();
+                }
+            }else{
+                request()->session()->put('auto_bind_app', $res);
+                return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
+            }
+        } else {
+            request()->session()->put('auto_bind_app', $res);
+            return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
+        }
+
+    }
 }

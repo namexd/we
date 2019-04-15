@@ -76,6 +76,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->hasMany(UserHasApp::class);
     }
 
+    public function getApp($app_id)
+    {
+        return $this->hasApps->where('app_id',$app_id)->first()??null;
+    }
+
     public function hasRoles()
     {
         return $this->hasMany(RoleHasUser::class);
