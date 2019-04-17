@@ -21,8 +21,7 @@ class HomeController extends Controller
         $ads = AdCategory::where('types', $is_mobile ? 'mobile' : 'web')->with('ads')->get()->toArray();
         $data['data']['ads'] = $ads;
 
-        $topics = Topic::orderBy('id', 'desc')->limit(5)->select('id', 'title', 'image', 'excerpt', 'slug', 'created_at', 'updated_at')->get();
-        $data['data']['topics'] = $topics;
+        $data['data']['topics'] = Topic::lastPosts();
         if ($menus == []) {
             $user = $this->user();
             if (count($user->hasApps)) {
@@ -32,10 +31,9 @@ class HomeController extends Controller
             }
         } else {
             $user = $this->user();
-            if($user->isTester())
-            {
+            if ($user->isTester()) {
                 $data['data']['announcement'] = config('api.defaults.announcement_tester');
-            }else{
+            } else {
                 $data['data']['announcement'] = config('api.defaults.announcement');
             }
         }

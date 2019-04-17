@@ -62,5 +62,12 @@ class Topic extends Model
         return $previous_id ? self::find($previous_id, ['id', 'title']) : null;
     }
 
+    public static function lastPosts($limit = 5)
+    {
+        return self::whereHas('category', function ($query) {
+            $query->where('status', 1);
+        })->orderBy('id', 'desc')->limit($limit)->select('id', 'title', 'image', 'excerpt', 'slug', 'created_at', 'updated_at')->get();
+    }
+
 
 }
