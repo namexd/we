@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use function App\Utils\is_mobile;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
