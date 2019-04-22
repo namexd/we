@@ -37,34 +37,40 @@ class WeController extends Controller
     {
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $data = $app->material->list('news', 0, 20);
-        dd($data);
 //return;
         $medias = [];
+        $insert= 0;
         if ($data) {
             foreach ($data['item'] as $item) {
                 $media_id = $item['media_id'];
-                $content = $item['content'];
-                $create_time = $content['create_time'];
-                $update_time = $content['update_time'];
-                foreach ($content['news_item'] as $new_item) {
-                    $meida = [];
-                    $media['media_id'] = $media_id;
-                    $media['create_time'] = $create_time;
-                    $media['update_time'] = $update_time;
-                    $media['title'] = $new_item['title'];
-                    $media['author'] = $new_item['author'];
-                    $media['digest'] = $new_item['digest'];
-                    $media['content'] = $new_item['content'];
-                    $media['content_source_url'] = $new_item['content_source_url'];
-                    $media['thumb_media_id'] = $new_item['thumb_media_id'];
-                    $media['show_cover_pic'] = $new_item['show_cover_pic'];
-                    $media['url'] = $new_item['url'];
-                    $media['thumb_url'] = $new_item['thumb_url'];
-                    $mediaer = WechatMedia::create($media);
-                    $medias[] = $mediaer;
+                $exist= WechatMedia::where('media_id',$media_id)->count();
+                if($exist==0)
+                {
+                    $content = $item['content'];
+                    $create_time = $content['create_time'];
+                    $update_time = $content['update_time'];
+                    foreach ($content['news_item'] as $new_item) {
+                        $meida = [];
+                        $media['media_id'] = $media_id;
+                        $media['create_time'] = $create_time;
+                        $media['update_time'] = $update_time;
+                        $media['title'] = $new_item['title'];
+                        $media['author'] = $new_item['author'];
+                        $media['digest'] = $new_item['digest'];
+                        $media['content'] = $new_item['content'];
+                        $media['content_source_url'] = $new_item['content_source_url'];
+                        $media['thumb_media_id'] = $new_item['thumb_media_id'];
+                        $media['show_cover_pic'] = $new_item['show_cover_pic'];
+                        $media['url'] = $new_item['url'];
+                        $media['thumb_url'] = $new_item['thumb_url'];
+                        $mediaer = WechatMedia::create($media);
+                        $medias[] = $mediaer;
+                        $insert++;
 
+                    }
                 }
             }
+            echo $insert .'条插入了。';
             dd(count($medias));
         }
     }
