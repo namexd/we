@@ -693,4 +693,15 @@ class Company extends Coldchain2Model
             return false;
         }
     }
+
+    public static function branchListWithOrders($id, $withoutId = null, $fields = ['id', 'pid', 'title', 'short_title'])
+    {
+        $query = self::where('pid', $id)->where('status',1);
+        if ($withoutId) {
+            $query = $query->where('id', '!=', $withoutId);
+        }
+        $query = self::cdcOrders($query);
+        return $query->select($fields)->get();
+    }
+
 }

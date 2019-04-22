@@ -153,6 +153,8 @@ $api->version('v1', [
             ], function ($api) {
                 //单位树
                 $api->get('companies/tree/{id?}', 'CompaniesController@tree')->name('api.ccrp.companies.tree');
+                //单位下级单位
+                $api->get('companies/branch/{id?}', 'CompaniesController@branch')->name('api.ccrp.companies.branch');
                 // 当前单位
                 $api->get('companies/current/{id?}', 'CompaniesController@current')->name('api.ccrp.companies.current');
                 // 所有单位清单

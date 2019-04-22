@@ -106,6 +106,22 @@ class CompaniesController extends Controller
         $data['data'] = $menus == [] ? $company : $menus;
         return $this->response->array($data);
     }
+    public function branch($id = null)
+    {
+        $this->check($id);
+        $company = Company::branchListWithOrders($this->company->id, null,['id', 'pid', 'title', 'short_title','leaves_count']);
+        $company_array = $company->toArray();
+        $company_top = Company::where('id', $this->company->id)->select('id', 'pid','title', 'short_title', 'leaves_count')->first();
+        $company_top_array = $company_top->toArray();
+        if($id==null)
+        {
+            $company_top_array['pid'] = 0;
+        }
+        array_push($company_array, $company_top_array);
+        $menus = (new Company())->toTree($company_array);
+        $data['data'] = $menus == [] ? $company : $menus;
+        return $this->response->array($data);
+    }
 
     public function statManage($id = null, $month = null)
     {
