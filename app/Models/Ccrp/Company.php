@@ -696,7 +696,8 @@ class Company extends Coldchain2Model
 
     public static function branchListWithOrders($id, $withoutId = null, $fields = ['id', 'pid', 'title', 'short_title'])
     {
-        $query = self::where('pid', $id)->where('status',1);
+        $parent = self::where('id',$id)->first();
+        $query = self::where('pid', $id)->where('status',1)->where('company_group', $parent->company_group);
         if ($withoutId) {
             $query = $query->where('id', '!=', $withoutId);
         }
