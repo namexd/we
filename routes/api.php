@@ -137,6 +137,7 @@ $api->version('v1', [
             $api->resource('oa_accountant_invoices', OaAccountantInvoiceController::class);
             //销售周报管理
             $api->resource('oa_sales_report', OaSalesReportController::class);
+
             $api->resource('equipment_change_applies', EquipmentChangeApplyController::class);
             $api->get('equipment_change_types', 'EquipmentChangeApplyController@getChangeType');
             //工具查询-批签发通用数据
