@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Ccrp;
 
 use App\Models\EquipmentChangeApply;
 use App\Transformers\EquipmentChangeApplyTransformer;
@@ -13,6 +13,7 @@ class EquipmentChangeApplyController extends Controller
 
     public function __construct(EquipmentChangeApply $equipmentChangeApply)
     {
+        parent::__construct();
         $this->model = $equipmentChangeApply;
     }
 
@@ -24,12 +25,15 @@ class EquipmentChangeApplyController extends Controller
      */
     public function index(Request $request)
     {
-        $data = $this->model->with(['detail', 'new'])->paginate($request->pagesize??$this->pagesize);
+        $this->check();
+        $company_ids=$this->company_ids;
+        $data = $this->model->with(['company','detail', 'new'])->whereIn('company_id',$company_ids)->paginate($request->pagesize??$this->pagesize);
         return $this->response->paginator($data, new EquipmentChangeApplyTransformer());
     }
 
     public function getChangeType()
     {
+        $this->check();
         return $this->response->array(['data' => $this->model->getChangeType()]);
 
     }
@@ -42,6 +46,7 @@ class EquipmentChangeApplyController extends Controller
      */
     public function store(Request $request)
     {
+        $this->check();
         $result = $this->model->add($request->all());
         if ($result instanceof Model)
             return $this->response->item($result,new EquipmentChangeApplyTransformer())->statusCode(201);
@@ -57,6 +62,7 @@ class EquipmentChangeApplyController extends Controller
      */
     public function show($id)
     {
+        $this->check();
         $equipment_change_apply = $this->model->findOrFail($id);
         return $this->response->item($equipment_change_apply, new EquipmentChangeApplyTransformer());
     }

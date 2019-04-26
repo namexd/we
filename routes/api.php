@@ -137,8 +137,8 @@ $api->version('v1', [
             $api->resource('oa_accountant_invoices', OaAccountantInvoiceController::class);
             //销售周报管理
             $api->resource('oa_sales_report', OaSalesReportController::class);
-            $api->resource('equipment_change_applies', EquipmentChangeApplyController::class);
-            $api->get('equipment_change_types', 'EquipmentChangeApplyController@getChangeType');
+
+
             //工具查询-批签发通用数据
             $api->get('piqianfas/vaccines','PiqianfasController@vaccines');
             $api->get('piqianfas/vaccine_companies','PiqianfasController@vaccine_companies');
@@ -188,7 +188,9 @@ $api->version('v1', [
                 $api->post('stat_manual_records', 'StatManualRecordsController@store')->name('api.ccrp.stat_manual_records.store');
                 $api->get('stat_manual_records/list/{month?}', 'StatManualRecordsController@index')->name('api.ccrp.stat_manual_records.index');
                 $api->get('stat_manual_records/show/{day?}/{session?}', 'StatManualRecordsController@show')->name('api.ccrp.stat_manual_records.show');
-
+                //冷链变更
+                $api->resource('equipment_change_applies', EquipmentChangeApplyController::class);
+                $api->get('equipment_change_types', 'EquipmentChangeApplyController@getChangeType');
 
                 //CCrp数据报表
                 $api->group([
