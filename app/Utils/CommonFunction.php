@@ -22,8 +22,21 @@ function array_trim($arr, $trim = true)
 
 function format_value($value, $suffix = '')
 {
-    if ($value !== '' and $value !== NULL and $value <> -999) return sprintf("%.1f", round($value, 3)) . $suffix;
-    else return '-';
+    if ($value !== '' and $value !== NULL and $value <> -999)
+    {
+        if($suffix=='')
+        {
+            return  0+sprintf("%.1f", round($value, 3));
+        }
+        else
+        {
+            return sprintf("%.1f", round($value, 3)).$suffix;
+        }
+
+    }
+    else {
+        return '-';
+    }
 }
 
 /*
