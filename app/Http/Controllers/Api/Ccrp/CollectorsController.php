@@ -23,6 +23,24 @@ class CollectorsController extends Controller
 
         return $this->response->paginator($collectors, new CollectorTransformer());
     }
+
+
+    public function history($collector)
+    {
+        $this->check();
+        $start = request()->start ?? date('Y-m-d H:i:s',time()-4*3600);
+        $end = request()->end ?? date('Y-m-d 23:59:59',strtotime($start));
+        $start_time = strtotime($start);
+        $end_time = strtotime($end);
+        $collector = Collector::whereIn('company_id',$this->company_ids)->where('collector_id',$collector)->first();
+        if($collector)
+        {
+            $data = $collector->history($start_time,$end_time);
+            return $this->response->collection($data, new CollectorHistoryTransformer());
+        }else{
+            return $this->response->noContent();
+        }
+    }
 //
 //    public function realtime()
 //    {

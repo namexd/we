@@ -168,6 +168,7 @@ $api->version('v1', [
                 $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.ccrp.coolers.history');
                 // 所有探头
                 $api->get('collectors', 'CollectorsController@index')->name('api.ccrp.collectors.index');
+                $api->get('collectors/{collector}/history', 'CollectorsController@history')->name('api.ccrp.collectors.history');
                 // 所有联系人
                 $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
                 // 报警统计
