@@ -6,6 +6,7 @@ use App\Http\Requests\Api\Ccrp\CollectorSyncRequest;
 use App\Models\Ccrp\Collector;
 use App\Models\Ccrp\Company;
 use App\Models\Ccrp\DataHistory;
+use App\Traits\ControllerDataRange;
 use App\Transformers\Ccrp\CollectorHistoryTransformer;
 use App\Transformers\Ccrp\CollectorRealtimeTransformer;
 use App\Transformers\Ccrp\CollectorTransformer;
@@ -14,6 +15,8 @@ use Illuminate\Http\Request;
 
 class CollectorsController extends Controller
 {
+    use ControllerDataRange;
+    public $default_date = '今日';
 
     public function index()
     {
@@ -27,11 +30,24 @@ class CollectorsController extends Controller
 
     public function history($collector)
     {
+
+        $this->set_default_datas($this->default_date);
         $this->check();
-        $start = request()->start ?? date('Y-m-d H:i:s',time()-4*3600);
-        $end = request()->end ?? date('Y-m-d 23:59:59',strtotime($start));
-        $start_time = strtotime($start);
-        $end_time = strtotime($end);
+        if(request()->date_range)
+        {
+            $dates = $this->get_dates();
+            $start_time = $dates['date_start'];
+            $end_time = $dates['date_end'];
+        }elseif(request()->start and request()->end){
+            $start = request()->start ?? date('Y-m-d H:i:s',time()-4*3600);
+            $end = request()->end ?? date('Y-m-d 23:59:59',strtotime($start));
+            $start_time = strtotime($start);
+            $end_time = strtotime($end);
+        }else{
+            $dates = $this->get_dates();
+            $start_time = $dates['date_start'];
+            $end_time = $dates['date_end'];
+        }
         $collector = Collector::whereIn('company_id',$this->company_ids)->where('collector_id',$collector)->first();
         if($collector)
         {
