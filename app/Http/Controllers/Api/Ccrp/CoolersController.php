@@ -17,6 +17,14 @@ class CoolersController extends Controller
         return $this->response->paginator($coolers, new CoolerTransformer());
     }
 
+    public function all()
+    {
+        $this->check();
+        $coolers = Cooler::whereIn('company_id',$this->company_ids)->where('status',1)->with('company')
+            ->orderBy('company_id','asc') ->orderBy('cooler_name','asc')->get();
+        return $this->response->collection($coolers, new CoolerTransformer());
+    }
+
     public function show($cooler)
     {
         $this->check();

@@ -19,16 +19,22 @@ class ActionsController extends Controller
         $code = 301;
         $message = '出错了';
         $response = [];
-        $res = json_decode($res, true);
-        if ($res) {
-            $response = $res['result'] ?? null;
-            $code = $res['code'] ?? 301;
-            $message = $res['message'] ?? '出错啦';
+        if ($res_decode = json_decode($res, true) and isset($res_decode['result'])) {
+            $response = $res_decode['result'] ?? null;
+            $code = $res_decode['code'] ?? 301;
+            $message = $res_decode['message'] ?? '出错啦';
+        }else{
+            $response['message']='json解析出错了';
+            $response['code']='-999';
+            $response['_debug'] = json_decode($res, true)??$res;
+            return $this->response->array($response);
         }
 
         if ($code < 300) {
-            array_push($res,['_debu'=>$res]);
+            $response['_debug'] = json_decode($res, true)??$res;
             return $this->response->array($response);
+        } elseif ($code == 500) {
+            return json_decode($res, true)??$res;
         } else {
             return $this->response->error($message, $code);
         }

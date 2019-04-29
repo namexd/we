@@ -3,6 +3,7 @@
 namespace App\Transformers\Ccrp;
 
 use App\Models\Ccrp\DataHistory;
+use function App\Utils\format_value;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 
@@ -12,10 +13,10 @@ class CollectorHistoryTransformer extends TransformerAbstract
     {
         return [
             'data_id' => $history->data_id,
-            'temp' => round($history->temp,1),
-            'humi' =>round( $history->humi,1),
-            'collect_time' =>  $history->collect_time??$history->sensor_collect_time,
-            'system_time' =>  $history->system_time,
+            'temp' => format_value($history->temp),
+            'humi' => format_value($history->humi),
+            'collect_time' => Carbon::createFromTimestamp($history->collect_time)->toDateTimeString(),
+            'system_time' => Carbon::createFromTimestamp($history->system_time)->toDateTimeString(),
         ];
     }
 }
