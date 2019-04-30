@@ -42,8 +42,9 @@ class EquipmentChangeApply extends Model
 
     ];
   const STATUS=[
-      '未变更',
-      '已变更'
+      '未处理',
+      '处理中',
+      '处理完成'
   ];
     public function company()
     {
@@ -67,6 +68,7 @@ class EquipmentChangeApply extends Model
 
     public function add($data)
     {
+        $data['status']=0;
        try
         {
             $apply= DB::transaction(function () use ($data){

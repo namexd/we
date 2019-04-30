@@ -19,7 +19,8 @@ class EquipmentChangeApplyTransformer extends TransformerAbstract
             'user_sign'=>$apply->user_sign,
             'details'=>$apply->detail,
             'news'=>$apply->new,
-
+            'status'=>$apply->status,
+            'status_name'=>$apply::STATUS[$apply->status],
         ];
         return  $rs;
     }
