@@ -2,6 +2,7 @@
 
 namespace App\Transformers;
 
+use App\Models\Ccrp\Cooler;
 use App\Models\EquipmentChangeApply;
 use App\Models\EquipmentChangeDetail;
 use App\Transformers\Ccrp\CoolerTransformer;
@@ -27,6 +28,13 @@ class EquipmentChangeDetailTransformer extends TransformerAbstract
 
     public function includeCooler(EquipmentChangeDetail $detail)
     {
-        return $this->item($detail->cooler, new CoolerTransformer());
+        if ($detail->cooler_id==0)
+        {
+            return $this->item(new Cooler, new CoolerTransformer());
+        }else
+        {
+            return $this->item($detail->cooler, new CoolerTransformer());
+        }
+
     }
 }

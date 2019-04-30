@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class EquipmentChangeNew extends Model
 {
     protected $fillable=[
+        'apply_id',
         'cooler_name',
         'country_code',
         'cooler_brand',
