@@ -41,68 +41,65 @@ class EquipmentChangeApply extends Model
         13 => '报警延迟时间修改'
 
     ];
-  const STATUS=[
-      '未处理',
-      '处理中',
-      '处理完成'
-  ];
+    const STATUS = [
+        '未处理',
+        '处理中',
+        '处理完成'
+    ];
+
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-    public function detail()
+    public function details()
     {
         return $this->hasMany(EquipmentChangeDetail::class, 'apply_id');
     }
 
-    public function new()
+    public function news()
     {
         return $this->hasMany(EquipmentChangeNew::class, 'apply_id');
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class,'handler');
+        return $this->belongsTo(User::class, 'handler');
     }
 
     public function add($data)
     {
-        $data['status']=0;
-       try
-        {
-            $apply= DB::transaction(function () use ($data){
-                $attributes=array_only($data,$this->fillable);
-                if ($apply=self::create($attributes)){
-                    if (!is_null(json_decode($data['details'])))
-                    {
-                       $details=json_decode($data['details'],true);
-                       $apply->detail()->createMany($details);
+        $data['status'] = 0;
+        try {
+            $apply = DB::transaction(function () use ($data) {
+                $attributes = array_only($data, $this->fillable);
+                if ($apply = self::create($attributes)) {
+                    if (!is_null(json_decode($data['details']))) {
+                        $details = json_decode($data['details'], true);
+                        $apply->details()->createMany($details);
 
                     }
-                    if (!is_null(json_decode($data['news'])))
-                    {
-                        $news=json_decode($data['news'],true);
-                        $apply->new()->createMany($news);
+                    if (!is_null(json_decode($data['news']))) {
+                        $news = json_decode($data['news'], true);
+                        $apply->news()->createMany($news);
                     }
                     return $apply;
                 }
 
-            },5);
-          return $apply;
-        }catch (Exception $exception)
-       {
-           return $exception->getMessage();
-       }
+            }, 5);
+            return $apply;
+        } catch (Exception $exception) {
+            return $exception->getMessage();
+        }
 
     }
+
     public function getChangeType()
     {
-        $k=0;
-        foreach (self::CHANGE_TYPE as $key=> $value)
-        {
-            $result[$k]['key']=$key;
-            $result[$k]['value']=$value;
+        $k = 0;
+        foreach (self::CHANGE_TYPE as $key => $value) {
+            $result[$k]['key'] = $key;
+            $result[$k]['value'] = $value;
             $k++;
         }
         return $result;
