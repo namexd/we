@@ -8,12 +8,13 @@ class EquipmentChangeNew extends Model
 {
     protected $fillable=[
         'cooler_name',
-        'number',
-        'brand',
-        'version',
-        'type',
-        'size',
-        'start_time',
+        'country_code',
+        'cooler_brand',
+        'cooler_model',
+        'cooler_type',
+        'cooler_size',
+        'cooler_size2',
+        'cooler_starttime',
         'is_medical'
     ];
     protected  $casts=[
