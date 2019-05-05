@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\Ccrp\Company;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Database\Eloquent\Model;
 use Mockery\CountValidator\Exception;
@@ -73,6 +74,7 @@ class EquipmentChangeApply extends Model
         try {
             $apply = DB::transaction(function () use ($data) {
                 $attributes = array_only($data, $this->fillable);
+                $attributes['apply_time']=Carbon::now();
                 if ($apply = self::create($attributes)) {
                     if (!is_null(json_decode($data['details']))) {
                         $details = json_decode($data['details'], true);
