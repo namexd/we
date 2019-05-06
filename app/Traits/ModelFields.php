@@ -2,6 +2,7 @@
 
 namespace App\Traits;
 
+use App\Helpers\FormCreateHelper;
 use LaravelFormBuilder\Form;
 
 trait ModelFields
@@ -105,7 +106,6 @@ trait ModelFields
                 $items[] = self::addFilter($value, $key);
             }
         }
-        dd($items);
         //input组件
         $items['name'] = Form::input('name', '用户名');
         $items['password'] = Form::password('password', '密码');
@@ -128,7 +128,7 @@ trait ModelFields
         ];
         $items['select'] = Form::select('color', '颜色', [])->options($select_options);
 
-        $form = Form::create('', $items);
+        $form = new FormCreateHelper('', $items);
         $api = $form->buildFilter();
         return $api;
     }

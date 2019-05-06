@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\FormCreateHelper;
 use App\Traits\ModelFields;
 use Encore\Admin\Auth\Database\Administrator;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,7 @@ class Topic extends Model
     protected static function filterFields()
     {
         return [
-            'title' => Form::TEXT,
+            'title' => FormCreateHelper::TEXT,
             'name' => ['text', 'options' => ['label' => 'xxx']],
             'content' => ['text', 'options' => []],
         ];

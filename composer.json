@@ -24,7 +24,8 @@
         "overtrue/wechat": "~4.0",
         "socialiteproviders/weixin": "^4.0",
         "spatie/laravel-permission": "~2.7",
-        "tymon/jwt-auth": "1.0.0-rc.3"
+        "tymon/jwt-auth": "1.0.0-rc.3",
+        "xaboy/laravel-form-builder": "^1.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "~3.1",
@@ -37,8 +38,7 @@
     "autoload": {
         "classmap": [
             "database/seeds",
-            "database/factories",
-            "app/LIbs/lonycn"
+            "database/factories"
         ],
         "psr-4": {
             "App\\": "app/"
