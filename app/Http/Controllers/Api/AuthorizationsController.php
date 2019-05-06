@@ -185,7 +185,7 @@ class AuthorizationsController extends Controller
         }
         $token = Auth::guard('api')->fromUser($user);
 
-        ApiLoginLog::addLog($request, $user);
+        $this->AddLoginLog($request, $user);
         return $this->respondWithToken($token, ['info' => $data])->setStatusCode(201);
     }
 
@@ -200,7 +200,7 @@ class AuthorizationsController extends Controller
             $user = $hasUser->weuser->user;
         }
         $token = Auth::guard('api')->fromUser($user);
-        ApiLoginLog::addLog($request, $user);
+        $this->AddLoginLog($request, $user);
         return $this->respondWithToken($token)->setStatusCode(201);
     }
 
@@ -269,5 +269,13 @@ class AuthorizationsController extends Controller
             $data = array_merge($data, $withInfo);
         }
         return $this->response->array($data);
+    }
+
+    private function AddLoginLog($request,$user)
+    {
+        if(env('APP_ENV')=='production')
+        {
+            ApiLoginLog::addLog($request, $user);
+        }
     }
 }
