@@ -27,9 +27,9 @@ class EquipmentChangeApplyController extends Controller
     {
         $this->check();
         $company_ids=$this->company_ids;
-        if($status=$request->get('status'))
+        if($request->has('status'))
         {
-            $this->model=$this->model->where('status',$status);
+            $this->model=$this->model->where('status',$request->status);
         }
         $data = $this->model->with(['company','details', 'news'])->whereIn('company_id',$company_ids)->orderBy('id','desc')->paginate($request->pagesize??$this->pagesize);
         return $this->response->paginator($data, new EquipmentChangeApplyTransformer());
