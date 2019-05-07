@@ -21,11 +21,24 @@ class Topic extends Model
             'content' => ['text', 'options' => []],
         ];
     }
+    protected static function columnsFields()
+    {
+        return [
+            'title',
+            'excerpt',
+            'view_count',
+            'reply_count',
+            'created_at',
+        ];
+    }
 
     protected static function fieldTitles()
     {
         return [
             'title' => '测试标题',
+            'excerpt' => '描述',
+            'view_count'=> '查看次数',
+            'reply_count'=> '回复次数',
         ];
     }
 

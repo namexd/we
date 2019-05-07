@@ -10,6 +10,14 @@ trait ModelFields
     protected $filters = [];
 
     /**
+     * 列表显示字段，为空则为全部
+     * @return array
+     */
+    protected static function columnsFields()
+    {
+        return null;
+    }
+    /**
      * 生成过滤器的字段
      * @return array
      */
@@ -91,11 +99,6 @@ trait ModelFields
         return $item;
     }
 
-    /**
-     * 筛选过滤器
-     * @return mixed
-     * @throws \FormBuilder\exception\FormBuilderException
-     */
     public static function filter()
     {
         $items = [];
@@ -131,5 +134,10 @@ trait ModelFields
         $form = new FormCreateHelper('', $items);
         $api = $form->buildFilter();
         return $api;
+    }
+
+    public static function columns()
+    {
+        return self::getFieldsTitles(self::columnsFields()??(new self)->getFillable());
     }
 }

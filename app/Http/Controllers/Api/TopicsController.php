@@ -24,7 +24,12 @@ class TopicsController extends Controller
             $model->where('category_id', $request->category_id);
         }
         $topics = $model->paginate($request->pagesize ?? $this->pagesize);
-        return $this->response->paginator($topics, new TopicListTransformer());
+        $filter = Topic::filter();
+        $columns = Topic::columns();
+        return $this->response->paginator($topics, new TopicListTransformer())
+            ->addMeta('filter',$filter)
+            ->addMeta('columns',$columns)
+            ;
     }
 
     public function show(Topic $topic)
