@@ -138,6 +138,12 @@ trait ModelFields
 
     public static function columns()
     {
-        return self::getFieldsTitles(self::columnsFields()??(new self)->getFillable());
+        $columns =self::getFieldsTitles(self::columnsFields()??(new self)->getFillable());
+        $res = [];
+        foreach($columns as $key=>$column)
+        {
+            $res[] = ['label'=>$column,'value'=>$key];
+        }
+        return $res;
     }
 }
