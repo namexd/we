@@ -17,6 +17,7 @@ use App\Transformers\UserQrcodeTransformer;
 use App\Transformers\UserTransformer;
 use function App\Utils\app_access_encode;
 use Dingo\Api\Auth\Auth;
+use Illuminate\Http\Request;
 use Symfony\Component\Debug\Exception\FatalThrowableError;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
@@ -132,6 +133,35 @@ class UsersController extends Controller
         }
         if (!$users->checkPassword($login, $password)) {
             return $this->response->error('密码错误。', 422);
+        }
+        $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
+        return $this->response->created(null, $rs->toArray());
+    }
+
+    public function autoBindApps($app_id=1,Request $request)
+    {
+        $user = $this->user();
+        if ($user->status == 0) {
+            return $this->response->error('您的账号被禁用。', 401);
+        }
+        if (!$user->phone or !$user->phone_verified) {
+            return $this->response->error('您的手机号没有验证。', 456);
+        }
+        $binded = $user->hasApps->where('app_id', $request->app_id)->first();
+        if ($binded) {
+            return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
+        }
+        $app = App::where('id', $app_id)->where('status', 1)->first();
+        if (!$app) {
+            return $this->response->error('管理系统选择错误。', 422);
+        }
+
+        $folder = ucfirst(strtolower($app->slug));
+        $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
+        $users = new $userModel;
+        $username = $request->username;
+        if (!$login = $users->checkUsername($username)) {
+            return $this->response->error('用户名不存在。', 422);
         }
         $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
         return $this->response->created(null, $rs->toArray());
