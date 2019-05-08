@@ -4,6 +4,7 @@ namespace App\Models\Ccrp;
 
 use App\Models\Ccrp\Reports\StatCooler;
 use App\Traits\ControllerDataRange;
+use function App\Utils\time_clock;
 
 class Cooler extends Coldchain2Model
 {
@@ -48,13 +49,28 @@ class Cooler extends Coldchain2Model
         '4' => '深低温冰箱',
         '5' => '冷藏冷库',
         '6' => '冷冻冷库',
+        '7' => '冷藏车',
         '8' => '房间室温',
         '9' => '培养箱',
         '10' => '阴凉库',
         '11' => '常温库',
+        '12' => '台式小冰箱',
+        '13' => '冰衬冰箱',
+        '14' => '疫苗运输车',
+        '15' => ' 备用冷库制冷机组',
+        '16' => '发电机',
+        '17' => '冷藏包',
+        '18' => '温度计',
+        '19' => '冰排',
         '100' => '移动保温箱',
-        '101' => '冷藏车',
+        '101' => '移动冷藏车',
+        '102' => 'GSP冷藏车',
     ];
+
+    public function cooler_info()
+    {
+        return $this->hasOne(CoolerInfo::class, 'cooler_id', 'cooler_id');
+    }
 
     function category()
     {
@@ -121,12 +137,12 @@ class Cooler extends Coldchain2Model
 
     public function getCoolerSizeAttr($value)
     {
-        return $value ? $value . 'L' : '-';
+        return $value ? $value.'L' : '-';
     }
 
     public function getCoolerSize2Attr($value)
     {
-        return $value ? $value . 'L' : '-';
+        return $value ? $value.'L' : '-';
     }
 
 
@@ -170,7 +186,7 @@ class Cooler extends Coldchain2Model
     public function getListByCompanyIdsAndMonth($companyIds, $month_start, $month_end)
     {
         return $this->whereIn('company_id', $companyIds)
-            ->whereRaw('((uninstall_time = 0 ) or uninstall_time >' . \App\Utils\time_clock(0, date('Y-m-d', $month_start)) . ')and (install_time is NULL or install_time=0 or  install_time <' . \App\Utils\time_clock(24, date('Y-m-d', $month_end)) . ')')
+            ->whereRaw('((uninstall_time = 0 ) or uninstall_time >'.time_clock(0, date('Y-m-d', $month_start)).')and (install_time is NULL or install_time=0 or  install_time <'.time_clock(24, date('Y-m-d', $month_end)).')')
             ->orderBy('sort', 'desc')
             ->orderBy('category_id', 'asc')
             ->orderBy('cooler_id', 'desc');
@@ -182,5 +198,33 @@ class Cooler extends Coldchain2Model
         return $this->hasMany(StatCooler::class, 'cooler_id', 'cooler_id');
     }
 
-
+    public function getCountByType($company_ids, $filter)
+    {
+        $builder = $this->whereIn('company_id', $company_ids);
+        if ($status = $filter['status']) {
+            $builder = $builder->whereHas('cooler_info', function ($query) use ($status) {
+                $query->where('ice_state', $status);
+            });
+        }
+        return $builder->selectRaw('
+            ifnull(sum(if(cooler_type="7",1,0)),0) as type_7,
+            ifnull(sum(if(cooler_type="14",1,0)) ,0)as type_14,
+            ifnull(sum(if(cooler_type="5",1,0)),0) as type_5,
+            ifnull(sum(if(cooler_type="6",1,0)),0) as type_6,
+            ifnull(sum(if(cooler_type="3",1,0)),0) as type_3,
+            ifnull(sum(if(cooler_type="13",1,0)) ,0)as type_13,
+            ifnull(sum(if(cooler_type="4",1,0)),0) as type_4,
+            ifnull(sum(if(cooler_type="1",1,0)),0) as type_1,
+            ifnull(sum(if(cooler_type="16",1,0)) ,0)as type_16,
+            ifnull(sum(if(cooler_type="17",1,0)) ,0)as type_17,
+            ifnull(sum(if(cooler_type="12",1,0)) ,0)as type_12'
+        )->first();
+    }
+   static public function coolerType()
+   {
+       foreach (self::COOLER_TYPE as $key=> $type){
+           $result['type_'.$key]=$type;
+       }
+       return $result;
+   }
 }

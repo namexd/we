@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
 use App\Http\Requests\Api\Ccrp\Report\DateRangeRequest;
+use App\Models\Ccrp\Company;
+use App\Models\Ccrp\Cooler;
 use App\Models\Ccrp\Reports\CoolerLog;
 use App\Transformers\Ccrp\Reports\CoolerLogTransformer;
 use App\Transformers\Ccrp\Reports\WarningersTransformer;
@@ -34,5 +36,24 @@ class CoolersController extends Controller
         $result=$coolerLog->getListByDate($this->company_ids,$start,$end)->paginate($this->pagesize);
         $transformer=new CoolerLogTransformer();
         return $this->response->paginator($result,$transformer)->addMeta('colums',$transformer->columns());
+    }
+
+    public function countCoolerNumber(Cooler $cooler)
+    {
+        $company_id=request()->get('company_id');
+        $parent=Company::find($company_id);
+        $companies=Company::where('pid', $company_id)->where('status',1)->where('company_group', $parent->company_group)->get();
+        $result=[];
+        foreach ($companies as $key=>$company)
+        {
+            $companyIds=$company->ids();
+            $result[$key]=$cooler->getCountByType($companyIds,request()->toArray());
+            $result[$key]['title']=$company->title;
+            $result[$key]['region_code']=$company->region_code;
+        }
+        $data['data']=$result;
+        $data['meta']['columns']=Cooler::coolerType();
+        return $this->response->array($data);
+
     }
 }

@@ -116,6 +116,7 @@ $api->version('v1', [
             //更新微信信息
             $api->get('weusers', 'WeusersController@show')->name('api.weusers.show');
             $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');
+            $api->post('weusers/generateFormId', 'WeusersController@generateFormId')->name('api.weusers.generateFormId');
             //系统信息
             $api->get('apps/{slug}', 'AppsController@show')->name('api.apps.show');
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
@@ -213,6 +214,7 @@ $api->version('v1', [
                     $api->get('login_logs/statistics', 'LoginLogsController@statistics')->name('api.ccrp.reports.login_logs.statistics');
                     $api->get('login_logs/list', 'LoginLogsController@list')->name('api.ccrp.reports.login_logs.list');
                     $api->get('coolers/logs', 'CoolersController@logs')->name('api.ccrp.reports.coolers.logs');
+                    $api->get('coolers/countCoolerNumber', 'CoolersController@countCoolerNumber')->name('api.ccrp.reports.coolers.countCoolerNumber');
                 });
 
                 //以下没有使用
