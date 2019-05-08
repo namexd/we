@@ -41,14 +41,19 @@ class CoolersController extends Controller
     public function countCoolerNumber(Cooler $cooler)
     {
         $company_id=request()->get('company_id');
-        $company_ids=Company::where('pid',$company_id)->pluck('id');
+        $parent=Company::find($company_id);
+        $companies=Company::where('pid', $company_id)->where('status',1)->where('company_group', $parent->company_group)->get();
         $result=[];
-        foreach ($company_ids as $companyId)
+        foreach ($companies as $key=>$company)
         {
-            $companyIds=Company::find($companyId)->ids();
-            $result[]=$cooler->getCountByType($companyIds,request()->toArray());
+            $companyIds=$company->ids();
+            $result[$key]=$cooler->getCountByType($companyIds,request()->toArray());
+            $result[$key]['title']=$company->title;
+            $result[$key]['region_code']=$company->region_code;
         }
-        return $this->response->array($result);
+        $data['data']=$result;
+        $data['meta']['columns']=Cooler::coolerType();
+        return $this->response->array($data);
 
     }
 }
