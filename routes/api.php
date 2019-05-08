@@ -237,6 +237,14 @@ $api->version('v1', [
                 $api->post('{action}', 'ActionsController@index')->name('api.bpms.actions.index');
                 // 当前单位
             });
+            //Ocenter 旧的用户中心
+            $api->group([
+                'namespace' => 'Ocenter',
+                'prefix' => 'ocenter',
+            ], function ($api) {
+                $api->get('wxmember/check_phone/{openid}', 'WxmembersController@checkPhone')->name('api.ocenter.wxmember.check_phone');
+                $api->put('wxmember/bind_phone/{openid}/{phone}', 'WxmembersController@bindPhone')->name('api.ocenter.wxmember.bind_phone');
+            });
         });
     });
 });
