@@ -149,7 +149,12 @@ class UsersController extends Controller
         }
         $binded = $user->hasApps->where('app_id', $request->app_id)->first();
         if ($binded) {
-            return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
+            if($binded->app_username == $request->username)
+            {
+                return $this->response->created(null, $binded->toArray());
+            }else{
+                return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
+            }
         }
         $app = App::where('id', $app_id)->where('status', 1)->first();
         if (!$app) {
