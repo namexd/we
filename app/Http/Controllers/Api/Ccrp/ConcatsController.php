@@ -16,10 +16,9 @@ class ConcatsController extends Controller
         return $this->response->paginator($concats, new ContactTransformer());
     }
 
-    public function hasPhone($phone)
+    public function hasPhone($company_id,$phone)
     {
-        $this->check();
-        $concat = Contact::whereIn('company_id',$this->company_ids)->where('status',1)->where('phone',$phone)->first();
+        $concat = Contact::where('company_id',$company_id)->where('status',1)->where('phone',$phone)->first();
         return $concat?$this->response->item($concat, new ContactTransformer()):$this->response->noContent();
 
     }

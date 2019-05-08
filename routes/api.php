@@ -175,7 +175,7 @@ $api->version('v1', [
                 // 所有联系人
                 $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
                 // 是否包含手机号的联系人
-                $api->get('contacts/has_phone/{phone}', 'ConcatsController@hasPhone')->name('api.ccrp.contacts.has_phone');
+                $api->get('contacts/{company_id}/has_phone/{phone}', 'ConcatsController@hasPhone')->name('api.ccrp.contacts.has_phone');
                 // 报警统计
                 $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.ccrp.warning_all_events.categories');
                 // 超温报警
