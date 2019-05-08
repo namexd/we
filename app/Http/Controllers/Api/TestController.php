@@ -11,7 +11,7 @@ use LaravelFormBuilder\Form;
 
 class TestController extends Controller
 {
-    public function form()
+    public function index()
     {
         $model = Topic::orderBy('id', 'desc');
         $filter = Topic::filter();

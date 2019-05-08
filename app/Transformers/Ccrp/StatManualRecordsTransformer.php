@@ -4,7 +4,7 @@ namespace App\Transformers\Ccrp;
 
 use App\Models\Ccrp\Collector;
 use App\Models\Ccrp\Cooler;
-use App\Models\Ccrp\StatManualRecord;
+use App\Models\Ccrp\Reports\StatManualRecord;
 use Carbon\Carbon;
 use League\Fractal\TransformerAbstract;
 

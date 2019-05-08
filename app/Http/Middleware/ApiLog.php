@@ -22,7 +22,10 @@ class ApiLog
         // 执行动作 之前
         $response = $next($request);
         // 执行动作 之后
-        $this->apilog($request);
+        if(env('APP_ENV')=='production')
+        {
+            $this->apilog($request);
+        }
         return $response;
     }
 

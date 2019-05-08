@@ -107,6 +107,8 @@ $api->version('v1', [
             $api->put('users/apps', 'UsersController@bindApps')->name('api.users.bind_apps');
             $api->get('users/apps/{app_slug?}/check', 'UsersController@checkApps')->name('api.users.apps.check');
             $api->delete('users/apps', 'UsersController@unbindApps')->name('api.users.unbind_apps');
+            //自动绑定系统接口
+            $api->put('users/apps/auto_bind/{app_id}', 'UsersController@autoBindApps')->name('api.users.auto_bind_apps');
             //生成用户二维码
             $api->get('users/qrcode', 'UsersController@qrcode')->name('api.users.qrcode');
             // 可查看的用户列表（通讯录）
@@ -173,6 +175,8 @@ $api->version('v1', [
                 $api->get('collectors/{collector}/history', 'CollectorsController@history')->name('api.ccrp.collectors.history');
                 // 所有联系人
                 $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
+                // 是否包含手机号的联系人
+                $api->get('contacts/{company_id}/has_phone/{phone}', 'ConcatsController@hasPhone')->name('api.ccrp.contacts.has_phone');
                 // 报警统计
                 $api->get('warning_events/categories/{handled?}', 'WarningAllEventsController@categories')->name('api.ccrp.warning_all_events.categories');
                 // 超温报警
@@ -234,6 +238,14 @@ $api->version('v1', [
                 $api->get('{action}', 'ActionsController@index')->name('api.bpms.actions.index');
                 $api->post('{action}', 'ActionsController@index')->name('api.bpms.actions.index');
                 // 当前单位
+            });
+            //Ocenter 旧的用户中心
+            $api->group([
+                'namespace' => 'Ocenter',
+                'prefix' => 'ocenter',
+            ], function ($api) {
+                $api->get('wxmember/check_phone/{openid}', 'WxmembersController@checkPhone')->name('api.ocenter.wxmember.check_phone');
+                $api->put('wxmember/bind_phone/{openid}/{phone}', 'WxmembersController@bindPhone')->name('api.ocenter.wxmember.bind_phone');
             });
         });
     });

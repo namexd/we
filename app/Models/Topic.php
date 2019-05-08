@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Helpers\FormCreateHelper;
 use App\Traits\ModelFields;
 use Encore\Admin\Auth\Database\Administrator;
 use Illuminate\Database\Eloquent\Model;
@@ -15,9 +16,19 @@ class Topic extends Model
     protected static function filterFields()
     {
         return [
-            'title' => Form::TEXT,
+            'title' => FormCreateHelper::TEXT,
             'name' => ['text', 'options' => ['label' => 'xxx']],
             'content' => ['text', 'options' => []],
+        ];
+    }
+    protected static function columnsFields()
+    {
+        return [
+            'title',
+            'excerpt',
+            'view_count',
+            'reply_count',
+            'created_at',
         ];
     }
 
@@ -25,6 +36,9 @@ class Topic extends Model
     {
         return [
             'title' => '测试标题',
+            'excerpt' => '描述',
+            'view_count'=> '查看次数',
+            'reply_count'=> '回复次数',
         ];
     }
 

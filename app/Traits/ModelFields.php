@@ -2,12 +2,21 @@
 
 namespace App\Traits;
 
+use App\Helpers\FormCreateHelper;
 use LaravelFormBuilder\Form;
 
 trait ModelFields
 {
     protected $filters = [];
 
+    /**
+     * 列表显示字段，为空则为全部
+     * @return array
+     */
+    protected static function columnsFields()
+    {
+        return null;
+    }
     /**
      * 生成过滤器的字段
      * @return array
@@ -90,11 +99,6 @@ trait ModelFields
         return $item;
     }
 
-    /**
-     * 筛选过滤器
-     * @return mixed
-     * @throws \FormBuilder\exception\FormBuilderException
-     */
     public static function filter()
     {
         $items = [];
@@ -105,7 +109,6 @@ trait ModelFields
                 $items[] = self::addFilter($value, $key);
             }
         }
-        dd($items);
         //input组件
         $items['name'] = Form::input('name', '用户名');
         $items['password'] = Form::password('password', '密码');
@@ -128,8 +131,19 @@ trait ModelFields
         ];
         $items['select'] = Form::select('color', '颜色', [])->options($select_options);
 
-        $form = Form::create('', $items);
+        $form = new FormCreateHelper('', $items);
         $api = $form->buildFilter();
         return $api;
+    }
+
+    public static function columns()
+    {
+        $columns =self::getFieldsTitles(self::columnsFields()??(new self)->getFillable());
+        $res = [];
+        foreach($columns as $key=>$column)
+        {
+            $res[] = ['label'=>$column,'value'=>$key];
+        }
+        return $res;
     }
 }

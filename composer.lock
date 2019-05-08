@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5b03cfff41ad9e6528c143d22ef91e5d",
+    "content-hash": "fd0dcba2d377536b2fdca9b11b1a8441",
     "packages": [
         {
             "name": "aliyuncs/oss-sdk-php",
@@ -6630,6 +6630,109 @@
                 "validate"
             ],
             "time": "2018-12-25T11:19:39+00:00"
+        },
+        {
+            "name": "xaboy/form-builder",
+            "version": "1.2.9",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xaboy/form-builder.git",
+                "reference": "eae1a346a063daf8aee4ed10213aafc91c0572e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xaboy/form-builder/zipball/eae1a346a063daf8aee4ed10213aafc91c0572e7",
+                "reference": "eae1a346a063daf8aee4ed10213aafc91c0572e7",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "ext-json": "*",
+                "php": ">=5.4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "FormBuilder\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xaboy",
+                    "email": "xaboy2005@qq.com"
+                }
+            ],
+            "description": "PHP表单生成器，快速生成现代化的form表单。包含复选框、单选框、输入框、下拉选择框等元素以及,省市区三级联动,时间选择,日期选择,颜色选择,文件/图片上传等功能。",
+            "homepage": "https://github.com/xaboy/form-builder",
+            "time": "2019-03-22T01:56:08+00:00"
+        },
+        {
+            "name": "xaboy/laravel-form-builder",
+            "version": "1.2.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/xaboy/laravel-form-builder.git",
+                "reference": "c07395902ad781ac13ed180cee6fd64893b82416"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/xaboy/laravel-form-builder/zipball/c07395902ad781ac13ed180cee6fd64893b82416",
+                "reference": "c07395902ad781ac13ed180cee6fd64893b82416",
+                "shasum": "",
+                "mirrors": [
+                    {
+                        "url": "https://dl.laravel-china.org/%package%/%reference%.%type%",
+                        "preferred": true
+                    }
+                ]
+            },
+            "require": {
+                "laravel/framework": "^5.0.0",
+                "php": ">=5.4.0",
+                "xaboy/form-builder": "^1.2.7"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "LaravelFormBuilder\\FormBuilderProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "LaravelFormBuilder\\": "./src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "xaboy",
+                    "email": "xaboy2005@qq.com"
+                }
+            ],
+            "description": "laravel专用表单生成器，快速生成现代化的form表单。包含复选框、单选框、输入框、下拉选择框等元素以及,省市区三级联动,时间选择,日期选择,颜色选择,文件/图片上传等功能。",
+            "homepage": "https://github.com/xaboy/laravel-form-builder",
+            "keywords": [
+                "form",
+                "form-builder",
+                "form-generator",
+                "iview",
+                "laravel"
+            ],
+            "time": "2019-02-20T05:31:33+00:00"
         }
     ],
     "packages-dev": [
@@ -7751,6 +7854,7 @@
                 "mock",
                 "xunit"
             ],
+            "abandoned": true,
             "time": "2018-08-09T05:50:03+00:00"
         },
         {

@@ -9,4 +9,6 @@ return [
     'title' => '标题',
     'email' => '邮箱',
     'address' => '地址',
+    'created_at' => '创建时间',
+    'updated_at' => '更新时间',
 ];
