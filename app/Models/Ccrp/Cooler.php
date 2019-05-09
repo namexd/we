@@ -197,34 +197,62 @@ class Cooler extends Coldchain2Model
 
         return $this->hasMany(StatCooler::class, 'cooler_id', 'cooler_id');
     }
-
+    static public function coolerType()
+    {
+        foreach (self::COOLER_TYPE as $key=> $type){
+            $result['type_'.$key]=$type;
+        }
+        return $result;
+    }
     public function getCountByType($company_ids, $filter)
     {
         $builder = $this->whereIn('company_id', $company_ids);
-        if ($status = $filter['status']) {
-            $builder = $builder->whereHas('cooler_info', function ($query) use ($status) {
-                $query->where('ice_state', $status);
+        if (isset($filter['status'])) {
+            $builder = $builder->whereHas('cooler_info', function ($query) use ($filter) {
+                $query->where('ice_state', $filter['status']);
             });
         }
         return $builder->selectRaw('
             ifnull(sum(if(cooler_type="7",1,0)),0) as type_7,
-            ifnull(sum(if(cooler_type="14",1,0)) ,0)as type_14,
+            ifnull(sum(if(cooler_type="14",1,0)),0)as type_14,
             ifnull(sum(if(cooler_type="5",1,0)),0) as type_5,
             ifnull(sum(if(cooler_type="6",1,0)),0) as type_6,
             ifnull(sum(if(cooler_type="3",1,0)),0) as type_3,
-            ifnull(sum(if(cooler_type="13",1,0)) ,0)as type_13,
+            ifnull(sum(if(cooler_type="13",1,0)),0)as type_13,
             ifnull(sum(if(cooler_type="4",1,0)),0) as type_4,
             ifnull(sum(if(cooler_type="1",1,0)),0) as type_1,
-            ifnull(sum(if(cooler_type="16",1,0)) ,0)as type_16,
-            ifnull(sum(if(cooler_type="17",1,0)) ,0)as type_17,
-            ifnull(sum(if(cooler_type="12",1,0)) ,0)as type_12'
+            ifnull(sum(if(cooler_type="16",1,0)),0)as type_16,
+            ifnull(sum(if(cooler_type="17",1,0)),0)as type_17,
+            ifnull(sum(if(cooler_type="12",1,0)),0)as type_12'
         )->first();
     }
-   static public function coolerType()
-   {
-       foreach (self::COOLER_TYPE as $key=> $type){
-           $result['type_'.$key]=$type;
-       }
-       return $result;
-   }
+    public function getVolumeByStatus($company_ids, $filter)
+    {
+        $coolerInfoModel=new CoolerInfo();
+        $prifix=$coolerInfoModel->getConnection()->getConfig('prefix');
+        $builder = $this->whereIn('company_id', $company_ids);
+        if (isset($filter['cooler_type']) && $cooler_type=$filter['cooler_type']) {
+            $builder = $builder->where('cooler_type',$cooler_type);
+        }
+        if (isset($filter['cooler_type']) && $cooler_type=$filter['cooler_type']) {
+            $builder = $builder->where('cooler_type',$cooler_type);
+        }
+        return $builder->join($coolerInfoModel->getTable(),function ($join) use ($prifix,$coolerInfoModel){
+            $join->on($this->getTable().'.cooler_id','=',$coolerInfoModel->getTable().'.cooler_id');
+        })->selectRaw('
+           count(1) as total_count,
+           round(sum(cooler_size+cooler_size2)) as total_volume,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=1,1,0)),0) as total_count_status1,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=2,1,0)),0) as total_count_status2,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=3,1,0)),0) as total_count_status3,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=4,1,0)),0) as total_count_status4,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=5,1,0)),0) as total_count_status5,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=1,1,0)*(cooler_size+cooler_size2)))) as total_count_volume1,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=2,1,0)*(cooler_size+cooler_size2)))) as total_count_volume2,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=3,1,0)*(cooler_size+cooler_size2)))) as total_count_volume3,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=4,1,0)*(cooler_size+cooler_size2)))) as total_count_volume4,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=5,1,0)*(cooler_size+cooler_size2)))) as total_count_volume5
+           '
+        )->first();
+    }
 }
