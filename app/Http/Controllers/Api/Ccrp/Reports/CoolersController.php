@@ -76,4 +76,23 @@ class CoolersController extends Controller
         return $this->response->array($data);
 
     }
+    public function countCoolerStatus(Cooler $cooler)
+    {
+        $this->check($this->company_id);
+        $company_id=$this->company_id??$this->company->id;
+        $parent=Company::find($company_id);
+        $companies=Company::where('pid', $company_id)->where('status',1)->where('company_group', $parent->company_group)->get();
+        $result=[];
+        foreach ($companies as $key=>$company)
+        {
+            $companyIds=$company->ids();
+            $result[$key]=$cooler->getCoolerStatus($companyIds,request()->toArray());
+            $result[$key]['title']=$company->title;
+            $result[$key]['region_code']=$company->region_code;
+        }
+        $data['data']=$result;
+//        $data['meta']['columns']=Cooler::coolerType();
+        return $this->response->array($data);
+
+    }
 }

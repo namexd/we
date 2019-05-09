@@ -255,4 +255,37 @@ class Cooler extends Coldchain2Model
            '
         )->first();
     }
+//冷链设备使用状态统计
+    public function getCoolerStatus($company_ids, $filter)
+    {
+        $coolerInfoModel=new CoolerInfo();
+        $prifix=$coolerInfoModel->getConnection()->getConfig('prefix');
+        $builder = $this->whereIn('company_id', $company_ids);
+        if (isset($filter['cooler_type']) && $cooler_type=$filter['cooler_type']) {
+            $builder = $builder->where('cooler_type',$cooler_type);
+        }
+        return $builder->join($coolerInfoModel->getTable(),function ($join) use ($prifix,$coolerInfoModel){
+            $join->on($this->getTable().'.cooler_id','=',$coolerInfoModel->getTable().'.cooler_id');
+        })->selectRaw('
+           count(1) as total_count,
+           round(sum((if(cooler_type=2,1,0)*(cooler_size+cooler_size2)))) as total_count_ld_volume,
+           round(sum((if(cooler_type=1,1,0)*(cooler_size+cooler_size2)))) as total_count_lc_volume,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=1,1,0)),0) as total_count_status1,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=2,1,0)),0) as total_count_status2,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=3,1,0)),0) as total_count_status3,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=4,1,0)),0) as total_count_status4,
+           ifnull(sum(if('.$prifix.$coolerInfoModel->getTable().'.ice_state=5,1,0)),0) as total_count_status5,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=1 and cooler_type=1,1,0)*(cooler_size+cooler_size2)))) as total_count_lc_volume1,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=2 and cooler_type=1,1,0)*(cooler_size+cooler_size2)))) as total_count_lc_volume2,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=3 and cooler_type=1,1,0)*(cooler_size+cooler_size2)))) as total_count_lc_volume3,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=4 and cooler_type=1,1,0)*(cooler_size+cooler_size2)))) as total_count_lc_volume4,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=5 and cooler_type=1,1,0)*(cooler_size+cooler_size2)))) as total_count_lc_volume5,  
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=1 and cooler_type=2,1,0)*(cooler_size+cooler_size2)))) as total_count_ld_volume1,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=2 and cooler_type=2,1,0)*(cooler_size+cooler_size2)))) as total_count_ld_volume2,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=3 and cooler_type=2,1,0)*(cooler_size+cooler_size2)))) as total_count_ld_volume3,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=4 and cooler_type=2,1,0)*(cooler_size+cooler_size2)))) as total_count_ld_volume4,
+           round(sum((if('.$prifix.$coolerInfoModel->getTable().'.ice_state=5 and cooler_type=2,1,0)*(cooler_size+cooler_size2)))) as total_count_ld_volume5
+           '
+        )->first();
+    }
 }

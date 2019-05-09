@@ -216,6 +216,7 @@ $api->version('v1', [
                     $api->get('coolers/logs', 'CoolersController@logs')->name('api.ccrp.reports.coolers.logs');
                     $api->get('coolers/count_cooler_number', 'CoolersController@countCoolerNumber')->name('api.ccrp.reports.coolers.count_cooler_number');
                     $api->get('coolers/count_cooler_volume', 'CoolersController@countCoolerVolume')->name('api.ccrp.reports.coolers.count_cooler_volume');
+                    $api->get('coolers/count_cooler_status', 'CoolersController@countCoolerStatus')->name('api.ccrp.reports.coolers.count_cooler_status');
                 });
 
                 //以下没有使用
