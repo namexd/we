@@ -52,39 +52,42 @@ trait ControllerCrud
 
     /**
      * @param string $function
+     * @param string $action
      * @param string $innerText
      * @param string $type
      * @param string $size
      * @param string $icon
      * @return array
      */
-    public function toolBarAddButton($function = "submit", $innerText = null, $type = null, $size = "small", $icon = '')
+    public function toolBarAddButton($function = "submit",$action='', $innerText = null, $type = null, $size = "small", $icon = '')
     {
         switch ($function)
         {
             case 'submit':
                 $innerText = $innerText??"提交";
-                $type = 'primary';
+                $type = $type??'primary';
                 break;
             case 'print':
                 $innerText = $innerText??"打印";
-                $type = 'success';
+                $type = $type??'success';
                 break;
             case 'excel':
                 $innerText = $innerText??"导出Excel";
-                $type = 'danger';
+                $type = $type??'danger';
                 break;
             case 'pdf':
                 $innerText = $innerText??"导出Pdf";
-                $type = 'danger';
+                $type = $type??'danger';
                 break;
             default:
                 $innerText = $innerText??"确认";
-                $type = 'primary';
+                $type = $type??'primary';
         }
         return $button = [
             //自定义
             'function' => $function,
+            //动作或者url
+            'action' => $action,
             //按钮类型，可选值为primary、ghost、dashed、text、info、success、warning、error或者不设置
             'type' => $type,
             //按钮大小，可选值为large、small、default或者不设置
