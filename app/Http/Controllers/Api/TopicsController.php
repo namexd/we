@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Models\Topic;
 use App\Models\TopicCategory;
+use App\Traits\ControllerCrud;
 use App\Transformers\TopicCategoryTransformer;
 use App\Transformers\TopicListTransformer;
 use App\Transformers\TopicTransformer;
@@ -11,6 +12,20 @@ use Illuminate\Http\Request;
 
 class TopicsController extends Controller
 {
+
+    public function crudModel()
+    {
+        return Topic::class;
+    }
+
+
+    public function toolbarButtons()
+    {
+        $btns[] = $this->toolbarAddButton('print');
+        $btns[] = $this->toolbarAddButton('excel');
+        $btns[] = $this->toolbarAddButton('pdf');
+        return $btns;
+    }
 
     /**
      * Display a listing of the resource.
@@ -24,12 +39,12 @@ class TopicsController extends Controller
             $model->where('category_id', $request->category_id);
         }
         $topics = $model->paginate($request->pagesize ?? $this->pagesize);
-        $filter = Topic::filter();
-        $columns = Topic::columns();
-        return $this->response->paginator($topics, new TopicListTransformer())
-            ->addMeta('filter',$filter)
-            ->addMeta('columns',$columns)
-            ;
+
+
+        $return = $this->response->paginator($topics, new TopicListTransformer());
+
+        return $this->output($return);
+//            ;
     }
 
     public function show(Topic $topic)

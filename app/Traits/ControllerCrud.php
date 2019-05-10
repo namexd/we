@@ -2,147 +2,129 @@
 
 namespace App\Traits;
 
-
 use Carbon\Carbon;
+use Closure;
+use Illuminate\Contracts\Pagination\Paginator;
 
-trait ControllerDataRange
+trait ControllerCrud
 {
     /**
-     * @var string
+     * 绑定模型
+     * @return null
      */
-    protected $_date_start = '';
+    public function crudModel()
+    {
+        return null;
+    }
 
     /**
-     * @var string
+     * @param $function string filter,columns
+     * @return bool
      */
-    protected $_date_end = '';
-    /**
-     * @var string
-     */
-    protected $_date_name = '';
-
-
-    public function get_date_start($format = 'timestamp')
+    public function withMeta($function)
     {
-        return $format == 'timestamp' ? strtotime($this->_date_start) : $this->_date_start;
-    }
-
-    public function get_date_end($format = 'timestamp')
-    {
-        return $format == 'timestamp' ? strtotime($this->_date_end) : $this->_date_end;
-    }
-
-    public function get_dates($format = 'timestamp', $with_name = false)
-    {
-        $dates = [
-            'date_start' => $this->get_date_start($format),
-            'date_end' => $this->get_date_end($format),
-        ];
-        if ($with_name) {
-            $dates['date_name'] = $this->get_date_name();
-        }
-        return $dates;
-    }
-
-    public function get_date_name()
-    {
-        return $this->_date_name;
-    }
-
-    public function set_date_start($value)
-    {
-        $this->_date_start = $value;
-    }
-
-    public function set_date_end($value)
-    {
-        return $this->_date_end = $value;
-    }
-
-    public function default_datas($dates)
-    {
-        switch ($dates) {
-            case '全部':
-                $start = Carbon::create(2000, 14, 1, 0, 0, 0)->toDateTimeString();
-                $end = Carbon::now()->endOfDay()->toDateTimeString();
-                break;
-            case '今日':
-                $start = Carbon::today()->toDateTimeString();
-                $end = Carbon::now()->endOfDay()->toDateTimeString();
-                break;
-            case '昨日':
-                $start = Carbon::now()->yesterday()->startOfDay()->toDateTimeString();
-                $end = Carbon::now()->yesterday()->endOfDay()->toDateTimeString();
-                break;
-            case '本周':
-                $start = Carbon::now()->startOfWeek()->toDateTimeString();
-                $end = Carbon::now()->endOfWeek()->toDateTimeString();
-                break;
-            case '上周':
-                $start = Carbon::now()->previous()->startOfWeek()->toDateTimeString();
-                $end = Carbon::now()->previous()->endOfWeek()->toDateTimeString();
-                break;
-            case '本月':
-                $start = Carbon::now()->startOfMonth()->toDateTimeString();
-                $end = Carbon::now()->endOfMonth()->toDateTimeString();
-                break;
-            case '上月':
-                $start = Carbon::now()->subMonth(1)->startOfMonth()->toDateTimeString();
-                $end = Carbon::now()->subMonth(1)->endOfMonth()->toDateTimeString();
-                break;
-            case '本年':
-                $start = Carbon::now()->startOfYear()->toDateTimeString();
-                $end = Carbon::now()->lastOfYear()->toDateTimeString();
-                break;
-            case '去年':
-                $start = Carbon::now()->subYear(1)->startOfYear()->toDateTimeString();
-                $end = Carbon::now()->subYear(1)->endOfYear()->toDateTimeString();
-                break;
-            case '最近7天':
-                $start = Carbon::now()->subDays(7)->startOfDay()->toDateTimeString();
-                $end = Carbon::now()->endOfDay()->toDateTimeString();
-                break;
-            case '最近30天':
-                $start = Carbon::now()->subDays(30)->startOfDay()->toDateTimeString();
-                $end = Carbon::now()->endOfDay()->toDateTimeString();
-                break;
-            default:
-                $start = null;
-                $end = null;
-        }
-        return ['start' => $start, 'end' => $end];
-    }
-
-    public function set_default_datas($dates = null)
-    {
-        $dates = request()->date_name ?? $dates;
-        $start = null;
-        $end = null;
-        if ($dates) {
-            $this->_date_name = $dates;
-            extract($this->default_datas($dates));;
-        }
-        if (
-            request()->date_start
-            and strtotime(request()->date_start)
-            and date('Y-m-d H:i:s', strtotime(request()->date_start)) != $start
-        ) {
-            $start = date('Y-m-d H:i:s', strtotime(request()->date_start));
-            $this->_date_name = '';
-        }
-        if (request()->date_end
-            and strtotime(request()->date_end)
-            and date('Y-m-d H:i:s', strtotime(request()->date_end)) != $end
-        ) {
-            $end = date('Y-m-d H:i:s', strtotime(request()->date_end));
-            $this->_date_name = '';
-        } else {
-            if ($start and $end == null) {
-                $end = Carbon::tomorrow()->toDateTimeString();
+        $with = request()->get('with');
+        if ($with) {
+            $withs = explode(',', $with);
+            if (in_array($function, $withs)) {
+                return true;
             }
         }
-        $this->set_date_start($start);
-        $this->set_date_end($end);
+        return false;
     }
 
+    public function output($rs)
+    {
+        if ($this->crudModel() == null) {
+            return $rs;
+        }
+        if ($this->withMeta('filter')) {
+            $rs->addMeta('filter', $this->filter());
+        }
+        if ($this->withMeta('columns')) {
+            $rs->addMeta('columns', $this->columns());
+        }
+        if ($this->withMeta('toolbar')) {
+            $rs->addMeta('toolbar', $this->toolbar());
+        }
+        return $rs;
+    }
+
+    /**
+     * @param string $function
+     * @param string $innerText
+     * @param string $type
+     * @param string $size
+     * @param string $icon
+     * @return array
+     */
+    public function toolBarAddButton($function = "submit", $innerText = null, $type = null, $size = "small", $icon = '')
+    {
+        switch ($function)
+        {
+            case 'submit':
+                $innerText = $innerText??"提交";
+                $type = 'primary';
+                break;
+            case 'print':
+                $innerText = $innerText??"打印";
+                $type = 'success';
+                break;
+            case 'excel':
+                $innerText = $innerText??"导出Excel";
+                $type = 'danger';
+                break;
+            case 'pdf':
+                $innerText = $innerText??"导出Pdf";
+                $type = 'danger';
+                break;
+            default:
+                $innerText = $innerText??"确认";
+                $type = 'primary';
+        }
+        return $button = [
+            //自定义
+            'function' => $function,
+            //按钮类型，可选值为primary、ghost、dashed、text、info、success、warning、error或者不设置
+            'type' => $type,
+            //按钮大小，可选值为large、small、default或者不设置
+            'size' => $size,
+            //按钮文字提示
+            'innerText' => $innerText,
+            //设置按钮的图标类型
+            'icon' => $icon,
+            //设置按钮为加载中状态
+            'loading' => 'false',
+            //按钮形状，可选值为circle或者不设置
+            'shape' => 'undefined',
+            //设置button原生的type，可选值为button、submit、reset
+            'htmlType' => "button",
+            //开启后，按钮的长度为 100%
+            'long' => 'false',
+            //设置按钮为禁用状态
+            'disabled' => 'false',
+        ];
+    }
+
+    public function toolbarButtons()
+    {
+        return [];
+    }
+
+    public function filter()
+    {
+        return $this->crudModel() ? $this->crudModel()::filter() : null;
+    }
+
+    public function columns()
+    {
+        return $this->crudModel() ? $this->crudModel()::columns() : null;
+    }
+
+    public function toolbar()
+    {
+        return [
+            'buttons' => $this->toolbarButtons()
+        ];
+    }
 }

@@ -19,7 +19,6 @@ use Illuminate\Support\Facades\Input;
  */
 class CoolersController extends Controller
 {
-
     /**
      * note：冷链操作日志表
      * author: xiaodi
