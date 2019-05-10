@@ -14,7 +14,7 @@ class WarningSenderEventTransformer extends TransformerAbstract
 
     public function transform(WarningSenderEvent $event)
     {
-        $sender = Sender::where('sender_id',$event->sender_id)->where('company_id',$event->company_id)->orderBy('status','asc')->first();
+        $sender = $event->sender;
         $result = [
             'id' => $event->logid,
             'cooler_name' => '-',
