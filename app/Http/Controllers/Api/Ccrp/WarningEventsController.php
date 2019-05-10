@@ -22,16 +22,16 @@ class WarningEventsController extends Controller
     public function index($handled)
     {
         $this->check();
-        $model = WarningEvent::whereIn('company_id', $this->company_ids);
         switch ($handled) {
             case 'unhandled':
                 $this->default_date = '全部';
-                $model = $model->where('handled', WarningEvent::未处理);
+                $model =  WarningEvent::lists($this->company_ids, WarningEvent::未处理);
                 break;
             case 'handled':
-                $model = $model->where('handled', WarningEvent::已处理);
+                $model = WarningEvent::lists($this->company_ids, WarningEvent::已处理);
                 break;
             default  :
+                $model = WarningEvent::lists($this->company_ids);
         }
         $this->set_default_datas($this->default_date);
         $model = $model->whereBetween(WarningEvent::TIME_FIELD, $this->get_dates());
