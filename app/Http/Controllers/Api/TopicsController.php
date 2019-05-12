@@ -18,18 +18,30 @@ class TopicsController extends Controller
         return Topic::class;
     }
 
-
     public function toolbarButtons()
     {
+        $btns[] = $this->toolbarAddButton('add');
         $btns[] = $this->toolbarAddButton('print');
-        $btns[] = $this->toolbarAddButton('excel');
+        $btns[] = $this->toolbarAddButton('excel','http://139.196.212.133:81/Download/201905/00000388/%E7%BD%97%E6%B3%BE%E7%A4%BE%E5%8C%BA%E5%8D%AB%E7%94%9F%E6%9C%8D%E5%8A%A1%E4%B8%AD%E5%BF%83_%E7%BD%97%E6%B3%BE1%E5%86%B0%E7%AE%B13101131701-05-0004_2019%E5%B9%B404%E6%9C%88%E6%95%B0%E6%8D%AE%E4%B8%80%E8%A7%88%E8%A1%A8_20190506152636279.xls');
         $btns[] = $this->toolbarAddButton('pdf');
+        return $btns;
+    }
+
+    public function tableSortable()
+    {
+        return ['view_count'];
+    }
+    public function tableButtons()
+    {
+        $btns[] = $this->toolbarAddButton('edit');
+        $btns[] = $this->toolbarAddButton('link');
         return $btns;
     }
 
     /**
      * Display a listing of the resource.
      *
+     * @param Request $request
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
@@ -39,12 +51,9 @@ class TopicsController extends Controller
             $model->where('category_id', $request->category_id);
         }
         $topics = $model->paginate($request->pagesize ?? $this->pagesize);
-
-
         $return = $this->response->paginator($topics, new TopicListTransformer());
+        return $this->display($return);
 
-        return $this->output($return);
-//            ;
     }
 
     public function show(Topic $topic)

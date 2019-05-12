@@ -33,19 +33,33 @@ trait ControllerCrud
         return false;
     }
 
-    public function output($rs)
+    /**
+     * 展示代码
+     * @param $rs
+     * @return mixed
+     */
+    public function display($rs)
     {
         if ($this->crudModel() == null) {
             return $rs;
         }
         if ($this->withMeta('filter')) {
-            $rs->addMeta('filter', $this->filter());
+            $rs->addMeta('filter', $this->withFilter());
         }
         if ($this->withMeta('columns')) {
-            $rs->addMeta('columns', $this->columns());
+            $rs->addMeta('columns', $this->withColumns());
         }
         if ($this->withMeta('toolbar')) {
-            $rs->addMeta('toolbar', $this->toolbar());
+            $rs->addMeta('toolbar', $this->withToolbar());
+        }
+        if ($this->withMeta('table')) {
+            $rs->addMeta('table', $this->withTable());
+        }
+        if ($this->withMeta('options')) {
+            $rs->addMeta('filter', $this->withFilter());
+            $rs->addMeta('columns', $this->withColumns());
+            $rs->addMeta('toolbar', $this->withToolbar());
+            $rs->addMeta('table', $this->withTable());
         }
         return $rs;
     }
@@ -59,10 +73,25 @@ trait ControllerCrud
      * @param string $icon
      * @return array
      */
-    public function toolBarAddButton($function = "submit",$action='', $innerText = null, $type = null, $size = "small", $icon = '')
+    public function toolBarAddButton($function = "submit",$action=null, $innerText = null, $type = null, $size = "small", $icon = '')
     {
         switch ($function)
         {
+            case 'add':
+                $innerText = $innerText??"新增";
+                $type = $type??'success';
+                $action = $action??'add';
+                break;
+            case 'edit':
+                $innerText = $innerText??"编辑";
+                $type = $type??'danger';
+                $action = $action??'edit';
+                break;
+            case 'link':
+                $innerText = $innerText??"打开";
+                $type = $type??'text';
+                $action = $action??'http://www.baidu.com';
+                break;
             case 'submit':
                 $innerText = $innerText??"提交";
                 $type = $type??'primary';
@@ -113,21 +142,35 @@ trait ControllerCrud
     {
         return [];
     }
+    public function tableButtons()
+    {
+        return [];
+    }
+    public function tableSortable()
+    {
+        return [];
+    }
 
-    public function filter()
+    public function withFilter()
     {
         return $this->crudModel() ? $this->crudModel()::filter() : null;
     }
 
-    public function columns()
+    public function withColumns()
     {
         return $this->crudModel() ? $this->crudModel()::columns() : null;
     }
 
-    public function toolbar()
+    public function withToolbar()
     {
         return [
             'buttons' => $this->toolbarButtons()
         ];
+    }
+    public function withTable()
+    {
+        $res['sortable'] = $this->tableSortable();
+        $res['buttons'] = $this->tableButtons();
+        return $res;
     }
 }
