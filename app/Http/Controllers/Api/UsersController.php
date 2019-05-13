@@ -128,13 +128,14 @@ class UsersController extends Controller
         $users = new $userModel;
         $username = $request->username;
         $password = $request->password;
-        if (!$login = $users->checkUsername($username)) {
+        if (!$users->checkUsername($username)) {
             return $this->response->error('用户名不存在。', 422);
         }
-        if (!$users->checkPassword($login, $password)) {
+        $login = $users->checkPassword($username, $password);
+        if (!$login) {
             return $this->response->error('密码错误。', 422);
         }
-        $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
+        $rs = $app->bind($user, $username, $login->id, $login->unitid);
         return $this->response->created(null, $rs->toArray());
     }
 
@@ -165,10 +166,13 @@ class UsersController extends Controller
         $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
         $users = new $userModel;
         $username = $request->username;
-        if (!$login = $users->checkUsername($username)) {
+        if (!$users->checkUsername($username)) {
             return $this->response->error('用户名不存在。', 422);
         }
-        $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
+        if( $login = $users->getByUsername($username))
+        {
+            $rs = $app->bind($user, $login->username, $login->id, $login->unitid);
+        }
         return $this->response->created(null, $rs->toArray());
     }
 

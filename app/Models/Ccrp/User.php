@@ -20,13 +20,18 @@ class User extends Coldchain2Model
     //验证用户名是否正确
     public function checkUsername($username)
     {
-        return $this->where('username', $username)->where('status', 1)->select('id', 'username', 'password', DB::raw('company_id as unitid'))->first();
+        return $this->where('username', $username)->where('status', 1)->count()?true:false;
     }
 
     //验证密码是否正确
-    public function checkPassword($user, $password)
+    public function checkPassword($username, $password)
     {
-        return $this->user_md5($password) == $user->password;
+        return $this->where('username', $username)->where('password',$this->user_md5($password))->where('status', 1)->select('id', 'username',  DB::raw('company_id as unitid'))->first()??false;
+    }
+
+    public function getByUsername($username)
+    {
+       return $this->where('username', $username)->where('status', 1)->select('id', 'username',  DB::raw('company_id as unitid'))->first();
     }
 
     private function user_md5($str, $auth_key = null)
