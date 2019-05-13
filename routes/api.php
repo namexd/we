@@ -203,6 +203,9 @@ $api->version('v1', [
                 //冷链变更
                 $api->resource('equipment_change_applies', EquipmentChangeApplyController::class);
                 $api->get('equipment_change_types', 'EquipmentChangeApplyController@getChangeType');
+                //第三方校准证书
+                $api->get('jzzs', 'CertificationsController@index');
+                $api->get('jzzs/{id}', 'CertificationsController@show');
 
                 //CCrp数据报表
                 $api->group([
@@ -223,7 +226,6 @@ $api->version('v1', [
                     $api->get('coolers/count_cooler_volume', 'CoolersController@countCoolerVolume')->name('api.ccrp.reports.coolers.count_cooler_volume');
                     $api->get('coolers/count_cooler_status', 'CoolersController@countCoolerStatus')->name('api.ccrp.reports.coolers.count_cooler_status');
                 });
-
                 //以下没有使用
                 //同步数据，获取data_id之后的新数据
 //            $api->post('collectors/sync',function (){
