@@ -7,7 +7,7 @@ use League\Fractal\TransformerAbstract;
 
 class CertificationTransformer extends TransformerAbstract
 {
-    public $availableIncludes = ['company', 'payCompany'];
+    public $availableIncludes = ['company', 'payCompany','file','files'];
 
     public function transform(Certification $certification)
     {
@@ -39,6 +39,14 @@ class CertificationTransformer extends TransformerAbstract
     public function includepayCompany(Certification $certification)
     {
         return $this->item($certification->payCompany, new CompanyListTransformer());
+    }
+    public function includeFile(Certification $certification)
+    {
+        return $this->item($certification->file, new FileTransformer());
+    }
+    public function includeFiles(Certification $certification)
+    {
+        return $this->collection($certification->files(), new FileTransformer());
     }
 
 }

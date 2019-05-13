@@ -25,7 +25,10 @@ class CertificationsController extends Controller
     public function index(Request $request)
     {
         $this->check();
-
+        if ($request->has('company_id')&&$company=$request->company_id)
+        {
+            $this->model=$this->model->where('company_id',$company);
+        }
         $data = $this->model->orderBy('id','desc')->paginate($request->pagesize??$this->pagesize);
         return $this->response->paginator($data, new CertificationTransformer());
     }
