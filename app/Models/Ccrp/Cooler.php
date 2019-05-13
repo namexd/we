@@ -198,6 +198,15 @@ class Cooler extends Coldchain2Model
         return $this->hasMany(StatCooler::class, 'cooler_id', 'cooler_id');
     }
 
+    public function getCoolerTypes()
+    {
+        $result=[];
+        foreach (self::COOLER_TYPE as $key => $type) {
+            $result['key'] = $key;
+            $result['value'] = $type;
+        }
+        return $result;
+    }
     static public function coolerType()
     {
         foreach (self::COOLER_TYPE as $key => $type) {

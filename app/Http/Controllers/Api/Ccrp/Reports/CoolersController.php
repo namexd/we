@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
+use App\Exports\CoolerExport;
 use App\Http\Requests\Api\Ccrp\Report\DateRangeRequest;
 use App\Models\Ccrp\Company;
 use App\Models\Ccrp\Cooler;
@@ -10,6 +11,7 @@ use App\Transformers\Ccrp\Reports\CoolerLogTransformer;
 use App\Transformers\Ccrp\Reports\WarningersTransformer;
 use Dingo\Api\Http\Response;
 use Illuminate\Support\Facades\Input;
+use Maatwebsite\Excel\Facades\Excel;
 
 
 /**
@@ -40,7 +42,7 @@ class CoolersController extends Controller
 
     public function countCoolerNumber(Cooler $cooler)
     {
-        $this->check($this->company_id);
+//        $this->check($this->company_id);
         $company_id=$this->company_id??$this->company->id;
         $parent=Company::find($company_id);
         $companies=Company::where('pid', $company_id)->where('status',1)->where('company_group', $parent->company_group)->get();
@@ -52,6 +54,10 @@ class CoolersController extends Controller
             $result[$key]['title']=$company->title;
             $result[$key]['region_code']=$company->region_code;
         }
+        if (1==(request()->get('export')))
+        {
+            return  Excel::download(new CoolerExport(1,$result),$parent->title.'各地设备数量统计'.date('Ymdhis').'.xlsx');
+        }
         $data['data']=$result;
         $data['meta']['columns']=Cooler::coolerType();
         return $this->response->array($data);
@@ -59,7 +65,7 @@ class CoolersController extends Controller
     }
     public function countCoolerVolume(Cooler $cooler)
     {
-        $this->check($this->company_id);
+//        $this->check($this->company_id);
         $company_id=$this->company_id??$this->company->id;
         $parent=Company::find($company_id);
         $companies=Company::where('pid', $company_id)->where('status',1)->where('company_group', $parent->company_group)->get();
@@ -71,6 +77,11 @@ class CoolersController extends Controller
             $result[$key]['title']=$company->title;
             $result[$key]['region_code']=$company->region_code;
         }
+        if (1==(request()->get('export')))
+        {
+
+            return  Excel::download(new CoolerExport(2,$result),$parent->title.'各地设备数量统计'.date('Ymdhis').'.xlsx');
+        }
         $data['data']=$result;
 //        $data['meta']['columns']=Cooler::coolerType();
         return $this->response->array($data);
@@ -78,7 +89,7 @@ class CoolersController extends Controller
     }
     public function countCoolerStatus(Cooler $cooler)
     {
-        $this->check($this->company_id);
+//        $this->check($this->company_id);
         $company_id=$this->company_id??$this->company->id;
         $parent=Company::find($company_id);
         $companies=Company::where('pid', $company_id)->where('status',1)->where('company_group', $parent->company_group)->get();
@@ -90,9 +101,18 @@ class CoolersController extends Controller
             $result[$key]['title']=$company->title;
             $result[$key]['region_code']=$company->region_code;
         }
+        if (1==(request()->get('export')))
+        {
+            return  Excel::download(new CoolerExport(3,$result),$parent->title.'冷链设备使用状态统计'.date('Ymdhis').'.xlsx');
+        }
         $data['data']=$result;
 //        $data['meta']['columns']=Cooler::coolerType();
         return $this->response->array($data);
 
+    }
+    public function getCoolerTypes(Cooler $cooler)
+    {
+        $result=$cooler->getCoolerTypes();
+        return $this->response->array($result);
     }
 }

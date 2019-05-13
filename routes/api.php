@@ -72,11 +72,16 @@ $api->version('v1', [
         $api->get('users/qrcode/{code}', 'UsersController@qrcodeShow')->name('api.users.qrcode_show');
         //CCrp数据报表
         $api->group([
-            'namespace' => 'Reports',
+            'namespace' => 'Ccrp\Reports',
             'prefix' => 'reports',
         ], function ($api) {
             //导出报表回调地址
             $api->get('temperatures/coolers_history_30/{cooler_id}/{month}', 'TemperatureController@CoolerHistoryShow')->name('api.ccrp.reports.coolers_history_30.show');
+            $api->get('coolers/count_cooler_number', 'CoolersController@countCoolerNumber')->name('api.ccrp.reports.coolers.count_cooler_number');
+            $api->get('coolers/count_cooler_volume', 'CoolersController@countCoolerVolume')->name('api.ccrp.reports.coolers.count_cooler_volume');
+            $api->get('coolers/count_cooler_status', 'CoolersController@countCoolerStatus')->name('api.ccrp.reports.coolers.count_cooler_status');
+
+
         });
         // 需要 token 验证的接口
         $api->group([
