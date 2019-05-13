@@ -21,11 +21,21 @@ class WarningSenderEvent extends Coldchain2Model
 
     function sender()
     {
-        return $this->belongsTo(Sender::class, 'sender_id', 'sender_id')->where('company_id', $this->company_id);
+        return $this->belongsTo(Sender::class, 'sender_pk_id', 'id')->where('company_id', $this->company_id);
     }
 
     function options()
     {
         return $this->hasMany(WarningEventOption::class, 'warning_type', 'warning_type')->where('warning_type',WarningEvent::断电预警);
+    }
+
+    public static function lists($company_ids,$handled=null)
+    {
+        $res =  self::whereIn('company_id', $company_ids)->where('warning_type',0);
+        if($handled !== null)
+        {
+            $res = $res->where('handled', $handled);
+        }
+        return $res;
     }
 }

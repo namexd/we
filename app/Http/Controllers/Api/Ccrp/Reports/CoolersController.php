@@ -21,7 +21,6 @@ use Maatwebsite\Excel\Facades\Excel;
  */
 class CoolersController extends Controller
 {
-
     /**
      * note：冷链操作日志表
      * author: xiaodi

@@ -44,4 +44,15 @@ class WarningEvent extends Coldchain2Model
     {
         return $this->hasMany(WarningEventOption::class, 'warning_type', 'warning_type');
     }
+
+    public static function lists($company_ids,$handled=null)
+    {
+        $res =  self::whereIn('company_id', $company_ids);
+        if($handled !== null)
+        {
+            $res = $res->where('handled', $handled);
+        }
+        return $res;
+    }
+
 }
