@@ -52,7 +52,6 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
-    'ccsc_url' => env('APP_CCSC_URL', 'https://ccsc.coldyun.net/'),
 
     /*
     |--------------------------------------------------------------------------
