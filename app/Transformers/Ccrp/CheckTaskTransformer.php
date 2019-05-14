@@ -17,7 +17,8 @@ class CheckTaskTransformer extends TransformerAbstract
             'template'=>$checkTask->template->title,
             'start'=>$checkTask->start,
             'end'=>$checkTask->end,
-            'status'=>$checkTask->status
+            'status'=>$checkTask->status,
+            'url'=>config('app.ccsc_url').'admin/check_tasks/'.$checkTask->id
         ];
         return $arr;
     }

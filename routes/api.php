@@ -208,7 +208,6 @@ $api->version('v1', [
                 $api->get('jzzs/{id}', 'CertificationsController@show');
                 //巡检单
                 $api->get('check_tasks','CheckTasksController@index');
-                $api->get('check_tasks/{id}','CheckTasksController@show');
                 //CCrp数据报表
                 $api->group([
                     'namespace' => 'Reports',

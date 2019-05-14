@@ -13,7 +13,7 @@ class CoolerLog extends Coldchain2Model
 
     public function getStatusAttribute($value)
     {
-        return Cooler::STATUS[$value];
+        return Cooler::$status[$value];
     }
     public function getCompanyAttribute()
     {

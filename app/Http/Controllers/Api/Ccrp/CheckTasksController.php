@@ -30,21 +30,4 @@ class CheckTasksController extends Controller
         $data = $this->model->whereIn('company_id', $company_ids)->orderBy('id', 'desc')->paginate($request->pagesize ?? $this->pagesize);
         return $this->response->paginator($data, new CheckTaskTransformer());
     }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param int $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        $this->check();
-        $result=CheckTaskResult::where('task_id',$id);
-        $params=$result->pluck('value','key')->toArray();
-        $params['result']=$result->first();
-        $view=view('ccrp.template.check_report',$params);
-        return $view;
-    }
-
 }
