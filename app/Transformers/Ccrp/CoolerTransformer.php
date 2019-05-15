@@ -27,7 +27,10 @@ class CoolerTransformer extends TransformerAbstract
             'updated_at' => $cooler->update_time > 0 ? Carbon::createFromTimestamp($cooler->update_time)->toDateTimeString() : 0,
         ];
         if ($cooler->url)
+        {
             $arr['url'] = $cooler->url;
+        }
+        $arr['image'] = $cooler->cooler_image??'';
         return $arr;
     }
 

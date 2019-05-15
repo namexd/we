@@ -35,6 +35,11 @@ class Controller extends BaseController
             if ($company_id == null) {
                 if (request()->get('company_id')) {
                     $company_id = request()->get('company_id');
+                    $user_company = $user->userCompany;
+                    $user_company_ids = $user_company->ids();
+                    if (!in_array($company_id, $user_company_ids)) {
+                        $company_id = $user->company_id;
+                    }
                 }else{
                     $company_id = $user->company_id;
                 }
