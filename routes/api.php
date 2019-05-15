@@ -258,6 +258,13 @@ $api->version('v1', [
                 $api->get('wxmember/check_phone/{openid}', 'WxmembersController@checkPhone')->name('api.ocenter.wxmember.check_phone');
                 $api->put('wxmember/bind_phone/{openid}/{phone}', 'WxmembersController@bindPhone')->name('api.ocenter.wxmember.bind_phone');
             });
+            //Ocenter 旧的用户中心
+            $api->group([
+                'namespace' => 'Admin',
+                'prefix' => 'admin',
+            ], function ($api) {
+                $api->get('info', 'InfoController@index')->name('api.admin.info.index');
+            });
         });
     });
 });
