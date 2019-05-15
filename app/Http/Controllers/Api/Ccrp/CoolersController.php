@@ -12,7 +12,12 @@ class CoolersController extends Controller
     public function index()
     {
         $this->check();
-        $coolers = Cooler::whereIn('company_id',$this->company_ids)->where('status',1)->with('company')
+        $coolers = Cooler::whereIn('company_id',$this->company_ids)->where('status',1);
+        if(request()->get('has_collector'))
+        {
+            $coolers = $coolers->where('collector_num','>',0);
+        }
+        $coolers = $coolers->with('company')
             ->orderBy('company_id','asc') ->orderBy('cooler_name','asc')->paginate($this->pagesize);
         return $this->response->paginator($coolers, new CoolerTransformer());
     }
