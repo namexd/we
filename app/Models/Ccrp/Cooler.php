@@ -31,6 +31,16 @@ class Cooler extends Coldchain2Model
         '5' => '盘苗',
         '6' => '除霜',
     ];
+
+    const 设备图片_冷藏冰箱_小型 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_small.png';
+    const 设备图片_冷藏冰箱_中型 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_middle.png';
+    const 设备图片_冷藏冰箱_大型 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_big.png';
+    const 设备图片_普通冰箱 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_ptbx.png';
+    const 设备图片_冷冻冰箱 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_ldbx.png';
+    const 设备图片_冷藏冷库 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_lclk.png';
+    const 设备图片_冷冻冷库 = 'https://cdn-static.coldyun.net/images/ico/icebox/icebox_ldlk.png';
+    const 设备图片_其他 = '';
+
     const 设备类型_冷藏冰箱 = 1;
     const 设备类型_冷冻冰箱 = 2;
     const 设备类型_普通冰箱 = 3;
@@ -68,6 +78,37 @@ class Cooler extends Coldchain2Model
         '102' => 'GSP冷藏车',
     ];
 
+    public function getCoolerImageAttribute()
+    {
+        $image = '';
+        switch ($this->cooler_type)
+        {
+            case self::设备类型_冷藏冰箱:
+                $image = self::设备图片_冷藏冰箱_小型;
+                if($this->cooler_size > 900)
+                {
+                    $image = self::设备图片_冷藏冰箱_大型;
+                }
+                if($this->cooler_size > 500)
+                {
+                    $image = self::设备图片_冷藏冰箱_中型;
+                }
+                break;
+            case self::设备类型_冷冻冰箱:
+                $image = self::设备图片_冷冻冷库;
+                break;
+            case self::设备类型_普通冰箱:
+                $image = self::设备图片_普通冰箱;
+                break;
+            case self::设备类型_冷藏冷库:
+                $image = self::设备图片_冷藏冷库;
+                break;
+            case self::设备类型_冷冻冷库:
+                $image = self::设备图片_冷冻冷库;
+                break;
+        }
+        return $image;
+    }
     public function cooler_info()
     {
         return $this->hasOne(CoolerInfo::class, 'cooler_id', 'cooler_id');
