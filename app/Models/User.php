@@ -43,7 +43,9 @@ class User extends Authenticatable implements JWTSubject
             'name',
             'phone',
             'phone_verified',
-            'realname'
+            'realname',
+            'bind_apps',
+            'created_at'
         ];
     }
 
@@ -54,6 +56,7 @@ class User extends Authenticatable implements JWTSubject
             'phone' => '手机',
             'phone_verified'=> '手机验证',
             'realname'=> '真实姓名',
+            'bind_apps'=> '绑定应用',
         ];
     }
 

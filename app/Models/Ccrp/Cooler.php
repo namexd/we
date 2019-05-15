@@ -95,7 +95,7 @@ class Cooler extends Coldchain2Model
                 }
                 break;
             case self::设备类型_冷冻冰箱:
-                $image = self::设备图片_冷冻冷库;
+                $image = self::设备图片_冷冻冰箱;
                 break;
             case self::设备类型_普通冰箱:
                 $image = self::设备图片_普通冰箱;

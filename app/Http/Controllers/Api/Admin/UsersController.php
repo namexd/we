@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\User;
-use App\Transformers\UserTransformer;
+use App\Transformers\UserAdminTransformer;
 use Carbon\Carbon;
 
 class UsersController extends Controller
@@ -70,7 +70,7 @@ class UsersController extends Controller
     public function index()
     {
         $users = User::orderBy('id','desc')->paginate();
-        $res = $this->response->paginator($users,new UserTransformer());
+        $res = $this->response->paginator($users,new UserAdminTransformer());
         return $this->display($res);
     }
 }
