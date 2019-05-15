@@ -264,6 +264,7 @@ $api->version('v1', [
                 'prefix' => 'admin',
             ], function ($api) {
                 $api->get('info', 'InfoController@index')->name('api.admin.info.index');
+                $api->get('users', 'InfoController@users')->name('api.admin.info.users');
             });
         });
     });

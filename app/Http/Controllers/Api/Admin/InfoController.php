@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Models\User;
+use App\Transformers\UserTransformer;
 use Carbon\Carbon;
 
 class InfoController extends Controller
@@ -18,7 +19,6 @@ class InfoController extends Controller
         $info['count_users_verified_yesterday'] = User::where('phone_verified','>',0)->where('created_at','>',Carbon::yesterday())->count();
         $info['count_users_month'] = User::where('created_at','>',Carbon::now()->firstOfMonth())->count();
         $info['count_users_verified_month'] = User::where('phone_verified','>',0)->where('created_at','>',Carbon::now()->firstOfMonth())->count();
-        $info['new_sers'] = User::orderBy('id','desc')->with('weuser')->limit(5)->get();
 
         $columns = [];
         $columns['count_users'] = '当前注册用户数';
@@ -29,10 +29,15 @@ class InfoController extends Controller
         $columns['count_users_verified_yesterday'] = '昨日已认证用户数';
         $columns['count_users_month'] = '本月注册用户数';
         $columns['count_users_verified_month'] = '本月已认证用户数';
-        $columns['new_sers'] = '最新注册用户';
 
         $info['meta']['columns'] = $columns;
         return $this->response->array($info);
 
+    }
+
+    public function users()
+    {
+        $users = User::orderBy('id','desc')->with('weuser')->get();
+        return $this->response->paginator($users,new UserTransformer());
     }
 }
