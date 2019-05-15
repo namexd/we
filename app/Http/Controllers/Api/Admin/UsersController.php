@@ -29,36 +29,36 @@ class UsersController extends Controller
 
         $columns = [];
         $columns[] = [
-            'label'=>'count_users',
-            'value'=>'当前注册用户数'
+            'label'=>'当前注册用户数',
+            'value'=>'count_users',
         ];
         $columns[] = [
-            'label'=>'count_users_verified',
-            'value'=>'已认证用户数'
+            'label'=>'已认证用户数',
+            'value'=>'count_users_verified'
         ];
         $columns[] = [
-            'label'=>'count_users_today',
-            'value'=>'今日注册用户数'
+            'label'=>'今日注册用户数',
+            'value'=>'count_users_today'
         ];
         $columns[] = [
-            'label'=>'count_users_verified_today',
-            'value'=>'今日已认证用户数'
+            'label'=>'今日已认证用户数',
+            'value'=>'count_users_verified_today'
         ];
         $columns[] = [
-            'label'=>'count_users_yesterday',
-            'value'=>'昨日注册用户数'
+            'label'=>'昨日注册用户数',
+            'value'=>'count_users_yesterday'
         ];
         $columns[] = [
-            'label'=>'count_users_verified_yesterday',
-            'value'=>'昨日已认证用户数'
+            'label'=>'昨日已认证用户数',
+            'value'=>'count_users_verified_yesterday'
         ];
         $columns[] = [
-            'label'=>'count_users_month',
-            'value'=>'本月注册用户数'
+            'label'=>'本月注册用户数',
+            'value'=>'count_users_month'
         ];
         $columns[] = [
-            'label'=>'count_users_verified_month',
-            'value'=>'本月已认证用户数'
+            'label'=>'本月已认证用户数',
+            'value'=>'count_users_verified_month'
         ];
 
 
