@@ -73,8 +73,9 @@ class TopicsController extends Controller
             'title'=>'required',
             'content'=>'required',
         ]);
-        $request->status=0;
-        Topic::create($request->all());
+        $data=$request->all();
+        $data['status']=0;
+        Topic::create($data);
         return $this->response->created();
     }
 }
