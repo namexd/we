@@ -67,4 +67,14 @@ class TopicsController extends Controller
         return $this->response->item($topic, new TopicTransformer())->addMeta('more', $meta);
     }
 
+    public function store(Request $request)
+    {
+        $this->validate($request,[
+            'title'=>'required',
+            'content'=>'required',
+        ]);
+        $request->status=0;
+        Topic::create($request->all());
+        return $this->response->created();
+    }
 }

@@ -91,6 +91,7 @@ $api->version('v1', [
             $api->get('ads', 'AdsController@index')->name('ads.index');
             //文章
             $api->get('topics', 'TopicsController@index')->name('topics.index');
+            $api->post('topics', 'TopicsController@store')->name('topics.store');
             $api->get('topics/{topic}', 'TopicsController@show')->name('topics.show');
             $api->get('topic_categories', 'TopicCategoriesController@index')->name('topics_categories.index');
             $api->get('topic_categories/{category}', 'TopicCategoriesController@show')->name('topics_categories.show');
