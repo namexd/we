@@ -332,5 +332,5 @@ function getDays($startdate, $enddate, $format = 'Y-m-d')
  */
 function hidePhone($str)
 {
-    return substr($str, 0, 3) . '****' . substr($str, -4);
+    return strlen($str)>0?substr($str, 0, 3) . '****' . substr($str, -4):'';
 }
