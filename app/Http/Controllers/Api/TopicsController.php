@@ -78,4 +78,23 @@ class TopicsController extends Controller
         Topic::create($data);
         return $this->response->created();
     }
+
+    public function testStore(Request $request)
+    {
+        $this->validate($request,[
+            'title'=>'required',
+            'content'=>'required',
+        ]);
+        if('lengwang'==$request->access)
+        {
+            $data=$request->except('access');
+            $data['status']=0;
+            Topic::create($data);
+            return $this->response->created();
+        }else
+        {
+            return $this->response->errorUnauthorized('认证错误');
+        }
+
+    }
 }
