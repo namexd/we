@@ -154,7 +154,8 @@ class UsersController extends Controller
             {
                 return $this->response->created(null, $binded->toArray());
             }else{
-                return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
+                $app = App::where('id', $request->app_id)->first();
+                $app->unbind($user);
             }
         }
         $app = App::where('id', $app_id)->where('status', 1)->first();
