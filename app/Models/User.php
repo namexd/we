@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\ModelFields;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -13,6 +14,7 @@ class User extends Authenticatable implements JWTSubject
 {
     use HasRoles;
     use Notifiable;
+    use ModelFields;
 
     /**
      * The attributes that are mass assignable.
@@ -33,6 +35,33 @@ class User extends Authenticatable implements JWTSubject
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+
+    protected static function columnsFields()
+    {
+        return [
+            'name',
+            'phone',
+            'phone_verified',
+            'realname',
+            'bind_apps',
+            'region',
+            'created_at'
+        ];
+    }
+
+    protected static function fieldTitles()
+    {
+        return [
+            'name' => '姓名',
+            'phone' => '手机',
+            'phone_verified'=> '手机验证',
+            'realname'=> '真实姓名',
+            'bind_apps'=> '绑定应用',
+            'region'=> '地区',
+        ];
+    }
+
 
     public function weuser()
     {
