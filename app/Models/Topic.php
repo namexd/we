@@ -80,7 +80,7 @@ class Topic extends Model
     {
         return self::whereHas('category', function ($query) {
             $query->where('status', 1);
-        })->orderBy('id', 'desc')->limit($limit)->select('id', 'title', 'image', 'excerpt', 'slug', 'created_at', 'updated_at')->get();
+        })->where('status',1)->orderBy('id', 'desc')->limit($limit)->select('id', 'title', 'image', 'excerpt', 'slug', 'created_at', 'updated_at')->get();
     }
 
 
