@@ -324,3 +324,13 @@ function getDays($startdate, $enddate, $format = 'Y-m-d')
 
     return $date;
 }
+
+/**
+ * 隐藏手机号中间4位
+ * @param $str
+ * @return string
+ */
+function hidePhone($str)
+{
+    return strlen($str)>0?substr($str, 0, 3) . '****' . substr($str, -4):'';
+}

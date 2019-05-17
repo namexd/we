@@ -3,6 +3,7 @@
 namespace App\Transformers;
 
 use App\Models\User;
+use function App\Utils\hidePhone;
 use League\Fractal\TransformerAbstract;
 
 class UserAdminTransformer extends TransformerAbstract
@@ -15,7 +16,7 @@ class UserAdminTransformer extends TransformerAbstract
             'id' => $user->id,
             'name' => $user->name,
             'realname' => $user->realname,
-            'phone' => $user->phone ,
+            'phone' => hidePhone($user->phone) ,
             'phone_verified' => $user->phone_verified ,
             'headimgurl'=>$weuser->headimgurl,
             'bind_apps'=>implode(',',$apps),
