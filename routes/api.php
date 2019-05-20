@@ -180,6 +180,7 @@ $api->version('v1', [
                 // 所有探头
                 $api->get('collectors', 'CollectorsController@index')->name('api.ccrp.collectors.index');
                 $api->get('collectors/{collector}/history', 'CollectorsController@history')->name('api.ccrp.collectors.history');
+                $api->get('collectors/{collector}', 'CollectorsController@show')->name('api.ccrp.collectors.show');
                 // 所有联系人
                 $api->get('contacts', 'ConcatsController@index')->name('api.ccrp.contacts.index');
                 // 是否包含手机号的联系人

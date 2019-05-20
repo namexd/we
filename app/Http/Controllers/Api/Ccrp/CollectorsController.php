@@ -7,6 +7,7 @@ use App\Models\Ccrp\Collector;
 use App\Models\Ccrp\Company;
 use App\Models\Ccrp\DataHistory;
 use App\Traits\ControllerDataRange;
+use App\Transformers\Ccrp\CollectorDetailTransformer;
 use App\Transformers\Ccrp\CollectorHistoryTransformer;
 use App\Transformers\Ccrp\CollectorRealtimeTransformer;
 use App\Transformers\Ccrp\CollectorTransformer;
@@ -27,6 +28,19 @@ class CollectorsController extends Controller
         return $this->response->paginator($collectors, new CollectorTransformer());
     }
 
+
+
+    public function show($collector)
+    {
+        $this->check();
+        $collector = Collector::whereIn('company_id',$this->company_ids)->find($collector);
+        if($collector)
+        {
+            return $this->response->item($collector, new CollectorDetailTransformer());
+        }else{
+            return $this->response->noContent();
+        }
+    }
 
     public function history($collector)
     {
