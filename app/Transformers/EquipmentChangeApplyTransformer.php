@@ -14,7 +14,7 @@ class EquipmentChangeApplyTransformer extends TransformerAbstract
             'id' => $apply->id,
             'company' => $apply->company->title,
             'phone' => $apply->phone,
-            'apply_time' => $apply->apply_time->toDateTimeString(),
+            'apply_time' => $apply->apply_time,
             'user_id' => $apply->user_id,
             'user_name' => $apply->user_name,
             'user_sign' => $apply->user_sign,
