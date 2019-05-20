@@ -31,6 +31,7 @@ class ActionsController extends Controller
             $response['code']='-999';
             $response['_debug'] = json_decode($res, true)??$res;
 
+            //检测bpms接口log
             if(env('BPMS_API_DEBUG_LOG') == true)
             {
                 $log = new Logger('bpms');
