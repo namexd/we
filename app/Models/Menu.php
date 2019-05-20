@@ -128,7 +128,9 @@ class Menu extends Model
 
     public function listTree($user, $is_mobile, $topid = null)
     {
-        $menus = $this->withRoles($user->roles->pluck('id'))->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+        $roles = $user->roles->pluck('id');
+        $roles[] = Role::FREE_ROLE_ID;
+        $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
         if ($user->isTester() and !$user->isLengwang()) {
             foreach ($menus as &$menu) {
                 if(!$menu->isFree())

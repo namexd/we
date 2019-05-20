@@ -24,6 +24,7 @@ class Role extends Model
     ];
 
     const LENGWANG_ROLE_ID = 5;
+    const FREE_ROLE_ID = 7;
 
     public function users()
     {
