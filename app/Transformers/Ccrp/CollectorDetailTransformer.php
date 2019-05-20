@@ -19,6 +19,8 @@ class CollectorDetailTransformer extends TransformerAbstract
             'humi' => round($collector->humi, 1),
             'volt' => round($collector->volt, 1),
             'rssi' => round($collector->rssi, 1),
+            'offline_check' => (boolean)$collector->offline_check,
+            'offline_span' => $collector->offline_span,
             'cooler_id' => $collector->cooler_id,
             'cooler_name' => $collector->cooler_name,
             'company_id' => $collector->company_id,
