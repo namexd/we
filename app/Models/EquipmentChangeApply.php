@@ -76,13 +76,12 @@ class EquipmentChangeApply extends Model
                 $attributes = array_only($data, $this->fillable);
                 $attributes['apply_time']=Carbon::now();
                 if ($apply = self::create($attributes)) {
-                    if (!is_null(json_decode($data['details']))) {
-                        $details = json_decode($data['details'], true);
+                    $details = json_decode($data['details'], true);
+                    $news = json_decode($data['news'], true);
+                    if (is_array($details)&&!is_null($details)) {
                         $apply->details()->createMany($details);
-
                     }
-                    if (!is_null(json_decode($data['news']))) {
-                        $news = json_decode($data['news'], true);
+                    if (is_array($news)&&!is_null($news)) {
                         $apply->news()->createMany($news);
                     }
                     return $apply;
