@@ -3,6 +3,9 @@
 namespace App\Http\Controllers\Api\Bpms;
 
 use App\Models\Bpms\BpmsAPI;
+use Log;
+use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 
 class ActionsController extends Controller
 {
@@ -27,6 +30,14 @@ class ActionsController extends Controller
             $response['message']='json解析出错了';
             $response['code']='-999';
             $response['_debug'] = json_decode($res, true)??$res;
+
+            if(env('BPMS_API_DEBUG_LOG') == true)
+            {
+                $log = new Logger('bpms');
+                $log->pushHandler(new StreamHandler(storage_path('logs/bpms.log'),Logger::INFO) );
+                $log->addInfo('json解析出错了:'.$res);
+            }
+
             return $this->response->array($response);
         }
 
