@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Transformers\MessageDistributionTransformer;
+use Illuminate\Http\Request;
 use App\Models\Ccrp\User;
 use App\Models\Ccrp\WarningEvent;
 use App\Models\Ccrp\WarningSenderEvent;
+use App\Models\MessageDistribution;
 use App\Models\UserHasApp;
 use Auth;
 use Cache;
@@ -42,9 +45,40 @@ class MessagesController extends Controller
                     }
                 }
                 $message['total'] = $total;
+                $message['message']['unread'] = $this->message_unread();
                 return $message;
             });
         }
         return $this->response->array($message);
+    }
+
+    public function message_unread()
+    {
+        $user=$this->user();
+        $count=MessageDistribution::where('user_id',$user->id)->where('read_status',0)->count();
+        return $count;
+    }
+    public function index(Request $request)
+    {
+        $user=$this->user();
+        $model=new MessageDistribution();
+        if ($request->has('read_status')&&$read_status=$request->read_status)
+        {
+            $model=$model->where('read_status',$read_status);
+        }
+        $message_distributions=$model->where('user_id',$user->id)->paginate($request->pagisize??$this->pagesize);
+        return $this->response->paginator($message_distributions,new MessageDistributionTransformer());
+    }
+
+    public function show($id)
+    {
+        $message_distribution=MessageDistribution::findOrFail($id);
+        if ($message_distribution->read_status==0)
+        {
+            $message_distribution->read_status=1;
+            $message_distribution->read_at=time();
+            $message_distribution->save();
+        }
+       return $this->response->item($message_distribution,new MessageDistributionTransformer());
     }
 }

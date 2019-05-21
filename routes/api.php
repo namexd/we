@@ -6,6 +6,9 @@ $api->version('v1', [
     'middleware' => ['serializer:array', 'bindings']
 ], function ($api) {
     $api->post('lengwang/topics', 'TopicsController@testStore')->name('topics.testStore');
+    $api->get('lengwang/topics/categories', 'TopicsController@category')->name('topics.categories');
+    $api->post('lengwang/uploads', 'UploadsController@store')->name('api.uploads.store');
+
 //    $api->get('{path}', function (Request $request) use ($api) {
 ////拿到路由，查数据库/缓存，想怎么渲染就怎渲染
 //        return $request->getPathInfo();
@@ -129,6 +132,8 @@ $api->version('v1', [
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
             //消息统计
             $api->get('messages/count/{type?}', 'MessagesController@Count')->name('api.messages.count');
+            $api->get('messages', 'MessagesController@index')->name('api.messages.index');
+            $api->get('messages/{id}', 'MessagesController@show')->name('api.messages.show');
             //上传文件
             $api->post('uploads', 'UploadsController@store')->name('api.uploads.store');
             //角色可见的产品手册列表
