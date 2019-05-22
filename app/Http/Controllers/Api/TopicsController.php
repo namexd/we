@@ -88,7 +88,7 @@ class TopicsController extends Controller
         if('lengwang'==$request->access)
         {
             $data=$request->except('access');
-            $data['status']=0;
+            $data['status']=$request->has('status')?$request->status:0;
             Topic::create($data);
             return $this->response->created();
         }else
@@ -96,5 +96,10 @@ class TopicsController extends Controller
             return $this->response->errorUnauthorized('认证错误');
         }
 
+    }
+    public function category()
+    {
+        $categories = TopicCategory::where('status', 1)->get();
+        return $this->response->collection($categories, new TopicCategoryTransformer());
     }
 }
