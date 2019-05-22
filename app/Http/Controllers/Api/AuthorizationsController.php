@@ -277,7 +277,7 @@ class AuthorizationsController extends Controller
         if(env('APP_ENV')=='production')
         {
             ApiLoginLog::addLog($request, $user);
-            UserLoginLog::addCcrpLoginLog($user);
+            UserLoginLog::addCcrpLoginLog($request, $user);
         }
 
     }
