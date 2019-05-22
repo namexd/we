@@ -8,6 +8,7 @@ use App\Http\Requests\Api\WeappAuthorizationRequest;
 use App\Http\Requests\Api\WeAuthorizationRequest;
 use App\Models\ApiLoginLog;
 use App\Models\ApilogUserAgent;
+use App\Models\Ccrp\UserLoginLog;
 use App\Models\Role;
 use App\Models\Weapp;
 use App\Models\WeappHasWeuser;
@@ -276,6 +277,8 @@ class AuthorizationsController extends Controller
         if(env('APP_ENV')=='production')
         {
             ApiLoginLog::addLog($request, $user);
+            UserLoginLog::addCcrpLoginLog($user);
         }
+
     }
 }
