@@ -84,7 +84,7 @@ class App extends Model
 
         $app = self::find($app_id);
         //更新角色
-        $role_slug = $app->slug;
+        $role_slug = $app->program;
         if ($role_slug == Role::冷链用户) {
             $app_user = \App\Models\Ccrp\User::find($app_userid);
             $userCompany = $app_user->userCompany;
@@ -109,7 +109,7 @@ class App extends Model
     {
         $user_has_app = UserHasApp::where('app_id', $this->id)->where('user_id', $user->id)->first();
         if(!$user_has_app) return null;
-        $role_slug = $this->slug;
+        $role_slug = $this->program;
         if ($role_slug == Role::冷链用户) {
             $app_user = \App\Models\Ccrp\User::find($user_has_app->app_userid);
             $userCompany = $app_user->userCompany;
