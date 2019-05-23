@@ -113,18 +113,15 @@ class UsersController extends Controller
         if (!$user->phone or !$user->phone_verified) {
             return $this->response->error('您的手机号没有验证。', 456);
         }
-        $app = App::find($request->app_id);
+        $app = App::where('id',$request->app_id)->where('status',1)->first();
+        if (!$app) {
+            return $this->response->error('管理系统选择错误。', 422);
+        }
         $app_ids = App::where('program',$app->program)->pluck('id');
         $binded = $user->hasApps->whereIn('app_id', $app_ids)->first();
         if ($binded) {
             return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
         }
-        $app_id = $request->app_id;
-        $app = App::where('id', $app_id)->where('status', 1)->first();
-        if (!$app) {
-            return $this->response->error('管理系统选择错误。', 422);
-        }
-
         $folder = ucfirst(strtolower($app->program));
         $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
         $users = new $userModel;
