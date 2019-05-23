@@ -125,7 +125,7 @@ class UsersController extends Controller
             return $this->response->error('管理系统选择错误。', 422);
         }
 
-        $folder = ucfirst(strtolower($app->slug));
+        $folder = ucfirst(strtolower($app->program));
         $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
         $users = new $userModel;
         $users->setApiServer($app);
@@ -166,7 +166,7 @@ class UsersController extends Controller
             return $this->response->error('管理系统选择错误。', 422);
         }
 
-        $folder = ucfirst(strtolower($app->slug));
+        $folder = ucfirst(strtolower($app->program));
         $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
         $users = new $userModel;
         $users->setApiServer($app);
