@@ -169,6 +169,7 @@ class UsersController extends Controller
         $folder = ucfirst(strtolower($app->slug));
         $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
         $users = new $userModel;
+        $users->setApiServer($app);
         $username = $request->username;
         if (!$users->checkUsername($username)) {
             return $this->response->error('用户名不存在。', 422);
