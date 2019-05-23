@@ -6,14 +6,13 @@ use GuzzleHttp\Client;
 
 class BpmsAPI
 {
-    const 电子监管码查询 = 'vaccineinfo';
     public $access = '';
     private $api_server = '';
 
     public function __construct($access,$api_server=null)
     {
         $this->access = $access;
-        $this->api_server = $api_server??config('api.defaults.bpms_api_server');
+        $this->api_server = $api_server??'';
     }
 
     public function get($function, $params)

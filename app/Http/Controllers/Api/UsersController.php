@@ -113,7 +113,9 @@ class UsersController extends Controller
         if (!$user->phone or !$user->phone_verified) {
             return $this->response->error('您的手机号没有验证。', 456);
         }
-        $binded = $user->hasApps->where('app_id', $request->app_id)->first();
+        $app = App::find($request->app_id);
+        $app_ids = App::where('program',$app->program)->pluck('id');
+        $binded = $user->hasApps->whereIn('app_id', $app_ids)->first();
         if ($binded) {
             return $this->response->error('已经使用【' . $binded->app_username . '】绑定了【' . $binded->app->name . '】，如需重新绑定，请先解绑。', 422);
         }
@@ -126,6 +128,7 @@ class UsersController extends Controller
         $folder = ucfirst(strtolower($app->slug));
         $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
         $users = new $userModel;
+        $users->setApiServer($app);
         $username = $request->username;
         $password = $request->password;
         if (!$users->checkUsername($username)) {

@@ -9,9 +9,9 @@ class BpmsAuthAPI
 {
     private $api_server = '';
 
-    public function __construct()
+    public function setApiServer($app)
     {
-        $this->api_server = config('api.defaults.bpms_auth_api_server');
+        $this->api_server =$app->api_auth_url;
     }
 
     public function get($function, $params)
