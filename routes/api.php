@@ -127,8 +127,13 @@ $api->version('v1', [
             $api->get('weusers', 'WeusersController@show')->name('api.weusers.show');
             $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');
             $api->post('weusers/generateFormId', 'WeusersController@generateFormId')->name('api.weusers.generateFormId');
-            //系统信息
+            //根据program查看app
+            $api->get('apps/programs', 'AppsController@programs')->name('api.apps.programs');
+            $api->get('apps/programs/user_not_bind', 'AppsController@programsUserNotBind')->name('api.apps.programs.user_not_bind');
+            $api->get('apps/programs/{program}', 'AppsController@programsList')->name('api.apps.programs.list');
+            //查看app
             $api->get('apps/{slug}', 'AppsController@show')->name('api.apps.show');
+            //所有app
             $api->get('apps', 'AppsController@index')->name('api.apps.index');
             //消息统计
             $api->get('messages/count/{type?}', 'MessagesController@Count')->name('api.messages.count');

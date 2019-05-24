@@ -12,6 +12,7 @@ class AppTransformer extends TransformerAbstract
         return [
             'id' => $app->id,
             'name' => $app->name,
+            'program' => $app->program,
             'slug' => $app->slug,
             'image' => $app->image ?? config('api.defaults.image.logo.default'),
             'note' => $app->note,
