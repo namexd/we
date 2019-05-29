@@ -27,14 +27,15 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     //默认页面
-    private $redirect_url = 'home';
+    private $redirect_url = '/we/qrhome';
     //首页
     private $redirect_home = 'home';
     private $redirect_app = '';
     private $redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
 
-    public function test()
+    public function test2()
     {
+        dd(1);
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $data = $app->material->list('news', 0, 20);
 //return;
@@ -88,11 +89,13 @@ class WeController extends Controller
         if (request('redirect_url')) {
             request()->session()->put('callback_url', urldecode(request('redirect_url')));
         } else {
-            request()->session('callback_url', $this->redirect_url);
+            request()->session()->put('callback_url', $this->redirect_url);
         }
-        $app = Factory::officialAccount(config('wechat.official_account.default'));
+        $config =config('wechat.official_account.default');
+        $config['oauth']['scopes'] = $scopes;
+        $app = Factory::officialAccount($config);
 
-        $oauth = $app->oauth->scopes([$scopes]);
+        $oauth = $app->oauth;
 //        $oauth = $app->oauth;
         return $oauth->redirect();
     }
@@ -103,6 +106,7 @@ class WeController extends Controller
      */
     public function callback()
     {
+
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $oauth = $app->oauth;
 
