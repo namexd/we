@@ -222,6 +222,14 @@ $api->version('v1', [
                 //巡检单
                 $api->get('check_tasks','CheckTasksController@index');
                 $api->get('check_tasks/{id}','CheckTasksController@show');
+                //冷藏车
+                $api->get('vehicles','VehiclesController@index');
+                $api->get('vehicles/refresh/{vehicle_id}','VehiclesController@refresh');
+                $api->get('vehicles/current/{vehicle_id}','VehiclesController@current');
+                $api->get('vehicles/vehicle_temp','VehiclesController@vehicle_temp');
+                $api->get('vehicles/vehicle_map','VehiclesController@vehicle_map');
+                $api->get('printers','PrintersController@index');
+                $api->get('printers/print_history_temp','PrintersController@printTemp');
                 //CCrp数据报表
                 $api->group([
                     'namespace' => 'Reports',
