@@ -27,14 +27,15 @@ use EasyWeChat\Factory;
 class WeController extends Controller
 {
     //默认页面
-    private $redirect_url = 'home';
+    private $redirect_url = '/we/qrhome';
     //首页
     private $redirect_home = 'home';
     private $redirect_app = '';
     private $redirect_ucenter = 'https://we.coldyun.net/ucenter/#/login';
 
-    public function test()
+    public function test2()
     {
+        dd(1);
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $data = $app->material->list('news', 0, 20);
 //return;
@@ -88,11 +89,13 @@ class WeController extends Controller
         if (request('redirect_url')) {
             request()->session()->put('callback_url', urldecode(request('redirect_url')));
         } else {
-            request()->session('callback_url', $this->redirect_url);
+            request()->session()->put('callback_url', $this->redirect_url);
         }
-        $app = Factory::officialAccount(config('wechat.official_account.default'));
+        $config =config('wechat.official_account.default');
+        $config['oauth']['scopes'] = $scopes;
+        $app = Factory::officialAccount($config);
 
-        $oauth = $app->oauth->scopes([$scopes]);
+        $oauth = $app->oauth;
 //        $oauth = $app->oauth;
         return $oauth->redirect();
     }
@@ -103,6 +106,7 @@ class WeController extends Controller
      */
     public function callback()
     {
+
         $app = Factory::officialAccount(config('wechat.official_account.default'));
         $oauth = $app->oauth;
 
@@ -426,7 +430,7 @@ class WeController extends Controller
         $from_app = App::where('slug', $from)->first();
         $to_app = App::where('slug', $to)->first();
         if (!$from_app or !$to_app) {
-            echo '<h1>' . '登录失败，access不正确。' . '</h1><hr>';
+            echo '<h1>' . '登录失败，系统标识错误。' . '</h1><hr>';
             exit();
         }
         $data = app_access_decode($from_app->appkey, $from_app->appsecret, $access);
@@ -476,7 +480,7 @@ class WeController extends Controller
     {
         $to_app = App::where('slug', $to)->first();
         if (!$to_app) {
-            echo '<h1>' . '登录失败，access不正确。' . '</h1><hr>';
+            echo '<h1>' . '登录失败，系统标识错误。' . '</h1><hr>';
             exit();
         }
 
@@ -489,8 +493,6 @@ class WeController extends Controller
         }
         $user_has_app = $user->getApp($to_app->id);
 
-        $res = $user_has_app->toArray();
-
         if ($user_has_app) {
             $user_info = (new App())->userBindedLoginInfo($to_app->slug, $user);
             if ($user_info and $user_info['access']) {
@@ -502,11 +504,11 @@ class WeController extends Controller
                     exit();
                 }
             }else{
+                $res = $user_has_app->toArray();
                 request()->session()->put('auto_bind_app', $res);
                 return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
             }
         } else {
-            request()->session()->put('auto_bind_app', $res);
             return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
         }
 
