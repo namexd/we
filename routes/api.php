@@ -185,6 +185,7 @@ $api->version('v1', [
                 // 所有冰箱
                 $api->get('coolers', 'CoolersController@index')->name('api.ccrp.coolers.index');
                 $api->get('coolers/all', 'CoolersController@all')->name('api.ccrp.coolers.all');
+                $api->get('coolers/cooler_type100', 'CoolersController@coolerType100')->name('api.ccrp.coolers.coolerType100');
                 $api->get('coolers/{cooler}', 'CoolersController@show')->name('api.ccrp.coolers.show');
                 $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.ccrp.coolers.history');
                 // 所有探头
@@ -229,7 +230,11 @@ $api->version('v1', [
                 $api->get('vehicles/vehicle_temp','VehiclesController@vehicle_temp');
                 $api->get('vehicles/vehicle_map','VehiclesController@vehicle_map');
                 $api->get('printers','PrintersController@index');
-                $api->get('printers/print_history_temp','PrintersController@printTemp');
+                $api->get('printers/history_temp','PrintersController@printTemp');
+                $api->get('printers/clear/{id}',function ($id){
+                    $resp= file_get_contents('http://pr01.coldyun.com/WPServer/clearorder?sn='.$id);
+                    return json_decode($resp,true);
+                });
                 //CCrp数据报表
                 $api->group([
                     'namespace' => 'Reports',

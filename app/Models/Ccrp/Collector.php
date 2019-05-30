@@ -108,7 +108,7 @@ class Collector extends Coldchain2Model
         $sn = str_replace('-','',$this->supplier_collector_id);
         $history->tableName($sn);
 
-        return $history->setTable('sensor.' . $sn . '')->whereBetween('sensor_collect_time',[$start_time,$end_time])->select(['data_id', 'temp', 'humi', 'sensor_collect_time as collect_time', 'system_time'])->limit(  3000)->orderBy('sensor_collect_time','asc')->get();
+        return $history->setTable('sensor.' . $sn . '')->whereBetween('sensor_collect_time',[$start_time,$end_time])->select(['data_id', 'temp', 'humi', 'sensor_collect_time as collect_time', 'system_time'])->limit(3000)->orderBy('sensor_collect_time','asc')->get();
     }
 
 }

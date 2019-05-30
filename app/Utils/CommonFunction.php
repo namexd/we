@@ -463,3 +463,85 @@ function is_com_diy($company_id, $com = 'minhang')
 
     return false;
 }
+function to_shidu($value = '', $fix = '%')
+
+{
+
+    if ($value !== '' and $value !== NULL and $value <> -999 and $value <> 0) {
+        if ($value > 100) $value = 100;
+        return sprintf("%.1f", round($value, 3)) . $fix;
+    } else return '-';
+
+}
+
+function to_wendu($value, $fix = '℃')
+
+{
+
+    if ($value !== '' and $value !== NULL and $value > -999) return sprintf("%.1f", round($value, 3)) . $fix;
+
+    else return '-';
+
+}
+
+function to_wendu2($value, $fix = '℃')
+
+{
+
+    if ($value !== '' and $value !== NULL and $value > -999) return sprintf("%.2f", round($value, 3)) . $fix;
+
+    else return '-';
+
+}
+
+function to_danya($value, $fix = 'V')
+
+{
+
+    if ($value !== '' and $value !== NULL and $value <> -999) return $value . $fix;
+
+    else return '-';
+
+}
+
+function to_dianya($value, $fix = 'V')
+
+{
+
+    if ($value !== '' and $value !== NULL and $value <> -999) return $value . $fix;
+
+    else return '-';
+
+}
+
+function to_rssi($value)
+
+{
+
+    if ($value !== '' and $value !== NULL and $value <> -999) return $value . '';
+
+    else return '-';
+
+}
+
+function to_dianliang($value, $fix = '%')
+{
+    if ($value !== '' and $value !== NULL and $value <> -999) return $value . $fix;
+
+    else return '-';
+}
+function time_format2($time = NULL, $format = 'Y-m-d H:i:s', $zero = '-')
+{
+
+
+    if ($time === NULL or $time <= 0) return $zero;
+
+    else return date($format, intval($time));
+
+}
+//去除符号-
+function abs2($str)
+{
+    if (gettype($str) == 'integer') return abs($str);
+    else return trim(strval(str_replace('-', '', $str)));
+}

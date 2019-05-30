@@ -6,6 +6,9 @@ use App\Models\Ccrp\Coldchain2Model;
 use App\Models\Ccrp\Collector;
 use App\Models\Ccrp\Cooler;
 use App\Models\Ccrp\DataHistory;
+use function App\Utils\abs2;
+use function App\Utils\to_shidu;
+use function App\Utils\to_wendu;
 use DB;
 
 class TemperatuesCoolerHistory extends Coldchain2Model
@@ -149,79 +152,4 @@ class TemperatuesCoolerHistory extends Coldchain2Model
         }
         return $config;
     }
-}
-
-function to_shidu($value = '', $fix = '%')
-
-{
-
-    if ($value !== '' and $value !== NULL and $value <> -999 and $value <> 0) {
-        if ($value > 100) $value = 100;
-        return sprintf("%.1f", round($value, 3)) . $fix;
-    } else return '-';
-
-}
-
-function to_wendu($value, $fix = '℃')
-
-{
-
-    if ($value !== '' and $value !== NULL and $value > -999) return sprintf("%.1f", round($value, 3)) . $fix;
-
-    else return '-';
-
-}
-
-function to_wendu2($value, $fix = '℃')
-
-{
-
-    if ($value !== '' and $value !== NULL and $value > -999) return sprintf("%.2f", round($value, 3)) . $fix;
-
-    else return '-';
-
-}
-
-function to_danya($value, $fix = 'V')
-
-{
-
-    if ($value !== '' and $value !== NULL and $value <> -999) return $value . $fix;
-
-    else return '-';
-
-}
-
-function to_dianya($value, $fix = 'V')
-
-{
-
-    if ($value !== '' and $value !== NULL and $value <> -999) return $value . $fix;
-
-    else return '-';
-
-}
-
-function to_rssi($value)
-
-{
-
-    if ($value !== '' and $value !== NULL and $value <> -999) return $value . '';
-
-    else return '-';
-
-}
-
-function to_dianliang($value, $fix = '%')
-{
-    if ($value !== '' and $value !== NULL and $value <> -999) return $value . $fix;
-
-    else return '-';
-}
-
-//去除符号-
-function abs2($str)
-{
-    if (gettype($str) == 'integer') return abs($str);
-    else return trim(strval(str_replace('-', '', $str)));
 }

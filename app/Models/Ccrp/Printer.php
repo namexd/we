@@ -51,73 +51,15 @@ class Printer extends Coldchain2Model
                 $data['uid'] =$user_id;
                 $data['server_state'] = $rs['msg'];
                 $data['orderindex'] = $rs['orderindex'];
-//                $this->printer_logs()->insert($data);
             }
             return $rs;
-            //$this->success($rs->msg,'/user/printer');
-
-            //{"responseCode":0,"msg":"服务器接收订单成功","orderindex":"1461323673156926118661"}
         }
     }
     public function printer_logs()
     {
         return $this->hasMany(PrinterLog::class,'printer_id','printer_id');
     }
-    //打印机模板
-    public function vehicle_print_data_format($title,$datas,$company_id){
-        $orderInfo = '<CB>'.$title.'</CB><BR>';
-        $orderInfo .= '时间|温度1|温度2|温度3|温度4<BR>';
-        $orderInfo .= '--------------------------------<BR>';
-        foreach($datas as $vo) {
-            $orderInfo .= ''.vehicle_time2($vo['RcvDT']).'　'.vehicle_temp2($vo['Temperature']).','.vehicle_temp2($vo['Temperature2']).','.vehicle_temp2($vo['Temperature3']).','.vehicle_temp2($vo['Temperature4']).' <BR>';
-        }
-        $orderInfo .= '--------------------------------<BR>';
-        if(!is_com_diy($company_id,'printer_no_time'))
-        {
-            $orderInfo .= '打印时间：' . date('Y-m-d H:i:s') . '<BR>';
-        }
-        $orderInfo .= '<BR>';
-        $orderInfo .= '<BR>';
-        $orderInfo .= '签字________________________<BR>';
-        $orderInfo .= '<BR>';
-        $orderInfo .= ' 技术支持电话：400-681-5218<BR>';
-        $orderInfo .= '　上海冷王智能科技有限公司';
-        return $orderInfo;
-    }
 
-    //打印机模板
-    public function vehicle_print_data_format_array($title,$datas,$company_id){
-        $orderInfoArr=array();
-        $orderInfo = '<CB>'.$title.'</CB><BR>';
-        $orderInfo .= '时间|温度1|温度2|温度3|温度4<BR>';
-        $orderInfo .= '--------------------------------<BR>';
-        foreach($datas as $vo) {
-            $orderInfo .= ''.vehicle_time2($vo['RcvDT']).'　'.vehicle_temp2($vo['Temperature']).','.vehicle_temp2($vo['Temperature2']).','.vehicle_temp2($vo['Temperature3']).','.vehicle_temp2($vo['Temperature4']).' <BR>';
-            if( strlen($orderInfo)>=250)
-            {
-                $orderInfoArr[]=$orderInfo;
-                $orderInfo='';
-            }
-        }
-        if(count($orderInfoArr)>0){
-            $orderInfo .= '--------------------------------<BR>';
-            if(!is_com_diy($company_id,'printer_no_time'))
-            {
-                $orderInfo .= '打印时间：' . date('Y-m-d H:i:s') . '<BR>';
-            }
-            $orderInfo .= '<BR>';
-            $orderInfo .= '<BR>';
-            $orderInfo .= '签字________________________<BR>';
-            $orderInfo .= '<BR>';
-            $orderInfo .= ' 技术支持电话：400-681-5218<BR>';
-            $orderInfo .= '　上海冷王智能科技有限公司';
-            $orderInfoArr[]=$orderInfo;
-            return $orderInfoArr;
-        }else{
-            return NULL;
-        }
-
-    }
 
 }
 //虚拟打印，返回成功。
