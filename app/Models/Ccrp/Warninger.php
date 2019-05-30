@@ -34,6 +34,12 @@ class Warninger extends Coldchain2Model
             'count_power_off',
         ]
     ];
+    const WARNINGER_TYPES = [
+        self::发送类型_短信 => '短信',
+        self::发送类型_邮件 => '邮件',
+        self::发送类型_微信 => '微信',
+        self::发送类型_电话 => '电话',
+    ];
     use ModelFields;
     protected $table = 'warninger';
     protected $primaryKey = 'warninger_id';
