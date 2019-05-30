@@ -34,6 +34,11 @@ class Warninger extends Coldchain2Model
             'count_power_off',
         ]
     ];
+
+    const 发送类型_短信 = 1;
+    const 发送类型_邮件 = 2;
+    const 发送类型_微信 = 3;
+    const 发送类型_电话 = 4;
     const WARNINGER_TYPES = [
         self::发送类型_短信 => '短信',
         self::发送类型_邮件 => '邮件',
