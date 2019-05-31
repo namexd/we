@@ -28,6 +28,12 @@ $api->version('v1', [
         'limit' => config('api.rate_limits.access.limit'),
         'expires' => config('api.rate_limits.access.expires'),
     ], function ($api) {
+
+        $api->get('test/list', 'TestController@list')->name('api.test.list');
+        $api->get('test/detail/{topic}', 'TestController@detail')->name('api.test.detail');
+        $api->get('sample/detail', function () {
+            return response(['version' => 'v1.02']);
+        });
         $api->get('version', function () {
             return response(['version' => 'v1.02']);
         });

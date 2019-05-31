@@ -20,7 +20,12 @@ class TopicListTransformer extends TransformerAbstract
             'reply_count'=>$topic->reply_count,
             'created_at' => $topic->created_at->toDateTimeString(),
             'updated_at' => $topic->updated_at->toDateTimeString(),
+
         ];
+        $rs['meta'] = [
+            'header' => $topic->title,
+            'footer' => '查看次数：'.$topic->view_count,
+            'detail' => '/api/test/detail/'.$topic->id.'?with=columns',];
         return  $rs;
     }
     public function includeUser(Topic $topic)

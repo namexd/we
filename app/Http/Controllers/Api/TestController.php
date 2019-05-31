@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Api;
 use App\Models\Topic;
 use App\Traits\ControllerCrud;
 use App\Transformers\TopicListTransformer;
+use App\Transformers\TopicTransformer;
 use function App\Utils\form_fields_trans;
 use Request;
 
@@ -35,6 +36,24 @@ class TestController extends Controller
         $btns[] = $this->toolbarAddButton('edit');
         $btns[] = $this->toolbarAddButton('link');
         return $btns;
+    }
+
+    public function list(Request $request)
+    {
+        $model = Topic::where('status', 1)->orderBy('created_at', 'desc');
+        $topics = $model->paginate($request->pagesize ?? $this->pagesize);
+        $return = $this->response->paginator($topics, new TopicListTransformer());
+        return $this->display($return);
+    }
+
+    public function detail(Topic $topic)
+    {
+        $next = $topic->next();
+        $previous = $topic->previous();
+        $meta['next'] = $next;
+        $meta['previous'] = $previous;
+        $return = $this->response->item($topic, new TopicTransformer());
+        return $this->display($return);
     }
     public function index(Request $request)
     {
