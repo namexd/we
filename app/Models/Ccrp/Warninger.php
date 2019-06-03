@@ -110,8 +110,8 @@ class Warninger extends Coldchain2Model
                 'warninger_name'=>'预警通道名称',
                 'warninger_type'=>'预警类型',
                 'warninger_body'=>'一级预警设置',
-                'warninger_type_level2'=>'二级预警设置',
-                'warninger_type_level3'=>'三级预警设置',
+                'warninger_body_level2'=>'二级预警设置',
+                'warninger_body_level3'=>'三级预警设置',
                 'bind_times'=>'绑定次数',
 
                 'count_tem_unhandled' => '未处理温度预警',

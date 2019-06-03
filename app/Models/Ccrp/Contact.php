@@ -1,7 +1,10 @@
 <?php
 namespace App\Models\Ccrp;
+use App\Traits\ModelFields;
+
 class Contact extends Coldchain2Model
 {
+    use ModelFields;
     protected $table = 'contact';
     protected $primaryKey = 'contact_id';
 
@@ -10,5 +13,15 @@ class Contact extends Coldchain2Model
     function company()
     {
         return $this->belongsTo(Company::class,'company_id','id');
+    }
+
+
+    protected static function fieldTitles()
+    {
+        return [
+            'name' => '姓名',
+            'phone' => '电话',
+            'note' => '备注',
+        ];
     }
 }
