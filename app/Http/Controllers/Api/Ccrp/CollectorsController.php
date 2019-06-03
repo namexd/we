@@ -71,13 +71,13 @@ class CollectorsController extends Controller
             return $this->response->noContent();
         }
     }
-//
-//    public function realtime()
-//    {
-//        $this->check();
-//        $collectors = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)
-//            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->paginate(10);
-//        return $this->response->paginator($collectors, new CollectorRealtimeTransformer());
-//    }
+
+    public function realtime()
+    {
+        $this->check();
+        $collectors = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)->with('company')
+            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->paginate($this->pagesize);
+        return $this->response->paginator($collectors, new CollectorRealtimeTransformer());
+    }
 
 }

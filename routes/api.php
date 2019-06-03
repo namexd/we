@@ -196,6 +196,7 @@ $api->version('v1', [
                 $api->get('coolers/{cooler}/history', 'CoolersController@history')->name('api.ccrp.coolers.history');
                 // 所有探头
                 $api->get('collectors', 'CollectorsController@index')->name('api.ccrp.collectors.index');
+                $api->get('collectors/realtime', 'CollectorsController@realtime')->name('api.ccrp.collectors.realtime');
                 $api->get('collectors/{collector}/history', 'CollectorsController@history')->name('api.ccrp.collectors.history');
                 $api->get('collectors/{collector}', 'CollectorsController@show')->name('api.ccrp.collectors.show');
                 // 所有联系人

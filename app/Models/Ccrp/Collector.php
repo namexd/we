@@ -90,6 +90,21 @@ class Collector extends Coldchain2Model
         return format_value($value);
     }
 
+    public function getUnnormalStatusAttribute()
+    {
+        if ($this->refresh_time < time() - 30 * 60) {
+            $rs = '离线';
+        } elseif ($setting = $this->warningSetting) {
+            if ($setting->temp_low < $this->temp) {
+                $rs = '低温';
+            } elseif ($setting->temp_height > $this->temp) {
+                $rs = '高温';
+            }
+        } else {
+            $rs = '';
+        }
+        return $rs;
+    }
 
     /**
      * @param null $start_time
@@ -98,17 +113,17 @@ class Collector extends Coldchain2Model
      */
     function history($start_time = null, $end_time = null)
     {
-        if($start_time !== null and $end_time === null){
-            $end_time = $end_time??strtotime(date('Y-m-d 23:59:59',$start_time));
-        }elseif($start_time === null and $end_time === null){
-            $start_time = $start_time??strtotime(date('Y-m-d 00:00:00',time()));
-            $end_time = $end_time??strtotime(date('Y-m-d 23:59:59',time()));
+        if ($start_time !== null and $end_time === null) {
+            $end_time = $end_time ?? strtotime(date('Y-m-d 23:59:59', $start_time));
+        } elseif ($start_time === null and $end_time === null) {
+            $start_time = $start_time ?? strtotime(date('Y-m-d 00:00:00', time()));
+            $end_time = $end_time ?? strtotime(date('Y-m-d 23:59:59', time()));
         }
         $history = new DataHistory();
-        $sn = str_replace('-','',$this->supplier_collector_id);
+        $sn = str_replace('-', '', $this->supplier_collector_id);
         $history->tableName($sn);
 
-        return $history->setTable('sensor.' . $sn . '')->whereBetween('sensor_collect_time',[$start_time,$end_time])->select(['data_id', 'temp', 'humi', 'sensor_collect_time as collect_time', 'system_time'])->limit(3000)->orderBy('sensor_collect_time','asc')->get();
+        return $history->setTable('sensor.' . $sn . '')->whereBetween('sensor_collect_time', [$start_time, $end_time])->select(['data_id', 'temp', 'humi', 'sensor_collect_time as collect_time', 'system_time'])->limit(3000)->orderBy('sensor_collect_time', 'asc')->get();
     }
 
 }
