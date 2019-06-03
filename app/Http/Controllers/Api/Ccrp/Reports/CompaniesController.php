@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
 use App\Models\Ccrp\Company;
+use App\Models\Ccrp\Warninger;
 use App\Transformers\Ccrp\Reports\CompanySettingsTransformer;
+use App\Transformers\Ccrp\WarningerTransformer;
 use function App\Utils\hidePhone;
 use Route;
 
@@ -15,28 +17,29 @@ class CompaniesController extends Controller
             "title" => '单位名称、地址、负责人、电话等信息',
             'meta' => [
                 "header" => '单位信息',
-                "detail" => '/api/ccrp/reports/companies/infomation/company',
+                "detail_data" => '/api/ccrp/reports/companies/infomation/company?with=columns',
             ]
         ];
         $info['data'][] = [
             "title" => '一、二、三级超温预警短信接收人员',
             'meta' => [
                 "header" => '预警通道设置',
-                "detail" => '/api/ccrp/reports/companies/infomation/company',
+                "detail_data" => '/api/ccrp/reports/companies/infomation/warningers?with=columns',
+                "detail_template"=>'list'
             ]
         ];
         $info['data'][] = [
             "title" => '可绑定小程序进入系统的人员',
             'meta' => [
                 "header" => '预警联系人',
-                "detail" => '/api/ccrp/reports/companies/infomation/company',
+                "detail_data" => '/api/ccrp/reports/companies/infomation/company',
             ]
         ];
         $info['data'][] = [
             "title" => '查看本单位已经绑定的人员',
             'meta' => [
                 "header" => '小程序绑定人员',
-                "detail" => '/api/ccrp/reports/companies/infomation/company',
+                "detail_data" => '/api/ccrp/reports/companies/infomation/company',
             ]
         ];
         $info["meta"]["columns"] = [
@@ -56,6 +59,11 @@ class CompaniesController extends Controller
                 $this->setCrudModel(Company::class);
                 $return = $this->response->item($this->company, new CompanySettingsTransformer());
                 return $this->display($return,'columns');
+                break;
+            case 'warningers':
+                $this->setCrudModel(Warninger::class);
+                $warningers = Warninger::where('company_id',$this->company->id)->get();
+                return $this->display($this->response->collection($warningers,new WarningerTransformer()),'columns');
                 break;
 
         }

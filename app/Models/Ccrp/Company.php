@@ -127,6 +127,7 @@ class Company extends Coldchain2Model
             'shebei_actived_type100' => '启用的移动保温箱',
             'shebei_install_type101' => '安装的冷藏车',
             'shebei_actived_type101' => '启用的冷藏车',
+            'region_name' => '地区',
         ];
     }
 

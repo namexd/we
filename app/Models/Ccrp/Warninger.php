@@ -7,6 +7,8 @@ use DB;
 
 class Warninger extends Coldchain2Model
 {
+    use ModelFields;
+
     const 预警历史统计表 = 1;
     const 所有报警一览表 = 2;
     const REPOERT_COLUMS = [
@@ -45,7 +47,6 @@ class Warninger extends Coldchain2Model
         self::发送类型_微信 => '微信',
         self::发送类型_电话 => '电话',
     ];
-    use ModelFields;
     protected $table = 'warninger';
     protected $primaryKey = 'warninger_id';
     protected $fillable = ['warninger_id', 'warninger_name', 'warninger_type', 'warninger_type_level2', 'warninger_type_level3', 'warninger_body', 'warninger_body_pluswx', 'warninger_body_level2', 'warninger_body_level2_pluswx', 'warninger_body_level3', 'warninger_body_level3_pluswx', 'using_sensor_num', 'set_time', 'set_uid', 'bind_times', 'category_id', 'company_id'];
@@ -106,6 +107,13 @@ class Warninger extends Coldchain2Model
     {
         return
             [
+                'warninger_name'=>'预警通道名称',
+                'warninger_type'=>'预警类型',
+                'warninger_body'=>'一级预警设置',
+                'warninger_type_level2'=>'二级预警设置',
+                'warninger_type_level3'=>'三级预警设置',
+                'bind_times'=>'绑定次数',
+
                 'count_tem_unhandled' => '未处理温度预警',
                 'temp_count_all' => '温度预警总计',
                 'temp_count_high' => '高温预警',
@@ -127,5 +135,10 @@ class Warninger extends Coldchain2Model
     public function colums($type)
     {
         return self::getFieldsTitles(self::REPOERT_COLUMS[$type]);
+    }
+
+    public function getWarningerTypeAttribute($value)
+    {
+        return isset(self::REPOERT_COLUMS[$value])?self::WARNINGER_TYPES[$value]:$value;
     }
 }
