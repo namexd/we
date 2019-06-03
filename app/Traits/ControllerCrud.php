@@ -173,8 +173,7 @@ trait ControllerCrud
 
     public function withColumns()
     {
-        if($this->getCrudModel())
-        {
+        if ($this->getCrudModel()) {
             return $columns = $this->getCrudModel()::columns();
         }
         return null;

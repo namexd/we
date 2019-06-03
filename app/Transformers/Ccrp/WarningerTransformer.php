@@ -2,6 +2,7 @@
 
 namespace App\Transformers\Ccrp;
 
+use App\Models\Ccrp\Contact;
 use App\Models\Ccrp\Warninger;
 use function App\Utils\hidePhone;
 use Carbon\Carbon;
@@ -23,6 +24,8 @@ class WarningerTransformer extends TransformerAbstract
         ];
         if( in_array($rs['warninger_type'],['短信','电话']))
         {
+            $contacts = Contact::where('company_id',$setting->company_id)-pluck('phone','name');
+            dd($contacts);
             $rs['warninger_body'] = hidePhone($setting->warninger_body);
             $rs['warninger_body_level2'] = hidePhone($setting->warninger_body_level2);
             $rs['warninger_body_level3'] = hidePhone($setting->warninger_body_level3);

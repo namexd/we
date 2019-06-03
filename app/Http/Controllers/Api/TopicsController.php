@@ -15,7 +15,7 @@ class TopicsController extends Controller
 
     public function crudModel()
     {
-        return Topic::class;
+        $this->setCrudModel(Topic::class);
     }
 
     public function toolbarButtons()

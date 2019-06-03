@@ -11,9 +11,8 @@ class UsersController extends Controller
 
     public function crudModel()
     {
-        return User::class;
+        $this->setCrudModel(User::class);
     }
-
 
     public function statics()
     {
@@ -69,6 +68,7 @@ class UsersController extends Controller
 
     public function index()
     {
+        $this->crudModel();
         $users = User::orderBy('id','desc')->paginate();
         $res = $this->response->paginator($users,new UserAdminTransformer());
         return $this->display($res);
