@@ -139,6 +139,6 @@ class Warninger extends Coldchain2Model
 
     public function getWarningerTypeAttribute($value)
     {
-        return isset(self::REPOERT_COLUMS[$value])?self::WARNINGER_TYPES[$value]:$value;
+        return isset(self::WARNINGER_TYPES[$value])?self::WARNINGER_TYPES[$value]:$value;
     }
 }

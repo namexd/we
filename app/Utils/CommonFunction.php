@@ -335,7 +335,18 @@ function getDays($startdate, $enddate, $format = 'Y-m-d')
  */
 function hidePhone($str)
 {
-    return strlen($str)>0?substr($str, 0, 3) . '****' . substr($str, -4):'';
+    if(strpos($str,','))
+    {
+        $phones = explode(',',$str);
+        $res = '';
+        foreach($phones as $phone)
+        {
+            $res .= hidePhone($phone).',';
+        }
+    }else{
+        $res = strlen($str)>0?substr($str, 0, 3) . '****' . substr($str, -4):'';
+    }
+    return $res;
 }
 function vehicle_time($time)
 
