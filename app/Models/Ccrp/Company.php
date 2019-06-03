@@ -32,6 +32,7 @@ class Company extends Coldchain2Model
         $this->setOrderColumn('sort');
     }
 
+
     const 状态禁用 = 0;
     const 状态正常 = 1;
     const  ONLINE_DOMAIN = [
@@ -86,7 +87,6 @@ class Company extends Coldchain2Model
         6 => '犬伤门诊',
     ];
 
-
     /**
      * 字段中文名称
      * @return array
@@ -96,6 +96,9 @@ class Company extends Coldchain2Model
         return [
             'title' => '单位名称',
             'short_title' => '简称',
+            'manager' => '负责人',
+            'address_lat' => '地图北纬',
+            'address_lon' => '地图东经',
             'shebei_install' => '安装的冷链装备',
             'shebei_actived' => '启用的冷链装备',
             'shebei_install_type1' => '安装的冷藏冰箱',

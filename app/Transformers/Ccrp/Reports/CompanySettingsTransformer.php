@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Transformers\Ccrp;
+namespace App\Transformers\Ccrp\Reports;
 
 use App\Models\Ccrp\Company;
 use Carbon\Carbon;
@@ -15,12 +15,10 @@ class CompanySettingsTransformer extends TransformerAbstract
             'pid' => $company->pid,
             'title' => $company->title,
             'short' => $company->short_title,
+            'manager' => $company->manager,
             'address' => $company->address,
             'address_lat' => $company->address_lat,
             'address_lon' => $company->address_lon,
-            "category_count" => $company->category_count,
-            "category_count_has_cooler" => $company->category_count_has_cooler,
-            "cdc_admin" => $company->cdc_admin,
             "shebei_install" => $company->shebei_install,
             "shebei_actived" => $company->shebei_actived,
 

@@ -173,7 +173,12 @@ trait ControllerCrud
 
     public function withColumns()
     {
-        return $this->getCrudModel() ? $this->getCrudModel()::columns() : null;
+        if($this->getCrudModel())
+        {
+            return $columns = $this->getCrudModel()::columns();
+        }
+        return null;
+
     }
 
     public function withToolbar()

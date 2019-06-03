@@ -3,9 +3,7 @@
 namespace App\Http\Controllers\Api\Ccrp\Reports;
 
 use App\Models\Ccrp\Company;
-use App\Models\Ccrp\Cooler;
-use App\Transformers\Ccrp\CompanySettingsTransformer;
-use App\Transformers\Ccrp\CompanyTransformer;
+use App\Transformers\Ccrp\Reports\CompanySettingsTransformer;
 use function App\Utils\hidePhone;
 use Route;
 
