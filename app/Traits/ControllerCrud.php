@@ -8,6 +8,8 @@ use Illuminate\Contracts\Pagination\Paginator;
 
 trait ControllerCrud
 {
+    public $crudModel = null;
+
     /**
      * 绑定模型
      * @return null
@@ -17,13 +19,24 @@ trait ControllerCrud
         return null;
     }
 
+    public function setCrudModel($model)
+    {
+        $this->crudModel = $model;
+    }
+
+    public function getCrudModel()
+    {
+        return $this->crudModel;
+    }
+
     /**
      * @param $function string filter,columns
+     * @param null $with
      * @return bool
      */
-    public function withMeta($function)
+    public function withMeta($function, $with = null)
     {
-        $with = request()->get('with');
+        $with = $with ?? request()->get('with');
         if ($with) {
             $withs = explode(',', $with);
             if (in_array($function, $withs)) {
@@ -36,26 +49,27 @@ trait ControllerCrud
     /**
      * 展示代码
      * @param $rs
+     * @param null $with
      * @return mixed
      */
-    public function display($rs)
+    public function display($rs, $with = null)
     {
-        if ($this->crudModel() == null) {
+        if ($this->getCrudModel() == null) {
             return $rs;
         }
-        if ($this->withMeta('filter')) {
+        if ($this->withMeta('filter', $with)) {
             $rs->addMeta('filter', $this->withFilter());
         }
-        if ($this->withMeta('columns')) {
+        if ($this->withMeta('columns', $with)) {
             $rs->addMeta('columns', $this->withColumns());
         }
-        if ($this->withMeta('toolbar')) {
+        if ($this->withMeta('toolbar', $with)) {
             $rs->addMeta('toolbar', $this->withToolbar());
         }
-        if ($this->withMeta('table')) {
+        if ($this->withMeta('table', $with)) {
             $rs->addMeta('table', $this->withTable());
         }
-        if ($this->withMeta('options')) {
+        if ($this->withMeta('options', $with)) {
             $rs->addMeta('filter', $this->withFilter());
             $rs->addMeta('columns', $this->withColumns());
             $rs->addMeta('toolbar', $this->withToolbar());
@@ -73,44 +87,43 @@ trait ControllerCrud
      * @param string $icon
      * @return array
      */
-    public function toolBarAddButton($function = "submit",$action=null, $innerText = null, $type = null, $size = "small", $icon = '')
+    public function toolBarAddButton($function = "submit", $action = null, $innerText = null, $type = null, $size = "small", $icon = '')
     {
-        switch ($function)
-        {
+        switch ($function) {
             case 'add':
-                $innerText = $innerText??"新增";
-                $type = $type??'success';
-                $action = $action??'add';
+                $innerText = $innerText ?? "新增";
+                $type = $type ?? 'success';
+                $action = $action ?? 'add';
                 break;
             case 'edit':
-                $innerText = $innerText??"编辑";
-                $type = $type??'danger';
-                $action = $action??'edit';
+                $innerText = $innerText ?? "编辑";
+                $type = $type ?? 'danger';
+                $action = $action ?? 'edit';
                 break;
             case 'link':
-                $innerText = $innerText??"打开";
-                $type = $type??'text';
-                $action = $action??'http://www.baidu.com';
+                $innerText = $innerText ?? "打开";
+                $type = $type ?? 'text';
+                $action = $action ?? 'http://www.baidu.com';
                 break;
             case 'submit':
-                $innerText = $innerText??"提交";
-                $type = $type??'primary';
+                $innerText = $innerText ?? "提交";
+                $type = $type ?? 'primary';
                 break;
             case 'print':
-                $innerText = $innerText??"打印";
-                $type = $type??'success';
+                $innerText = $innerText ?? "打印";
+                $type = $type ?? 'success';
                 break;
             case 'excel':
-                $innerText = $innerText??"导出Excel";
-                $type = $type??'danger';
+                $innerText = $innerText ?? "导出Excel";
+                $type = $type ?? 'danger';
                 break;
             case 'pdf':
-                $innerText = $innerText??"导出Pdf";
-                $type = $type??'danger';
+                $innerText = $innerText ?? "导出Pdf";
+                $type = $type ?? 'danger';
                 break;
             default:
-                $innerText = $innerText??"确认";
-                $type = $type??'primary';
+                $innerText = $innerText ?? "确认";
+                $type = $type ?? 'primary';
         }
         return $button = [
             //自定义
@@ -142,10 +155,12 @@ trait ControllerCrud
     {
         return [];
     }
+
     public function tableButtons()
     {
         return [];
     }
+
     public function tableSortable()
     {
         return [];
@@ -153,12 +168,12 @@ trait ControllerCrud
 
     public function withFilter()
     {
-        return $this->crudModel() ? $this->crudModel()::filter() : null;
+        return $this->getCrudModel() ? $this->getCrudModel()::filter() : null;
     }
 
     public function withColumns()
     {
-        return $this->crudModel() ? $this->crudModel()::columns() : null;
+        return $this->getCrudModel() ? $this->getCrudModel()::columns() : null;
     }
 
     public function withToolbar()
@@ -167,6 +182,7 @@ trait ControllerCrud
             'buttons' => $this->toolbarButtons()
         ];
     }
+
     public function withTable()
     {
         $res['sortable'] = $this->tableSortable();

@@ -259,6 +259,9 @@ $api->version('v1', [
                     $api->get('coolers/count_cooler_number', 'CoolersController@countCoolerNumber')->name('api.ccrp.reports.coolers.count_cooler_number');
                     $api->get('coolers/count_cooler_volume', 'CoolersController@countCoolerVolume')->name('api.ccrp.reports.coolers.count_cooler_volume');
                     $api->get('coolers/count_cooler_status', 'CoolersController@countCoolerStatus')->name('api.ccrp.reports.coolers.count_cooler_status');
+
+                    $api->get('companies/infomation/{slug}','CompaniesController@infomationDetail')->name('api.ccrp.reports.companies.info.detail');
+                    $api->get('companies/infomation','CompaniesController@infomation')->name('api.ccrp.reports.companies.infomation');
                 });
                 //以下没有使用
                 //同步数据，获取data_id之后的新数据
