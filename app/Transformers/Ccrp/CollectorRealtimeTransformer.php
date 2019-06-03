@@ -20,7 +20,7 @@ class CollectorRealtimeTransformer extends TransformerAbstract
             'company' => $collector->company->title,
             'temp' => round($collector->temp, 1),
             'humi' => round($collector->humi, 1),
-            'refresh_time' => $collector->refresh_time,
+            'refresh_time' =>$collector->refresh_time?Carbon::createFromTimestamp($collector->refresh_time)->toDateTimeString():'',
         ];
         $rs['unnormal_status'] = $collector->unnormal_status;
         return $rs;
