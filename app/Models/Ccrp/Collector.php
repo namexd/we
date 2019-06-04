@@ -93,14 +93,12 @@ class Collector extends Coldchain2Model
 
     public function getUnnormalStatusAttribute()
     {
-        if ($this->refresh_time < time() - 30 * 60) {
+        if ($this->warning_status ==3 ) {
             $rs = '离线';
-        } elseif ($setting = $this->warningSetting) {
-            if ($setting->temp_low > $this->temp) {
-                $rs = '低温';
-            } elseif ($setting->temp_height < $this->temp) {
-                $rs = '高温';
-            }
+        } elseif ($this->warning_type == 1) {
+            $rs = '超温';
+        }  elseif ($this->warning_type == 2) {
+            $rs = '超温';
         } else {
             $rs = '';
         }
