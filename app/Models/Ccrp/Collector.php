@@ -96,9 +96,9 @@ class Collector extends Coldchain2Model
         if ($this->refresh_time < time() - 30 * 60) {
             $rs = '离线';
         } elseif ($setting = $this->warningSetting) {
-            if ($setting->temp_low < $this->temp) {
+            if ($setting->temp_low > $this->temp) {
                 $rs = '低温';
-            } elseif ($setting->temp_height > $this->temp) {
+            } elseif ($setting->temp_height < $this->temp) {
                 $rs = '高温';
             }
         } else {
@@ -110,11 +110,12 @@ class Collector extends Coldchain2Model
     public function getWarningSettingTempRangeAttribute()
     {
         if ($setting = $this->warningSetting) {
-            return [$setting->temp_low, $setting->temp_height];
-        } else {
-            $rs = [-999,999];
+            if($this->warningSetting->status == 1 and $this->warningSetting->temp_warning == 1)
+            {
+                return [$setting->temp_low, $setting->temp_height];
+            }
         }
-        return $rs;
+        return [-999,999];
     }
 
     /**
