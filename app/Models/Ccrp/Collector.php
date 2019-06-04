@@ -53,6 +53,7 @@ class Collector extends Coldchain2Model
 //        '6'=>'电压低',
 //        '7'=>'电压高',
     ];
+    const 预警类型_离线 = 3;
 
     function cooler()
     {
@@ -102,6 +103,16 @@ class Collector extends Coldchain2Model
             }
         } else {
             $rs = '';
+        }
+        return $rs;
+    }
+
+    public function getWarningSettingTempRangeAttribute()
+    {
+        if ($setting = $this->warningSetting) {
+            return [$setting->temp_low, $setting->temp_height];
+        } else {
+            $rs = [-999,999];
         }
         return $rs;
     }

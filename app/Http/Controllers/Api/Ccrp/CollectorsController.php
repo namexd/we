@@ -76,8 +76,21 @@ class CollectorsController extends Controller
     {
         $this->check();
         $collectors = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)->with('company')
-            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc')->paginate($this->pagesize);
-        return $this->response->paginator($collectors, new CollectorRealtimeTransformer());
+            ->orderBy('company_id', 'asc')->orderBy('collector_name', 'asc');
+        if($type = request()->get('type') and $type !='' and $type != 'all')
+        {
+            if($type =='overtemp')
+            {
+                $collectors = $collectors->whereIn('warning_type',[Collector::预警状态_高温,Collector::预警状态_低温]);
+            }elseif($type =='offline')
+            {
+                $collectors= $collectors->where('warning_status',Collector::预警类型_离线);
+            }
+        }
+        $count['all'] = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)->count();
+        $count['offline'] = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)->where('warning_status',Collector::预警类型_离线)->count();
+        $count['overtemp'] = Collector::whereIn('company_id', $this->company_ids)->where('status', 1)->whereIn('warning_type',[Collector::预警状态_高温,Collector::预警状态_低温])->count();
+        return $this->response->paginator($collectors->paginate($this->pagesize), new CollectorRealtimeTransformer())->addMeta('count',$count);
     }
 
 }

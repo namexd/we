@@ -23,6 +23,7 @@ class CollectorRealtimeTransformer extends TransformerAbstract
             'refresh_time' =>$collector->refresh_time?Carbon::createFromTimestamp($collector->refresh_time)->toDateTimeString():'',
         ];
         $rs['unnormal_status'] = $collector->unnormal_status;
+        $rs['warning_setting_temp_range'] = $collector->warning_setting_temp_range;
         return $rs;
     }
 }
