@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use function App\Utils\app_access_encode;
+use function App\Utils\microservice_access_encode;
 use Illuminate\Database\Eloquent\Model;
 
 class App extends Model
@@ -38,9 +39,10 @@ class App extends Model
      * app之间登录通讯信息
      * @param $app_slug
      * @param $user
+     * @param string $encode_method
      * @return array
      */
-    public function userBindedLoginInfo($app_slug, $user)
+    public function userBindedLoginInfo($app_slug, $user,$encode_method='app')
     {
         $app = self::where('slug', $app_slug)->first();
         $bindApp = $user->hasApps->where('app_id', $app->id)->first();
@@ -56,7 +58,12 @@ class App extends Model
             $res['ucenter_user_id'] = $bindApp->user_id;
             $array['app_url'] = $app->app_url;
             $array['login_url'] = $app->login_url;
-            $res = app_access_encode($app->appkey, $app->appsecret, $res);
+            if($encode_method=='app')
+            {
+                $res = app_access_encode($app->appkey, $app->appsecret, $res);
+            }else{
+                $res = microservice_access_encode($app->appkey, $app->appsecret, $res);
+            }
         } else {
             $res = false;
         }

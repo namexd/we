@@ -286,6 +286,16 @@ $api->version('v1', [
                 $api->post('{action}', 'ActionsController@index')->name('api.bpms.actions.index');
                 // 当前单位
             });
+            //ccrp测试组
+            $api->group([
+                'namespace' => 'Ccrps',
+                'prefix' => 'ccrps',
+            ], function ($api) {
+                $api->any('{action}', 'ActionsController@index')->name('api.ccrps.actions.index');
+                $api->any('{action}/{params?}/{params2?}/{params3?}', 'ActionsController@index')->name('api.ccrps.actions.index');
+
+                // 当前单位
+            });
             //Ocenter 旧的用户中心
             $api->group([
                 'namespace' => 'Ocenter',
