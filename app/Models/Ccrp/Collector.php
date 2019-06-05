@@ -53,6 +53,7 @@ class Collector extends Coldchain2Model
 //        '6'=>'电压低',
 //        '7'=>'电压高',
     ];
+    const 预警类型_离线 = 3;
 
     function cooler()
     {
@@ -92,18 +93,27 @@ class Collector extends Coldchain2Model
 
     public function getUnnormalStatusAttribute()
     {
-        if ($this->refresh_time < time() - 30 * 60) {
+        if ($this->warning_status ==3 ) {
             $rs = '离线';
-        } elseif ($setting = $this->warningSetting) {
-            if ($setting->temp_low < $this->temp) {
-                $rs = '低温';
-            } elseif ($setting->temp_height > $this->temp) {
-                $rs = '高温';
-            }
+        } elseif ($this->warning_type == 1) {
+            $rs = '超温';
+        }  elseif ($this->warning_type == 2) {
+            $rs = '超温';
         } else {
             $rs = '';
         }
         return $rs;
+    }
+
+    public function getWarningSettingTempRangeAttribute()
+    {
+        if ($setting = $this->warningSetting) {
+            if($this->warningSetting->status == 1 and $this->warningSetting->temp_warning == 1)
+            {
+                return [$setting->temp_low, $setting->temp_height];
+            }
+        }
+        return [-999,999];
     }
 
     /**
