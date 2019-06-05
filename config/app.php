@@ -52,6 +52,7 @@ return [
     */
 
     'url' => env('APP_URL', 'http://localhost'),
+    'message_url' => env('APP_MESSAGE_URL', 'https://message-ms.coldyun.net/api/'),
 
     /*
     |--------------------------------------------------------------------------

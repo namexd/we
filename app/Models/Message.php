@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use function app\Utils\microservice_access_encode;
+use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 
 class Message extends Model
@@ -22,4 +24,17 @@ class Message extends Model
         '6'=>'开通成功通知',
     ];
 
+    public function asyncSend($params)
+    {
+        $app = App::where('slug', 'we')->first();
+        $url = config('app.message_url');
+        $access = microservice_access_encode($app->appkey, $app->appsecret,['test'=>'hello ,im ccsc.admin requester']);
+        $client = new Client();
+        $res =  $client->request('POST', $url.'message', [
+            'headers' => [
+                'access' => $access,
+            ],
+            'form_params' =>$params
+        ]);
+    }
 }

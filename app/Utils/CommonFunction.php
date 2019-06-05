@@ -42,6 +42,18 @@ function format_value($value, $suffix = '')
     }
 }
 
+/**
+ * 微服务内网加密认证
+ * @param $appkey
+ * @param $appsecret
+ * @param $info
+ * @return string
+ */
+function microservice_access_encode($appkey, $appsecret, $info)
+{
+    return base64_encode(time() . '|||' . strtoupper($appkey) . '|||' . strtoupper($appsecret) . '|||' . json_encode($info));
+}
+
 /*
  * 阿里云短信-发送验证码
  */
