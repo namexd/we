@@ -303,6 +303,8 @@ $api->version('v1', [
             ], function ($api) {
                 $api->get('wxmember/check_phone/{openid}', 'WxmembersController@checkPhone')->name('api.ocenter.wxmember.check_phone');
                 $api->put('wxmember/bind_phone/{openid}/{phone}', 'WxmembersController@bindPhone')->name('api.ocenter.wxmember.bind_phone');
+                // ccrp是否包含手机号的联系人
+                $api->get('contacts/{company_id}/has_phone/{phone}', 'ConcatsController@hasPhone')->name('api.ccrp.contacts.has_phone');
             });
             //Ocenter 旧的用户中心
             $api->group([
