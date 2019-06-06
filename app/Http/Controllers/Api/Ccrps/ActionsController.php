@@ -6,7 +6,7 @@ use App\Models\Microservice\MicroserviceAPI;
 
 class ActionsController extends Controller
 {
-    public function index($action, $params = null, $params2 = null, $params3 = null)
+    public function index($action, $params = null, $params2 = null, $params3 = null, $params4 = null)
     {
         $this->check();
         if ($params) {
@@ -15,6 +15,9 @@ class ActionsController extends Controller
                 $action .= '/' . $params2;
                 if ($params3) {
                     $action .= '/' . $params3;
+                    if ($params4) {
+                        $action .= '/' . $params4;
+                    }
                 }
             }
         }
