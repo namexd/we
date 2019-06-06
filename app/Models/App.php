@@ -45,6 +45,7 @@ class App extends Model
     public function userBindedLoginInfo($app_slug, $user,$encode_method='app')
     {
         $app = self::where('slug', $app_slug)->first();
+        $userinfo = $user->toArray();
         $bindApp = $user->hasApps->where('app_id', $app->id)->first();
         $array['login_url'] = '';
         $array['app_url'] = '';
@@ -56,6 +57,7 @@ class App extends Model
             $res['userid'] = $bindApp->app_userid;
             $res['unitid'] = $bindApp->app_unitid;
             $res['ucenter_user_id'] = $bindApp->user_id;
+            $res['userinfo'] = $userinfo;
             $array['app_url'] = $app->app_url;
             $array['login_url'] = $app->login_url;
             if($encode_method=='app')
