@@ -42,7 +42,10 @@ class ActionsController extends Controller
                 return $this->response->array($rs)->setStatusCode($rs['status_code']);
             }
             return $rs;
-        } elseif ($rs == null) {
+        } elseif ($res and json_decode($res, true) == null and $res != strip_tags($res)) {
+            //如果非json并且包含html直接返回
+            return $res;
+        } elseif ($rs = json_decode($res, true) == null) {
             {
                 if (isset($rs['status_code']) and $rs['status_code'] != 200) {
                     return $this->response->created();
