@@ -294,7 +294,15 @@ $api->version('v1', [
                 $api->any('{action}', 'ActionsController@index')->name('api.ccrps.actions.index');
                 $api->any('{action}/{params?}/{params2?}/{params3?}/{params4?}', 'ActionsController@index')->name('api.ccrps.actions.index');
 
-                // 当前单位
+            });
+            //文件导出
+            $api->group([
+                'namespace' => 'Export',
+                'prefix' => 'exports',
+            ], function ($api) {
+                $api->any('{action}', 'ActionsController@index')->name('api.ccrps.actions.index');
+                $api->any('{action}/{params?}/{params2?}/{params3?}/{params4?}', 'ActionsController@index')->name('api.exports.actions.index');
+
             });
             //Ocenter 旧的用户中心
             $api->group([
