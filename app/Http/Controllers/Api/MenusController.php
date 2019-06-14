@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Ccrps\ActionsController;
 use App\Models\Menu;
-use App\Models\User;
-use App\Transformers\MenuTransformer;
-use Dingo\Api\Auth\Auth;
 use Jenssegers\Agent\Facades\Agent;
-use Request;
 
 class MenusController extends Controller
 {
@@ -21,7 +18,15 @@ class MenusController extends Controller
             }
         }
         $is_mobile = Agent::isMobile();
-        $menus = (new Menu())->listTree($this->user(), $is_mobile, $system);
+        $slugs=(new ActionsController())->index('menus');
+        if(is_array($slugs))
+        {
+            $menus = (new Menu())->listTree($this->user(), $is_mobile, $system,$slugs);
+        }
+        else
+        {
+            $menus = (new Menu())->listTree($this->user(), $is_mobile, $system);
+        }
         $data['data'] = $menus;
         return $this->response->array($data);
     }

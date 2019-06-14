@@ -70,7 +70,7 @@ class Menu extends Model
     {
         $orderColumn = DB::getQueryGrammar()->wrap($this->orderColumn);
 
-        $byOrder = $orderColumn . ' = 0,' . $orderColumn;
+        $byOrder = $orderColumn.' = 0,'.$orderColumn;
 
         return static::with('roles')->orderByRaw($byOrder)->get()->toArray();
     }
@@ -126,15 +126,18 @@ class Menu extends Model
         });
     }
 
-    public function listTree($user, $is_mobile, $topid = null)
+    public function listTree($user, $is_mobile, $topid = null, $slug = [])
     {
         $roles = $user->roles->pluck('id');
         $roles[] = Role::FREE_ROLE_ID;
-        $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+        $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web');
+        if (!is_null($slug)) {
+            $menus = $menus->whereIn('slug', $slug);
+        }
+        $menus = $menus->orderBy('order', 'asc')->get();
         if ($user->isTester() and !$user->isLengwang()) {
             foreach ($menus as &$menu) {
-                if(!$menu->isFree())
-                {
+                if (!$menu->isFree()) {
                     $menu->uri = '';
                 }
             }

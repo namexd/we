@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\Exports;
+namespace App\Http\Controllers\Api\Export;
 
 use App\Http\Controllers\Api\Controller as BaseController;
 use App\Models\App;
