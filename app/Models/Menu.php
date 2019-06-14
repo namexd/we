@@ -131,7 +131,7 @@ class Menu extends Model
         $roles = $user->roles->pluck('id');
         $roles[] = Role::FREE_ROLE_ID;
         $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web');
-        if (!is_null($slug)) {
+        if ($slug) {
             $menus = $menus->whereIn('slug', $slug);
         }
         $menus = $menus->orderBy('order', 'asc')->get();
