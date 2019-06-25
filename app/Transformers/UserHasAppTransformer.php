@@ -15,6 +15,7 @@ class UserHasAppTransformer extends TransformerAbstract
             'user_id' => $hasApp->user_id,
             'app_id' => $hasApp->app_id,
             'app_name' => $hasApp->app->name,
+            'app_program' => $hasApp->app->program,
             'app_slug' => $hasApp->app->slug,
             'app_username' => $hasApp->app_username,
             'app_userid' => $hasApp->app_userid,
