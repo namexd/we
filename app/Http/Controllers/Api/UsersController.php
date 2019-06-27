@@ -184,7 +184,7 @@ class UsersController extends Controller
         if (!$user->phone or !$user->phone_verified) {
             return $this->response->error('您的手机号没有验证。', 456);
         }
-        $app = App::where('slug', $slug)->first();
+        $app = App::where('program', $slug)->first();
         if (!$app) {
             return $this->response->error('系统请求错误。', 422);
         }
