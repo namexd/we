@@ -32,7 +32,7 @@ class AppsController extends Controller
     public function programsUserNotBind()
     {
         $user = $this->user();
-        $programsBind = App::where('status',1)->whereIn('id',$user->hasApps->pluck('app_id'))->pluck('program');
+        $programsBind = App::whereIn('id',$user->hasApps->pluck('app_id'))->pluck('program');
         $programs = App::where('status',1)->whereNotIn('program',$programsBind)->groupBy('program')->get();
         return $this->response->collection($programs, new AppTransformer());
     }
