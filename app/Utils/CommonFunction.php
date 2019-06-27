@@ -53,7 +53,24 @@ function microservice_access_encode($appkey, $appsecret, $info)
 {
     return base64_encode(time() . '|||' . strtoupper($appkey) . '|||' . strtoupper($appsecret) . '|||' . json_encode($info));
 }
-
+/**
+ * 微服务内网解密认证
+ * @param $access
+ * @return string
+ */
+function microservice_access_decode($access)
+{
+    $data = base64_decode($access);
+    if (!$data) {
+        return null;
+    }
+    $data = explode("|||", $data);
+    $response['time'] = $data[0] ?? 0;
+    $response['appkey'] = $data[1] ?? null;
+    $response['appsecret'] = $data[2] ?? null;
+    $response['info'] = isset($data[3])?json_decode($data[3], true) : null;
+    return $response;
+}
 /*
  * 阿里云短信-发送验证码
  */
