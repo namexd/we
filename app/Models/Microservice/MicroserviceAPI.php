@@ -6,6 +6,7 @@ use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\RequestException;
+use Symfony\Component\Debug\Exception\FatalThrowableError;
 
 class MicroserviceAPI
 {
@@ -73,8 +74,15 @@ class MicroserviceAPI
         try {
             $response = $client->$method($this->api_server . $function, $options);
             return $response->getBody()->getContents();
-        } catch (RequestException $exception) {
+        }
+        catch (RequestException $exception) {
 
+            if($exception->getResponse() ==null)
+            {
+                $content['status_code'] = 500;
+                $content['message'] = '系统出错啦.'.$exception->getMessage();
+                return json_encode($content);
+            }
             $content = $exception->getResponse()->getBody()->getContents();
             $content= json_decode($content,true);
             if(isset($content['status_code']) and $content['status_code']==422)
