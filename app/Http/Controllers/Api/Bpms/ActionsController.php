@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Bpms;
 
 use App\Models\Bpms\BpmsAPI;
+use function App\Utils\microservice_access_decode;
 use Log;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
@@ -12,6 +13,17 @@ class ActionsController extends Controller
     public function index($action)
     {
         $this->check();
+
+        if (request()->get('debug')) {
+            $response['_debug']['_url'] = $this->api_server;
+            $response['_debug']['access'] = $this->access;
+//            $response['_debug']['access_decode'] = microservice_access_decode($this->access);
+            $response['_debug']['action'] = $action;
+            $response['_debug']['method'] = request()->method();
+            $response['_debug']['request'] = request()->all();
+
+            return $this->response->array($response);
+        }
         $api = new BpmsAPI($this->access,$this->api_server);
         $res = $api->action(request()->method(), $action, request()->all());
         return $this->getResponse($res,$action);
