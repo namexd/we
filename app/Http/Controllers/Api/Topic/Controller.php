@@ -20,13 +20,9 @@ class Controller extends BaseController
 
     public function check()
     {
+
         $ucenter_user = $this->user();
-        $app_ids = App::where('program',$this->app_program)->pluck('id');
-        $user_app = UserHasApp::where('user_id', $ucenter_user->id)->whereIn('app_id', $app_ids)->first();
-        if ($user_app == null) {
-            return $this->response->error('系统账号绑定错误', 457);
-        }
-        $app = App::find($user_app->app_id);
+        $app = App::where('program',$this->app_program)->first();
         $this->api_server = $app->api_url;
         $user_info = (new App())->userBindedLoginInfo($app->slug, $ucenter_user,'microservice');
         $this->access = $user_info['access'];
