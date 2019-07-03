@@ -33,7 +33,7 @@ class User extends Coldchain2Model
     public function checkPhone($username, $phone)
     {
         $user =  $this->where('username', $username)->where('status', 1)->first();
-        return $concats = Contact::where('phone',$phone)->where('company_id',$user->company_id)->count()>0?true:false;
+        return Contact::where('phone',$phone)->where('status',1)->where('company_id',$user->company_id)->count()>0?true:false;
     }
 
     public function getByUsername($username)
