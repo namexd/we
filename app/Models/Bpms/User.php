@@ -41,6 +41,12 @@ class User extends BpmsAuthAPI
         return false;
     }
 
+    //通过手机号验证是否实名认证
+    public function checkPhone($username, $phone)
+    {
+        return true;
+    }
+
     public function getByUsername($username)
     {
         return false;

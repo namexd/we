@@ -29,6 +29,13 @@ class User extends Coldchain2Model
         return $this->where('username', $username)->where('password',$this->user_md5($password))->where('status', 1)->select('id', 'username',  DB::raw('company_id as unitid'))->first()??false;
     }
 
+    //通过手机号验证是否实名认证
+    public function checkPhone($username, $phone)
+    {
+        $user =  $this->where('username', $username)->where('status', 1)->first();
+        return $concats = Contact::where('phone',$phone)->where('company_id',$user->company_id)->count()>0?true:false;
+    }
+
     public function getByUsername($username)
     {
        return $this->where('username', $username)->where('status', 1)->select('id', 'username',  DB::raw('company_id as unitid'))->first();
