@@ -144,7 +144,7 @@ class User extends Authenticatable implements JWTSubject
      */
     public function registerTester()
     {
-        if (!$this->isTester()) {
+        if (!$this->isTester() and $this->roles->count()>0) {
             $role = Role::where('slug', Role::测试用户)->first();
             $this->roles()->attach($role->id);
         }
