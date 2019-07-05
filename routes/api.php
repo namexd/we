@@ -16,8 +16,8 @@ $api->version('v1', [
     // 短信验证码，1分钟，1次
     $api->group([
         'middleware' => ['api.throttle', 'api.auth'],
-        'limit' => config('api.rate_limits.sms.limit'),
-        'expires' => config('api.rate_limits.sms.expires'),
+//        'limit' => config('api.rate_limits.sms.limit'),
+//        'expires' => config('api.rate_limits.sms.expires'),
     ], function ($api) {
         $api->post('verification_codes', 'VerificationCodesController@store')
             ->name('api.verificationCodes.store');
