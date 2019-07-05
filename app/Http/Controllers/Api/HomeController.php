@@ -22,19 +22,15 @@ class HomeController extends Controller
         $data['data']['ads'] = $ads;
 
         $data['data']['topics'] = Topic::lastPosts();
-        if ($menus == []) {
-            $user = $this->user();
-            if (count($user->hasApps)) {
-                $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您绑定的 <b style="color:blue">' . (implode(',', $user->apps->pluck('name')->toArray())) . '</b> ，功能陆续开发。</br></div>';
-            } else {
-                $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您可能没有<b style="color:blue">绑定系统</b>，请到【我的】页面绑定业务系统。</br></div>';
-            }
+
+        $user = $this->user();
+        if ($user->isTester()) {
+            $data['data']['announcement'] = config('api.defaults.announcement_tester');
         } else {
-            $user = $this->user();
-            if ($user->isTester()) {
-                $data['data']['announcement'] = config('api.defaults.announcement_tester');
-            } else {
+            if (count($user->hasApps)) {
                 $data['data']['announcement'] = config('api.defaults.announcement');
+            } else {
+                $data['data']['announcement'] = config('api.defaults.announcement_noapp');
             }
         }
 

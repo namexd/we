@@ -272,5 +272,6 @@ return [
         'auto_register_tester' => env("AUTO_REGISTER_TESTER", false),
         'announcement' => env("DEFAULT_ANNOUNCEMENT", ""),
         'announcement_tester' => env("DEFAULT_ANNOUNCEMENT_TESTER", ""),
+        'announcement_noapp' => env("DEFAULT_ANNOUNCEMENT_NOAPP", ""),
     ],
 ];
