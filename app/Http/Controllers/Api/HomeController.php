@@ -21,8 +21,6 @@ class HomeController extends Controller
         $ads = AdCategory::where('types', $is_mobile ? 'mobile' : 'web')->with('ads')->get()->toArray();
         $data['data']['ads'] = $ads;
 
-        $data['data']['topics'] = Topic::lastPosts();
-
         $user = $this->user();
         if ($user->isTester()) {
             $data['data']['announcement'] = config('api.defaults.announcement_tester');

@@ -20,7 +20,7 @@ class AppsController extends Controller
     }
     public function programs()
     {
-        $apps = App::where('status',1)->groupBy('program')->get();
+        $apps = App::where('status',1)->groupBy('program')->orderBy('id','asc')->get();
         return $this->response->collection($apps,new AppTransformer());
     }
     public function programsList($program)
