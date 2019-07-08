@@ -33,7 +33,7 @@ class AppsController extends Controller
     {
         $user = $this->user();
         $programsBind = App::whereIn('id',$user->hasApps->pluck('app_id'))->pluck('program');
-        $programs = App::where('status',1)->whereNotIn('program',$programsBind)->groupBy('program')->get();
+        $programs = App::where('status',1)->whereNotIn('program',$programsBind)->groupBy('program')->orderBy('id','asc')->get();
         return $this->response->collection($programs, new AppTransformer());
     }
 
