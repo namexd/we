@@ -136,7 +136,7 @@ class UsersController extends Controller
             return $this->response->error('密码错误。', 422);
         }
         if (!$user->isLengwang() and  !$users->checkPhone($username,$user->phone,$user)) {
-            return $this->response->error('您的手机号不是本系统的联系人。', 422);
+            return $this->response->error('您的手机号不是本系统的联系人，若需绑定请联系客服。', 422);
         }
         $rs = $app->bind($user, $username, $login->id, $login->unitid);
         return $this->response->created(null, $rs->toArray());

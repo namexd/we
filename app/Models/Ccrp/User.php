@@ -44,19 +44,40 @@ class User extends Coldchain2Model
             })->count();
             if($inWarninger)
             {
-                $contact = new Contact();
-                $contact->phone = $phone;
-                $contact->name = $ucenter_user->realname??$ucenter_user->name;
-                $contact->company_id = $user->company_id;
-                $contact->create_time = time();
-                $contact->status = 1;
-                $contact->note = "";
-                $contact->create_uid = 0;
-                $contact->save();
+                $hasContact = Contact::where('phone',$phone)->where('status',0)->where('company_id',$user->company_id)->first();
+                if(!$hasContact) {
+                    $contact = new Contact();
+                    $contact->phone = $phone;
+                    $contact->name = $ucenter_user->realname ?? $ucenter_user->name;
+                    $contact->company_id = $user->company_id;
+                    $contact->create_time = time();
+                    $contact->status = 1;
+                    $contact->note = "";
+                    $contact->create_uid = 0;
+                    $contact->save();
+                }else{
+                    $hasContact->status=1;
+                    $hasContact->save();
+                }
                 return true;
+            }else{
+                if(Contact::where('phone',$phone)->where('status',0)->where('company_id',$user->company_id)->count()==0)
+                {
+                    $contact = new Contact();
+                    $contact->phone = $phone;
+                    $contact->name = $ucenter_user->realname??$ucenter_user->name;
+                    $contact->company_id = $user->company_id;
+                    $contact->create_time = time();
+                    $contact->status = 0;
+                    $contact->note = "";
+                    $contact->create_uid = 0;
+                    $contact->save();
+                }
             }
+            return false;
+        }else{
+            return true;
         }
-        return false;
     }
 
     public function getByUsername($username)
