@@ -2,6 +2,7 @@
 
 namespace App\Models\Ccrp;
 
+use function foo\func;
 use Illuminate\Support\Facades\DB;
 
 class User extends Coldchain2Model
@@ -30,10 +31,32 @@ class User extends Coldchain2Model
     }
 
     //通过手机号验证是否实名认证
-    public function checkPhone($username, $phone)
+    public function checkPhone($username, $phone, $ucenter_user=null)
     {
         $user =  $this->where('username', $username)->where('status', 1)->first();
-        return Contact::where('phone',$phone)->where('status',1)->where('company_id',$user->company_id)->count()>0?true:false;
+        $isContact = Contact::where('phone',$phone)->where('status',1)->where('company_id',$user->company_id)->count()>0?true:false;
+        if($isContact == false){
+            //check warninger
+            $inWarninger = Warninger::where('company_id',$user->company_id)->whereIn('warninger_type',[1,4])->where('bind_times','>',0)->where(function ($query) use ($phone){
+                $query->where('warninger_body', 'like', '%'.$phone.'%')
+                    ->orWhere('warninger_body_level2', 'like', '%'.$phone.'%')
+                    ->orWhere('warninger_body_level3', 'like', '%'.$phone.'%');
+            })->count();
+            if($inWarninger)
+            {
+                $contact = new Contact();
+                $contact->phone = $phone;
+                $contact->name = $ucenter_user->realname??$ucenter_user->name;
+                $contact->company_id = $user->company_id;
+                $contact->create_time = time();
+                $contact->status = 1;
+                $contact->note = "";
+                $contact->create_uid = 0;
+                $contact->save();
+                return true;
+            }
+        }
+        return false;
     }
 
     public function getByUsername($username)

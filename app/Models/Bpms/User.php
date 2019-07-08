@@ -42,7 +42,7 @@ class User extends BpmsAuthAPI
     }
 
     //通过手机号验证是否实名认证
-    public function checkPhone($username, $phone)
+    public function checkPhone($username=null, $phone=null, $user=null)
     {
         return true;
     }
