@@ -56,6 +56,18 @@ class MicroserviceAPI
         return $options;
     }
 
+    public function delete($params)
+    {
+        $header = [
+            'access' => $this->access,
+        ];
+        $options = [
+            'form_params' => $params,
+            'headers' => $header,
+        ];
+        return $options;
+    }
+
     public function action($method, $function, $params)
     {
         switch ($method) {
@@ -67,6 +79,9 @@ class MicroserviceAPI
                 break;
             case 'PUT':
                 $options = $this->put($params);
+                break;
+            case 'DELETE':
+                $options = $this->delete($params);
                 break;
         }
 
