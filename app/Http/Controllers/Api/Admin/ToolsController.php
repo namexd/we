@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Models\ApiLoginLog;
 use App\Models\App;
 use App\Models\User;
+use App\Models\UserHasApp;
 use App\Transformers\UserHidePhoneTransformer;
 use Carbon\Carbon;
 
@@ -25,6 +26,14 @@ class ToolsController extends Controller
             'meta' => [
                 "header" => '登录统计',
                 "detail_data" => '/api/admin/tools/information/loginlog',
+                "detail_template" => 'list'
+            ]
+        ];
+        $info['data'][] = [
+            "title" => '查看用户系统绑定情况',
+            'meta' => [
+                "header" => '系统绑定',
+                "detail_data" => '/api/admin/tools/information/appsbind',
                 "detail_template" => 'list'
             ]
         ];
@@ -59,6 +68,30 @@ class ToolsController extends Controller
                     [
                         "label" => "登录次数",
                         "value" => "login_times"
+                    ]
+                ];
+
+                return $info;
+                break;
+            case 'appsbind':
+                $this->setCrudModel(UserHasApp::class);
+                $data = UserHasApp::groupBy('app_id')->select(\DB::raw("app_id,count(*) as cnt"))->orderBy('app_id', 'asc')->with('app')->get();
+                $info = [];
+                foreach ($data as $row) {
+                    $info['data'][] = [
+                        "app_name" => $row->app->name,
+                        "bind_times" => $row->cnt,
+                    ];
+                }
+
+                $info["meta"]["columns"] = [
+                    [
+                        "label" => "系统应用",
+                        "value" => "app_name"
+                    ],
+                    [
+                        "label" => "绑定人数",
+                        "value" => "bind_times"
                     ]
                 ];
 
