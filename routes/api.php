@@ -219,6 +219,7 @@ $api->version('v1', [
                 $api->get('users/statics', 'UsersController@statics')->name('api.admin.users.statics');
                 $api->get('users', 'UsersController@index')->name('api.admin.users.index');
                 $api->get('tools', 'ToolsController@infomation')->name('api.admin.tools.infomation');
+                $api->get('tools/information/{slug}','ToolsController@infomationDetail')->name('api.admin.tools.info.detail');
             });
 
             //topics

@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Admin;
 
+use App\Models\ApiLoginLog;
 use App\Models\App;
 use App\Models\User;
 use App\Transformers\UserHidePhoneTransformer;
+use Carbon\Carbon;
 
 class ToolsController extends Controller
 {
@@ -18,6 +20,14 @@ class ToolsController extends Controller
                 "detail_template" => '/pages/ucenter/operational/index',
             ]
         ];
+        $info['data'][] = [
+            "title" => '查看用户登录情况',
+            'meta' => [
+                "header" => '登录统计',
+                "detail_data" => '/api/admin/tools/information/loginlog',
+                "detail_template" => 'list'
+            ]
+        ];
         $info["meta"]["columns"] = [
             [
                 "label" => "",
@@ -29,27 +39,30 @@ class ToolsController extends Controller
 
     public function infomationDetail($slug)
     {
-        $this->check();
         switch ($slug) {
-            case 'company':
-                $this->setCrudModel(Company::class);
-                $return = $this->response->item($this->company, new CompanySettingsTransformer());
-                return $this->display($return,'columns');
-                break;
-            case 'warningers':
-                $this->setCrudModel(Warninger::class);
-                $warningers = Warninger::where('company_id',$this->company->id)->get();
-                return $this->display($this->response->collection($warningers,new WarningerTransformer()),'columns');
-            case 'concats':
-                $this->setCrudModel(Contact::class);
-                $users =Contact::where('company_id', $this->company->id)->get();
-                return $this->display($this->response->collection($users,new ContactTransformer()),'columns');
-                break;
-            case 'users':
-                $this->setCrudModel(User::class);
-                $app = App::where('slug',App::冷链监测系统)->first();
-                $users =User::whereIn('id', $app->hasUser->where('app_id',$app->id)->where('app_unitid',$this->company->id)->pluck('user_id'))->get();
-                return $this->display($this->response->collection($users,new UserHidePhoneTransformer()),'columns');
+            case 'loginlog':
+                $this->setCrudModel(ApiLoginLog::class);
+                $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-7)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();
+                $info = [];
+                foreach ($data as $row) {
+                    $info['data'][] = [
+                        "date" => Carbon::now()->addDay($row->days - Carbon::now()->day )->toDateString(),
+                        "login_times" => $row->cnt,
+                    ];
+                }
+
+                $info["meta"]["columns"] = [
+                    [
+                        "label" => "日期",
+                        "value" => "date"
+                    ],
+                    [
+                        "label" => "登录次数",
+                        "value" => "login_times"
+                    ]
+                ];
+
+                return $info;
                 break;
 
         }
