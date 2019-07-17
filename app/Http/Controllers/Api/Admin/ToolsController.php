@@ -14,7 +14,14 @@ class ToolsController extends Controller
             "title" => '查看用户注册与激活情况',
             'meta' => [
                 "header" => '用户情况',
-                "detail_data" => '/pages/ucenter/operational/index',
+                "detail_data" => '',
+                "detail_template" => '/pages/ucenter/operational/index',
+            ]
+        ];
+        $info["meta"]["columns"] = [
+            [
+                "label" => "",
+                "value" => "title"
             ]
         ];
         return $this->response->array($info);
