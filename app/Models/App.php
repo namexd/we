@@ -67,6 +67,7 @@ class App extends Model
                 $res = microservice_access_encode($app->appkey, $app->appsecret, $res);
             }
         } else {
+            $res['userinfo'] = $userinfo;
             $res = microservice_access_encode($app->appkey, $app->appsecret, $res);
         }
         $array['access'] = $res;
