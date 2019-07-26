@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Ccrps\ActionsController;
 use App\Models\AdCategory;
+use App\Models\App;
 use App\Models\Ccrp\User;
 use App\Models\Menu;
 use App\Models\Topic;
@@ -27,6 +29,11 @@ class HomeController extends Controller
         } else {
             if (count($user->hasApps)) {
                 $data['data']['announcement'] = config('api.defaults.announcement');
+                if (in_array(App::where('slug',App::冷链监测系统)->first()->id,$user->hasApps->pluck('app_id')->toArray()))
+                {
+                    $count= (new ActionsController())->index('collectors/count_warningSetting_unset')['count'];
+                    $data['data']['announcement']= "<div style='color:red; padding:2px 10px;'>您当前有{$count}个探头未设置报警。</div>";
+                }
             } else {
                 $data['data']['announcement'] = config('api.defaults.announcement_noapp');
             }
