@@ -37,6 +37,14 @@ class ToolsController extends Controller
                 "detail_template" => 'list'
             ]
         ];
+        $info['data'][] = [
+            "title" => '查看文章更新数量和查看数量',
+            'meta' => [
+                "header" => '内容咨询',
+                "detail_data" => '/api/admin/tools/information/topics',
+                "detail_template" => 'list'
+            ]
+        ];
         $info["meta"]["columns"] = [
             [
                 "label" => "",
@@ -49,6 +57,30 @@ class ToolsController extends Controller
     public function infomationDetail($slug)
     {
         switch ($slug) {
+            case 'topics':
+                $this->setCrudModel(ApiLoginLog::class);
+                $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-7)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();
+                $info = [];
+                foreach ($data as $row) {
+                    $info['data'][] = [
+                        "date" => Carbon::now()->addDay($row->days - Carbon::now()->day )->toDateString(),
+                        "login_times" => $row->cnt,
+                    ];
+                }
+
+                $info["meta"]["columns"] = [
+                    [
+                        "label" => "日期",
+                        "value" => "date"
+                    ],
+                    [
+                        "label" => "登录次数",
+                        "value" => "login_times"
+                    ]
+                ];
+
+                return $info;
+                break;
             case 'loginlog':
                 $this->setCrudModel(ApiLoginLog::class);
                 $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-7)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();

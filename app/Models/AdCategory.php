@@ -10,7 +10,7 @@ class AdCategory extends Model
 
     public function ads()
     {
-        return $this->hasMany(Ad::class,'category_id');
+        return $this->hasMany(Topic::class,'category_id');
     }
     public function getTypesAttribute($value)
     {
