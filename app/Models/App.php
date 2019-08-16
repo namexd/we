@@ -121,7 +121,7 @@ class App extends Model
         if(!$user_has_app) return null;
         $role_slug = $this->program;
         if ($role_slug == Role::冷链用户) {
-            $app_user = \App\Models\Ccrp\User::find($user_has_app->app_userid);
+          $app_user = \App\Models\Ccrp\User::find($user_has_app->app_userid);
             $userCompany = $app_user->userCompany;
             if ($userCompany->cdcLevel() >= 1) {
                 $role_slug = Role::冷链疾控用户;

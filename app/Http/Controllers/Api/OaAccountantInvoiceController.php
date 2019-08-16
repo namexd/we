@@ -29,16 +29,14 @@ class OaAccountantInvoiceController extends Controller
      */
     public function store(Request $request)
     {
-        $data=$request->only(['type','date','company_name','number','invoice_number','invoice_amount','tax_rate',
-            'tax_amount','price_tax_count','product','count','tax_price','express_number','manager',
-            'collect_date','collect_amount','primary']);
+        $data=$request->all();
         $result=OaAccountantInvoice::create($data);
-        if ($request)
+        if ($result)
         {
-            return $this->response->item($result)->setStatusCode(201);
+            return $this->response->created();
         }else
         {
-            return $this->response->errorInternal();
+            return $this->response->errorInternal('添加失败');
         }
     }
 
@@ -62,11 +60,9 @@ class OaAccountantInvoiceController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $data=$request->only(['type','date','company_name','number','invoice_number','invoice_amount','tax_rate',
-            'tax_amount','price_tax_count','product','count','tax_price','express_number','manager',
-            'collect_date','collect_amount','primary']);
+        $data=$request->all();
         $result=OaAccountantInvoice::where('id',$id)->update($data);
-        if ($request)
+        if ($result)
         {
             return $this->response->item($result);
         }else

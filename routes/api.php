@@ -163,6 +163,9 @@ $api->version('v1', [
             $api->resource('oa_accountant_invoices', OaAccountantInvoiceController::class);
             //销售周报管理
             $api->resource('oa_sales_report', OaSalesReportController::class);
+            //用户发票信息
+            $api->get('invoice_type', 'UserInvoiceInfoController@getInvoiceType');
+            $api->resource('user_invoice_info', UserInvoiceInfoController::class);
 
 
             //工具查询-批签发通用数据
