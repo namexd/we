@@ -81,6 +81,7 @@ return [
             'isCName' => env('ALIYUN_OSS_ISCNAME'),//<true|false> // 是否使用自定义域名,true: 则Storage.url()会使用自定义的cdn或域名生成文件url， false: 则使用外部节点生成url
             'debug' => env('ALIYUN_OSS_DEBUG'),//<true|false>
             'folder' => env('ALIYUN_OSS_FOLDER'),//<true|false>
+            'url' => env('ALIYUN_OSS_URL'),
         ],
 
     ],
