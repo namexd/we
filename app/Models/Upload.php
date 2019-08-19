@@ -37,7 +37,7 @@ class Upload extends Model
                 $this->action = $action;
                 $this->unit_id = $unit_id;
                 $this->filename = substr($original_name, 0, 20);
-                $this->url = $url;
+                $this->url = $filename;
                 $this->ext = $extension;
                 $this->type = $type;
                 $this->size = $size;

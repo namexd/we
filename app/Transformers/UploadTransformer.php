@@ -18,7 +18,7 @@ class UploadTransformer extends TransformerAbstract
             'action' => $upload->action,
             'unit_id' => $upload->unit_id,
             'filename' => $upload->filename,
-            'url' => $upload->url,
+            'url' =>strrpos($upload->url,'https')!==false?$upload->url:config('filesystems.disks.oss.url').'/'.$upload->url,
             'ext' => $upload->ext,
             'type' => $upload->type,
             'size' => $upload->size,
