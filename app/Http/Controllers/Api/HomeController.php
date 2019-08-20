@@ -32,7 +32,10 @@ class HomeController extends Controller
                 if (in_array(App::where('slug',App::冷链监测系统)->first()->id,$user->hasApps->pluck('app_id')->toArray()))
                 {
                     $count= (new ActionsController())->index('collectors/count_warningSetting_unset')['count'];
-                    $data['data']['announcement']= "<div style='color:red; padding:2px 10px;'>您当前有{$count}个探头未设置报警。</div>";
+                    if ($count>0)
+                    {
+                        $data['data']['announcement']= "<div style='color:red; padding:2px 10px;'>您当前有{$count}个探头未设置报警。</div>";
+                    }
                 }
             } else {
                 $data['data']['announcement'] = config('api.defaults.announcement_noapp');

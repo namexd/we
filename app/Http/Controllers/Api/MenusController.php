@@ -18,15 +18,7 @@ class MenusController extends Controller
             }
         }
         $is_mobile = Agent::isMobile();
-        $slugs=(new ActionsController())->index('menus');
-        if(is_array($slugs))
-        {
-            $menus = (new Menu())->listTree($this->user(), $is_mobile, $system,$slugs);
-        }
-        else
-        {
-            $menus = (new Menu())->listTree($this->user(), $is_mobile, $system);
-        }
+        $menus = (new Menu())->listTree($this->user(), $is_mobile, $system);
         $data['data'] = $menus;
         return $this->response->array($data);
     }

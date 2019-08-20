@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Http\Controllers\Api\Ccrps\ActionsController;
 use Encore\Admin\Traits\AdminBuilder;
 use App\Traits\ModelTree;
 use Illuminate\Database\Eloquent\Model;
@@ -126,15 +127,28 @@ class Menu extends Model
         });
     }
 
-    public function listTree($user, $is_mobile, $topid = null, $slug = [])
+    public function listTree($user, $is_mobile, $topid = null)
     {
         $roles = $user->roles->pluck('id');
         $roles[] = Role::FREE_ROLE_ID;
-        $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web');
-        if ($slug) {
-            $menus = $menus->whereIn('slug', $slug);
-        }
+        $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->whereRaw(' (length(program)<1 or program is null) ');
         $menus = $menus->orderBy('order', 'asc')->get();
+        $menus =$menus->toArray();
+        if (in_array(App::冷链监测系统,$user->apps->pluck('slug')->toArray()))
+        {
+            $slugs=(new ActionsController())->index('menus');
+            if ($slugs) {
+                $ccrp_menus = $this->withRoles($roles)->whereIn('slug',$slugs)->where('types', $is_mobile ? 'mobile' : 'web')->get();
+                $menus =collect([$menus,$ccrp_menus->toArray()]);
+            }
+        }
+//        if (in_array(App::疫苗追溯系统,$user->apps->pluck('slug')->toArray()))
+//        {
+//                $bpms_menus = $this->withRoles($roles)->where('program','bpms')->get();
+//                $menus =collect([$menus,$bpms_menus->toArray()]);
+//        }
+        $menuIds= $menus->collapse()->pluck('id');
+        $menus=$this->whereIn('id',$menuIds)->orderBy('order', 'asc')->get();
         if ($user->isTester() and !$user->isLengwang()) {
             foreach ($menus as &$menu) {
                 if (!$menu->isFree()) {
