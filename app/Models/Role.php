@@ -18,6 +18,7 @@ class Role extends Model
     const 测试用户 = 'tester';
     const 冷王 = 'lengwang';
     const 免费 = 'free';
+    const 开发 = 'develop';
 
     protected $fillable = [
         'name', 'slug'
