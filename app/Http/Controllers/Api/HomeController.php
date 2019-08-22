@@ -7,7 +7,6 @@ use App\Models\AdCategory;
 use App\Models\App;
 use App\Models\Ccrp\User;
 use App\Models\Menu;
-use App\Models\Topic;
 use App\Models\UserHasApp;
 use App\Transformers\Ccrp\CompanyInfoTransformer;
 use App\Transformers\UserTransformer;
