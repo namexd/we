@@ -8,7 +8,7 @@ $api->version('v1', [
     $api->post('lengwang/topics', 'TopicsController@testStore')->name('topics.testStore');
     $api->get('lengwang/topics/categories', 'TopicsController@category')->name('topics.categories');
     $api->post('lengwang/uploads', 'UploadsController@store')->name('api.uploads.store');
-
+    $api->get('domains/{domain}','DomainsController@show');
 //    $api->get('{path}', function (Request $request) use ($api) {
 ////拿到路由，查数据库/缓存，想怎么渲染就怎渲染
 //        return $request->getPathInfo();
