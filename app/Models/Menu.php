@@ -132,7 +132,7 @@ class Menu extends Model
         $roles = $user->roles->pluck('id');
         $roles[] = Role::FREE_ROLE_ID;
         if (in_array(Role::开发, $user->roles->pluck('slug')->toArray())) {
-            $menus  = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+            $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
         } else {
             $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->whereRaw(' (length(program)<1 or program is null) ');
             $menus = $menus->orderBy('order', 'asc')->get();
@@ -159,6 +159,30 @@ class Menu extends Model
             }
         }
 
+        if ($topid) {
+            $pid = $topid;
+        } else {
+            if ($is_mobile) {
+                $pid = self::移动端;
+            } else {
+                $pid = self::网页端冷链监测;
+            }
+        }
+        $menus = $this->toTree($menus->toArray(), $pid);
+        return $menus;
+
+    }
+
+    public function listTreeDefault($is_mobile, $topid = null)
+    {
+        $roles = [
+            Role::FREE_ROLE_ID,
+            Role:: TEST_ROLE_ID
+        ];
+        $menus = $this->withRoles($roles)->where('types', $is_mobile ? 'mobile' : 'web')->orderBy('order', 'asc')->get();
+        foreach ($menus as &$menu) {
+            $menu->uri = '';
+        }
         if ($topid) {
             $pid = $topid;
         } else {

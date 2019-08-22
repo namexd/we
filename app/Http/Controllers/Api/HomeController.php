@@ -29,18 +29,31 @@ class HomeController extends Controller
         } else {
             if (count($user->hasApps)) {
                 $data['data']['announcement'] = config('api.defaults.announcement');
-                if (in_array(App::where('slug',App::冷链监测系统)->first()->id,$user->hasApps->pluck('app_id')->toArray()))
-                {
-                    $count= (new ActionsController())->index('collectors/count_warningSetting_unset')['count'];
-                    if ($count>0)
-                    {
-                        $data['data']['announcement']= "<div style='color:red; padding:2px 10px;'>您当前有{$count}个探头未设置报警。</div>";
+                if (in_array(App::where('slug', App::冷链监测系统)->first()->id, $user->hasApps->pluck('app_id')->toArray())) {
+                    $count = (new ActionsController())->index('collectors/count_warningSetting_unset')['count'];
+                    if ($count > 0) {
+                        $data['data']['announcement'] = "<div style='color:red; padding:2px 10px;'>您当前有{$count}个探头未设置报警。</div>";
                     }
                 }
             } else {
                 $data['data']['announcement'] = config('api.defaults.announcement_noapp');
             }
         }
+
+        return $this->response->array($data);
+    }
+
+    public function mobileDefault()
+    {
+        $is_mobile = 1;
+        $menus = (new Menu())->listTreeDefault($is_mobile);
+        $data['data']['menus'] = $menus;
+
+        $ads = AdCategory::where('types', $is_mobile ? 'mobile' : 'web')->with('ads')->get()->toArray();
+        $data['data']['ads'] = $ads;
+
+        $data['data']['announcement'] = config('api.defaults.announcement_noapp');
+
 
         return $this->response->array($data);
     }
@@ -55,7 +68,7 @@ class HomeController extends Controller
 
         if ($menus == []) {
             if (count($user->hasApps)) {
-                $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您绑定的 <b style="color:blue">' . (implode(',', $user->apps->pluck('name')->toArray())) . '</b> ，功能仍正在陆续开发中，敬请期待。</br></div>';
+                $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您绑定的 <b style="color:blue">'.(implode(',', $user->apps->pluck('name')->toArray())).'</b> ，功能仍正在陆续开发中，敬请期待。</br></div>';
             } else {
                 $data['data']['announcement'] = '<div style="background:#faf2cc;color:#FF0000; padding:10px;">您可能没有<b style="color:blue">绑定系统</b>，请到【我的】页面绑定业务系统。<br>已开通的系统：冷链监测系统；</br></div>';
             }

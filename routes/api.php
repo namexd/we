@@ -28,6 +28,8 @@ $api->version('v1', [
         'limit' => config('api.rate_limits.access.limit'),
         'expires' => config('api.rate_limits.access.expires'),
     ], function ($api) {
+        //默认菜单
+        $api->get('home/mobile_default', 'HomeController@mobileDefault')->name('api.home.mobile');
 
         $api->get('test/list', 'TestController@list')->name('api.test.list');
         $api->get('test/detail/{topic}', 'TestController@detail')->name('api.test.detail');
