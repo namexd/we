@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Models\Ad;
+use App\Models\Topic;
 use App\Models\AdCategory;
 use Illuminate\Http\Request;
 use Jenssegers\Agent\Facades\Agent;
