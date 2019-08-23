@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Requests\Api\AppPhoneAuthorizationRequest;
 use App\Http\Requests\Api\PhoneAuthorizationRequest;
 use App\Http\Requests\Api\SocialAuthorizationRequest;
 use App\Http\Requests\Api\WeappAuthorizationRequest;
@@ -280,5 +281,30 @@ class AuthorizationsController extends Controller
             UserLoginLog::addCcrpLoginLog($request, $user);
         }
 
+    }
+
+    //ccrp 用户名密码登陆
+    public function AppPhoneStore(AppPhoneAuthorizationRequest $request)
+    {
+        $verifyData = \Cache::get($request->verification_key);
+
+//        if (!$verifyData) {
+//            return $this->response->error('验证码已失效', 422);
+//        }
+//
+//        if (!hash_equals($verifyData['code'], $request->verification_code)) {
+//            // 返回401
+//            return $this->response->errorUnauthorized('验证码错误');
+//        }
+        $phone = $verifyData['phone']??$request->phone;
+        $user = User::where('phone', $phone)->whereNotNull('phone')->where('phone_verified', 1)->first();
+        if ($phone and !$user) {
+            return $this->response->errorUnauthorized('用户不存在');
+        }
+        // 清除验证码缓存
+        \Cache::forget($request->verification_key);
+
+        $token = Auth::guard('api')->fromUser($user);
+        return $this->respondWithToken($token)->setStatusCode(201);
     }
 }

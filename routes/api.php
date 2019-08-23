@@ -59,6 +59,9 @@ $api->version('v1', [
             // 使用手机号和验证码登录,未测试
             $api->post('verifications/phone', 'AuthorizationsController@phoneStore')
                 ->name('api.users.phoneStore');
+            // 使用手机号和验证码登录,未测试
+            $api->post('verifications/phone/{slug}', 'AuthorizationsController@AppPhoneStore')
+                ->name('api.users.phoneStore.app');
         });
         $api->get('test', 'TestController@index');
         //微信jssdk的配置信息
