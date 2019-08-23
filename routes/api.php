@@ -163,6 +163,9 @@ $api->version('v1', [
             $api->resource('oa_accountant_invoices', OaAccountantInvoiceController::class);
             //销售周报管理
             $api->resource('oa_sales_report', OaSalesReportController::class);
+            //用户发票信息
+            $api->get('invoice_type', 'UserInvoiceInfoController@getInvoiceType');
+            $api->resource('user_invoice_info', UserInvoiceInfoController::class);
 
 
             //工具查询-批签发通用数据
@@ -210,6 +213,13 @@ $api->version('v1', [
                 $api->put('wxmember/bind_phone/{openid}/{phone}', 'WxmembersController@bindPhone')->name('api.ocenter.wxmember.bind_phone');
                 // ccrp是否包含手机号的联系人
                 $api->get('contacts/{company_id}/has_phone/{phone}', 'ConcatsController@hasPhone')->name('api.ccrp.contacts.has_phone');
+            });
+            $api->group( [
+                'namespace' => 'Ucenter',
+                'prefix' => 'ucenter',
+            ], function ($api) {
+                $api->any('{action}', 'ActionsController@index')->name('api.ccrps.actions.index');
+                $api->any('{action}/{params?}/{params2?}/{params3?}/{params4?}', 'ActionsController@index')->name('api.exports.actions.index');
             });
             //Ocenter 旧的用户中心
             $api->group([
