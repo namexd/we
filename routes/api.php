@@ -14,20 +14,15 @@ $api->version('v1', [
 //        return $request->getPathInfo();
 //    })->where('path', '.*');
     // 短信验证码，1分钟，1次
-    $api->group([
-        'middleware' => ['api.throttle', 'api.auth'],
-//        'limit' => config('api.rate_limits.sms.limit'),
-//        'expires' => config('api.rate_limits.sms.expires'),
-    ], function ($api) {
-        $api->post('verification_codes', 'VerificationCodesController@store')
-            ->name('api.verificationCodes.store');
-    });
 
     $api->group([
         'middleware' => ['api.throttle'],
         'limit' => config('api.rate_limits.access.limit'),
         'expires' => config('api.rate_limits.access.expires'),
     ], function ($api) {
+        //获取验证码
+        $api->post('verification_codes', 'VerificationCodesController@store')
+            ->name('api.verificationCodes.store');
         //默认菜单
         $api->get('home/mobile_default', 'HomeController@mobileDefault')->name('api.home.mobile');
 
