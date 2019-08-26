@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Http\Controllers\Api\Ccrps\ActionsController;
 use App\Http\Requests\Api\AppPhoneAuthorizationRequest;
 use App\Http\Requests\Api\PhoneAuthorizationRequest;
 use App\Http\Requests\Api\SocialAuthorizationRequest;
@@ -9,6 +10,7 @@ use App\Http\Requests\Api\WeappAuthorizationRequest;
 use App\Http\Requests\Api\WeAuthorizationRequest;
 use App\Models\ApiLoginLog;
 use App\Models\ApilogUserAgent;
+use App\Models\App;
 use App\Models\Ccrp\UserLoginLog;
 use App\Models\Role;
 use App\Models\Weapp;
@@ -140,8 +142,7 @@ class AuthorizationsController extends Controller
                 $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                 $new_weappHasWeuser->save();
                 $user = $hasWeuser->weuser->user;
-                if(config('api.defaults.auto_register_tester'))
-                {
+                if (config('api.defaults.auto_register_tester')) {
                     $user->registerTester();
                 }
             } else {
@@ -174,8 +175,7 @@ class AuthorizationsController extends Controller
                     ];
                     $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                     $weappHasWeuser->save();
-                    if(config('api.defaults.auto_register_tester'))
-                    {
+                    if (config('api.defaults.auto_register_tester')) {
                         $user->registerTester();
                     }
                 } else {
@@ -273,10 +273,9 @@ class AuthorizationsController extends Controller
         return $this->response->array($data);
     }
 
-    private function AddLoginLog($request,$user)
+    private function AddLoginLog($request, $user)
     {
-        if(env('APP_ENV')=='production')
-        {
+        if (env('APP_ENV') == 'production') {
             ApiLoginLog::addLog($request, $user);
             UserLoginLog::addCcrpLoginLog($request, $user);
         }
@@ -284,23 +283,77 @@ class AuthorizationsController extends Controller
     }
 
     //ccrp 用户名密码登陆
-    public function AppPhoneStore(AppPhoneAuthorizationRequest $request)
+    public function AppPhoneStore(AppPhoneAuthorizationRequest $request, $slug)
     {
         $verifyData = \Cache::get($request->verification_key);
 
-//        if (!$verifyData) {
-//            return $this->response->error('验证码已失效', 422);
-//        }
-//
-//        if (!hash_equals($verifyData['code'], $request->verification_code)) {
-//            // 返回401
-//            return $this->response->errorUnauthorized('验证码错误');
-//        }
-        $phone = $verifyData['phone']??$request->phone;
-        $user = User::where('phone', $phone)->whereNotNull('phone')->where('phone_verified', 1)->first();
-        if ($phone and !$user) {
-            return $this->response->errorUnauthorized('用户不存在');
+        if($request->tester=='lengwang')
+        {
+            //测试模式,不验证手机验证码
+        }else{
+            if (!$verifyData) {
+                return $this->response->error('验证码已失效', 422);
+            }
+
+            if (!hash_equals($verifyData['code'], $request->verification_code)) {
+                // 返回401
+                return $this->response->errorUnauthorized('验证码错误');
+            }
         }
+        //check ccrp
+        if ($slug == 'ccrp') {
+            $app = App::where('slug', 'ccrp')->first();
+            $login = (new ActionsController())->anonymous($slug, 'users/login');
+            if (isset($login->original)) {
+                return $this->response->error($login->original['message'], $login->original['status_code']);
+            }
+
+            $phone = $verifyData['phone'] ?? $request->phone;
+            $user = User::where('phone', $phone)->whereNotNull('phone')->where('phone_verified', 1)->first();
+            if ($phone and !$user) {
+                //创建user
+                $user = new User();
+                $user->name = $phone;
+                $user->phone = $phone;
+                $user->phone_verified = 1;
+                $user->save();
+//                return $this->response->errorUnauthorized('用户不存在');
+            }
+            //使用user登陆
+            $has_ccrp = $user->getApp($app->id);
+            //check 是否可以绑定
+            if ($has_ccrp == null) {
+                $folder = ucfirst(strtolower($app->program));
+                $userModel = "\\App\\Models\\" . $folder . "\\" . "User";
+                $users = new $userModel;
+                $users->setApiServer($app);
+                $username = $request->username;
+                $password = $request->password;
+                if (!$users->checkUsername($username)) {
+                    return $this->response->error('用户名不存在。', 422);
+                }
+                $login = $users->checkPassword($username, $password);
+                if (!$login) {
+                    return $this->response->error('密码错误。', 422);
+                }
+                if (!$user->isLengwang() and !$users->checkPhone($username, $user->phone, $user)) {
+                    return $this->response->error('您的手机号不是本系统的联系人，若需绑定请联系客服。', 422);
+                }
+                $app_user = \App\Models\Ccrp\User::find($login->id);
+                $userCompany = $app_user->userCompany;
+                if (!$userCompany) {
+                    return $this->response->error('单位状态异常，请联系客服', 422);
+                }
+                $rs = $app->bind($user, $username, $login->id, $login->unitid);
+            }
+//                $has_ccrp = $user->getApp($app->id);
+//                dd($has_ccrp);
+
+
+        } else {
+            return $this->response->errorUnauthorized('系统不存在!');
+        }
+
         // 清除验证码缓存
         \Cache::forget($request->verification_key);
 
