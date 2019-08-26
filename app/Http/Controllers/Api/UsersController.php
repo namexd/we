@@ -138,11 +138,15 @@ class UsersController extends Controller
         if (!$user->isLengwang() and  !$users->checkPhone($username,$user->phone,$user)) {
             return $this->response->error('您的手机号不是本系统的联系人，若需绑定请联系客服。', 422);
         }
-        $app_user = \App\Models\Ccrp\User::find( $login->id);
-        $userCompany = $app_user->userCompany;
-        if (!$userCompany)
+        if($folder=='ccrp')
         {
-            return $this->response->error('单位状态异常，请联系客服', 422);
+            //ccrp 定向检测单位状态
+            $app_user = \App\Models\Ccrp\User::find( $login->id);
+            $userCompany = $app_user->userCompany;
+            if (!$userCompany)
+            {
+                return $this->response->error('单位状态异常，请联系客服', 422);
+            }
         }
         $rs = $app->bind($user, $username, $login->id, $login->unitid);
         return $this->response->created(null, $rs->toArray());
