@@ -16,7 +16,7 @@ class UserTransformer extends TransformerAbstract
             'realname' => $user->realname,
             'phone' => $user->phone,
             'phone_verified' => $user->phone_verified ,
-            'headimgurl'=>$user->weuser->headimgurl,
+            'headimgurl'=>$user->weuser?$user->weuser->headimgurl:null,
             'created_at' => $user->created_at->toDateTimeString(),
             'updated_at' => $user->updated_at->toDateTimeString(),
         ];
