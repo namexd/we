@@ -58,15 +58,15 @@ class ToolsController extends Controller
     {
         switch ($slug) {
             case 'topics':
-                $this->setCrudModel(ApiLoginLog::class);
-                $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-7)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();
+//                $this->setCrudModel(ApiLoginLog::class);
+//                $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-7)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();
                 $info = [];
-                foreach ($data as $row) {
-                    $info['data'][] = [
-                        "date" => Carbon::now()->addDay($row->days - Carbon::now()->day )->toDateString(),
-                        "login_times" => $row->cnt,
-                    ];
-                }
+//                foreach ($data as $row) {
+//                    $info['data'][] = [
+//                        "date" => Carbon::now()->addDay($row->days - Carbon::now()->day )->toDateString(),
+//                        "login_times" => $row->cnt,
+//                    ];
+//                }
 
                 $info["meta"]["columns"] = [
                     [
@@ -83,7 +83,7 @@ class ToolsController extends Controller
                 break;
             case 'loginlog':
                 $this->setCrudModel(ApiLoginLog::class);
-                $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-7)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();
+                $data = ApiLoginLog::where('created_at', '>', Carbon::now()->addDays(-14)->toDateTimeString())->groupBy(\DB::raw("days"))->select(\DB::raw("date_part('day', created_at) as days,count(*) as cnt"))->orderBy('days', 'asc')->get();
                 $info = [];
                 foreach ($data as $row) {
                     $info['data'][] = [
