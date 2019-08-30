@@ -27,8 +27,12 @@ class UserInvoiceInfoController extends Controller
      */
     public function index(Request $request)
     {
-        $infos = $this->model->where('user_id', $this->user()->id)->get();
-        return $this->response->collection($infos, new UserInvoiceInfoTransformer());
+        $infos = $this->model->where('user_id', $this->user()->id);
+        if ($request->has('invoice_type'))
+        {
+            $infos=$infos->where('invoice_type',$request->invoice_type);
+        }
+        return $this->response->collection($infos->orderBy('id','desc')->get(), new UserInvoiceInfoTransformer());
     }
 
     /**
@@ -57,7 +61,7 @@ class UserInvoiceInfoController extends Controller
      */
     public function show($id)
     {
-        return $this->response->item(OaAccountantInvoice::findOrFail($id), new UserInvoiceInfoTransformer())
+        return $this->response->item($this->model->findOrFail($id), new UserInvoiceInfoTransformer())
             ->addMeta('invoice_type', $this->model->getInvoiceType());
     }
 
@@ -71,7 +75,7 @@ class UserInvoiceInfoController extends Controller
     public function update(Request $request, $id)
     {
         $data = $request->all();
-        $result = OaAccountantInvoice::where('id', $id)->update($data);
+        $result = $this->model->where('id', $id)->update($data);
         if ($request) {
             return $this->response->item($result);
         } else {

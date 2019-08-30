@@ -14,7 +14,7 @@ return [
      |
      */
 
-    'enabled' => env('API_DEBUG', null),
+    'enabled' => env('APP_DEBUG', null),
     'except' => [
         'telescope*'
     ],

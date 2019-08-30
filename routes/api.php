@@ -166,6 +166,8 @@ $api->version('v1', [
             //用户发票信息
             $api->get('invoice_type', 'UserInvoiceInfoController@getInvoiceType');
             $api->resource('user_invoice_info', UserInvoiceInfoController::class);
+            $api->get('invoice_apply_status', 'UserInvoiceApplyController@getStatus');
+            $api->resource('user_invoice_applies', UserInvoiceApplyController::class);
 
 
             //工具查询-批签发通用数据
