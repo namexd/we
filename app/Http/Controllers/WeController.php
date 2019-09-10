@@ -14,6 +14,7 @@ use App\Models\WechatMedia;
 use App\Models\Weuser;
 use function App\Utils\add_query_param;
 use function App\Utils\app_access_decode;
+use Dingo\Api\Auth\Provider\JWT;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
@@ -40,13 +41,12 @@ class WeController extends Controller
         $data = $app->material->list('news', 0, 20);
 //return;
         $medias = [];
-        $insert= 0;
+        $insert = 0;
         if ($data) {
             foreach ($data['item'] as $item) {
                 $media_id = $item['media_id'];
-                $exist= WechatMedia::where('media_id',$media_id)->count();
-                if($exist==0)
-                {
+                $exist = WechatMedia::where('media_id', $media_id)->count();
+                if ($exist == 0) {
                     $content = $item['content'];
                     $create_time = $content['create_time'];
                     $update_time = $content['update_time'];
@@ -71,7 +71,7 @@ class WeController extends Controller
                     }
                 }
             }
-            echo $insert .'条插入了。';
+            echo $insert . '条插入了。';
             dd(count($medias));
         }
     }
@@ -91,7 +91,7 @@ class WeController extends Controller
         } else {
             request()->session()->put('callback_url', $this->redirect_url);
         }
-        $config =config('wechat.official_account.default');
+        $config = config('wechat.official_account.default');
         $config['oauth']['scopes'] = $scopes;
         $app = Factory::officialAccount($config);
 
@@ -200,14 +200,17 @@ class WeController extends Controller
             $redirect_url = ['url' => base64_encode($this->redirect_url)];
         }
         request()->session()->put('qrback_url', $redirect_url);
-        $redirect_uri = route('we.qrback', ['redirect_url' => $redirect_url]);
+        if (request()->get('qrback')) {
+            $redirect_uri = route(request()->qrback, ['redirect_url' => $redirect_url]);
+        } else {
+            $redirect_uri = route('we.qrback', ['redirect_url' => $redirect_url]);
+        }
         $redirect_uri = urlencode($redirect_uri);//该回调需要url编码
 
         $appID = config('wechat.open_platform.weixinweb.app_id');
 
-        if((request()->get('method')) =='js')
-        {
-            return view('we/qrcode',['redirect_uri'=>$redirect_uri]);
+        if ((request()->get('method')) == 'js') {
+            return view('we/qrcode', ['redirect_uri' => $redirect_uri]);
             exit();
         }
 
@@ -289,15 +292,13 @@ class WeController extends Controller
                 $user = $weuser->user;
 
                 //自动绑定
-                $auto_bind_app = session('auto_bind_app')??false;
-                if($auto_bind_app)
-                {
+                $auto_bind_app = session('auto_bind_app') ?? false;
+                if ($auto_bind_app) {
 
                     $user_has_app = UserHasApp::where('app_id', $auto_bind_app['app_id'])
                         ->where('user_id', $user->id)
                         ->first();
-                    if(!$user_has_app)
-                    {
+                    if (!$user_has_app) {
                         $app = App::where('id', $auto_bind_app['app_id'])->first();
                         $app->bind($user, $auto_bind_app['app_username'], $auto_bind_app['app_userid'], $auto_bind_app['app_unitid']);
                         request()->session()->forget('auto_bind_app');
@@ -460,7 +461,7 @@ class WeController extends Controller
                     echo '<h1>应用未开启扫码登录地址 :(</h1><hr>';
                     exit();
                 }
-            }else{
+            } else {
                 request()->session()->put('auto_bind_app', $res);
                 return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
             }
@@ -484,10 +485,9 @@ class WeController extends Controller
             exit();
         }
 
-        $user =   Auth::guard('api')->user();
+        $user = Auth::guard('api')->user();
 
-        if(!$user)
-        {
+        if (!$user) {
             echo '<h1>token错误，请重新登录 :(</h1><hr>';
             exit();
         }
@@ -500,10 +500,10 @@ class WeController extends Controller
                     $url = $user_info['login_url'] . '?access=' . $user_info['access'] . '&';
                     return Redirect::away($url);
                 } else {
-                    echo '<h1>"'.$to_app->name.'"未开启扫码登录地址 :(</h1><hr>';
+                    echo '<h1>"' . $to_app->name . '"未开启扫码登录地址 :(</h1><hr>';
                     exit();
                 }
-            }else{
+            } else {
                 $res = $user_has_app->toArray();
                 request()->session()->put('auto_bind_app', $res);
                 return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
@@ -512,5 +512,145 @@ class WeController extends Controller
             return redirect(route('we.qrcode', ['redirect_url' => $to_app->slug]));
         }
 
+    }
+
+
+    /**
+     * 扫码登录测试
+     */
+    public function bind()
+    {
+
+        if (session('user')) {
+            $user = session('user');
+        } else {
+            $user = auth('api')->user();
+            if (!$user) {
+                return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.']);
+            } else {
+                $user = $user->toArray();
+            }
+        }
+
+        if ($user) {
+            session()->put('user', $user);
+        } else {
+            return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.']);
+        }
+
+        $url = route('we.qrcode', base64_encode(route('we.qrbind'))) . '?qrback=we.qrback.bind';
+        return Redirect::away($url);
+
+
+    }
+
+    /**
+     * 扫码登录回调
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function qrbackBind()
+    {
+        $user_session = session('user');
+        $user = User::find($user_session['id']);
+        if (!$user) {
+            return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.']);
+        }
+        $code = request()->code ?? null;
+        $appid = config('wechat.open_platform.weixinweb.app_id');
+        $secret = config('wechat.open_platform.weixinweb.secret');
+        if (session('qrback_url')) {
+            $redirect = session('qrback_url');
+            if (isset($redirect['app'])) {
+                $this->redirect_app = $redirect['app'];
+            }
+            if (isset($redirect['url'])) {
+                $this->redirect_url = $redirect['url'];
+            }
+        }
+        if ($code)  //有code
+        {
+            //通过code获得 access_token + openid
+            $url = "https://api.weixin.qq.com/sns/oauth2/access_token?appid=" . $appid
+                . "&secret=" . $secret . "&code=" . $code . "&grant_type=authorization_code";
+            $client = new Client();
+            $jsonResult = $client->get($url);
+            $resultArray = json_decode($jsonResult->getBody(), true);
+            if (!isset($resultArray["access_token"])) {
+                return Redirect::route('we.qrcode', ['redirect_url' => $this->redirect_url]);
+            }
+            $access_token = $resultArray["access_token"];
+            $openid = $resultArray["openid"];
+            //通过access_token + openid 获得用户所有信息,结果全部存储在$infoArray里,后面再写自己的代码逻辑
+            $infoUrl = "https://api.weixin.qq.com/sns/userinfo?access_token=" . $access_token . "&openid=" . $openid;
+            $infoResult = $client->get($infoUrl);
+            $userInfo = json_decode($infoResult->getBody(), true);
+
+            //登录或创建用户
+            // 检测we.openid 是否存
+            $hasWeuser = WeappHasWeuser::where('weapp_id', Weapp::智慧冷链用户中心)->where('openid', $userInfo['openid'])->first();
+
+            if (!$hasWeuser) {
+                // 改用检测we.unionid 是否存
+                $hasWeuser = WeappHasWeuser::where('unionid', $userInfo['unionid'])->first();
+                // 有unionid 但是没有openid，则为小程序等第二应用的用户，插入关系
+                if ($hasWeuser) {
+                    $new_weappHasWeuser = [
+                        'weapp_id' => Weapp::智慧冷链用户中心,
+                        'weuser_id' => $hasWeuser->weuser_id,
+                        'openid' => $userInfo['openid'],
+                        'unionid' => $userInfo['unionid'],
+                    ];
+                    $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
+                    $new_weappHasWeuser->save();
+                }
+            }
+            if ($hasWeuser) {
+                // 如果openid存在，检测unionid字段是否为空，为空则更新
+                if (!$hasWeuser->unionid and $userInfo['unionid']) {
+                    $hasWeuser->unionid = $userInfo['unionid'];
+                    $hasWeuser->save();
+                }
+                $weuser = $hasWeuser->weuser;
+                if ($weuser and $weuser->user_id != $user->id) {
+                    User::where('id', $weuser->user_id)->update(['status' => 0]);
+                    $weuser->user_id = $user->id;
+                    $weuser->save();
+                }
+
+                $user->name = $userInfo['nickname'];
+                $user->save();
+
+                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功。']);
+            } else {
+                //create weuser
+                $new_weuser = [
+                    'nickname' => $userInfo['nickname'],
+                    'sex' => $userInfo['sex'],
+                    'language' => $userInfo['language'],
+                    'city' => $userInfo['city'],
+                    'province' => $userInfo['province'],
+                    'country' => $userInfo['country'],
+                    'headimgurl' => $userInfo['headimgurl'],
+                    'privilege' => json_encode($userInfo['privilege'])
+                ];
+                $weuser = new Weuser($new_weuser);
+                $user->weuser()->save($weuser);
+                $new_weappHasWeuser = [
+                    'weapp_id' => Weapp::智慧冷链用户中心,
+                    'openid' => $userInfo['openid'],
+                    'unionid' => $userInfo['unionid'],
+                    'weuser_id' => $user->weuser->id,
+                ];
+                $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
+                $weappHasWeuser->save();
+
+                $user->name = $userInfo['nickname'];
+                $user->save();
+
+                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功啦。']);
+            }
+        } else {
+            return response()->view('we.error', ['message' => '微信授权失败']);
+        }
     }
 }

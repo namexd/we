@@ -20,6 +20,13 @@ class UserTransformer extends TransformerAbstract
             'created_at' => $user->created_at->toDateTimeString(),
             'updated_at' => $user->updated_at->toDateTimeString(),
         ];
+        if(!$user->weuser)
+        {
+            $rs['weuser'] = null;
+            $rs['weuser_qrcode_bind_url'] =route('we.qrbind');
+        }else{
+            $rs['weuser'] = $user->weuser;
+        }
         if(request()->get('with'))
         {
             unset($rs['phone_verified']);
