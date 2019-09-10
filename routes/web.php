@@ -24,6 +24,8 @@ Route::get('we/callback', 'WeController@callback')->name('we.callback');
 Route::get('we/test', 'WeController@test')->name('we.test');
 //PC浏览器扫码登录
 //回调页面
+Route::get('we/qrcode/bind', 'WeController@bind')->name('we.qrbind');
+Route::get('we/qrcode/callback/bind', 'WeController@qrbackBind')->name('we.qrback.bind');
 Route::get('we/qrcode/callback', 'WeController@qrback')->name('we.qrback');
 //回调测试页面
 Route::get('we/qrcode/home', 'WeController@qrhome')->name('we.qrhome');
