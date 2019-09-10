@@ -610,39 +610,43 @@ class WeController extends Controller
                     $hasWeuser->unionid = $userInfo['unionid'];
                     $hasWeuser->save();
                 }
-
-                if ($hasWeuser and $hasWeuser->user_id != $user->id) {
-                    User::where('id', $hasWeuser->user_id)->update(['status' => 0]);
-                    $hasWeuser->user_id = $user->id;
-                    $hasWeuser->save();
+                $weuser = $hasWeuser->weuser;
+                if ($weuser and $weuser->user_id != $user->id) {
+                    User::where('id', $weuser->user_id)->update(['status' => 0]);
+                    $weuser->user_id = $user->id;
+                    $weuser->save();
                 }
 
-                $user->name = $userInfo['original']['nickname'];
+                $user->name = $userInfo['nickname'];
                 $user->save();
 
                 return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功。']);
             } else {
                 //create weuser
                 $new_weuser = [
-                    'nickname' => $userInfo['original']['nickname'],
-                    'sex' => $userInfo['original']['sex'],
-                    'language' => $userInfo['original']['language'],
-                    'city' => $userInfo['original']['city'],
-                    'province' => $userInfo['original']['province'],
-                    'country' => $userInfo['original']['country'],
-                    'headimgurl' => $userInfo['original']['headimgurl'],
-                    'privilege' => json_encode($userInfo['original']['privilege'])
+                    'nickname' => $userInfo['nickname'],
+                    'sex' => $userInfo['sex'],
+                    'language' => $userInfo['language'],
+                    'city' => $userInfo['city'],
+                    'province' => $userInfo['province'],
+                    'country' => $userInfo['country'],
+                    'headimgurl' => $userInfo['headimgurl'],
+                    'privilege' => json_encode($userInfo['privilege'])
                 ];
                 $weuser = new Weuser($new_weuser);
                 $user->weuser()->save($weuser);
                 $new_weappHasWeuser = [
                     'weapp_id' => Weapp::智慧冷链用户中心,
-                    'openid' => $userInfo['original']['openid'],
-                    'unionid' => $userInfo['original']['unionid'],
+                    'openid' => $userInfo['openid'],
+                    'unionid' => $userInfo['unionid'],
                     'weuser_id' => $user->weuser->id,
                 ];
                 $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                 $weappHasWeuser->save();
+
+                $user->name = $userInfo['nickname'];
+                $user->save();
+
                 return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功啦。']);
             }
         } else {
