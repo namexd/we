@@ -60,6 +60,8 @@ $api->version('v1', [
             $api->post('verifications/phone/{slug}', 'AuthorizationsController@AppPhoneStore')
                 ->name('api.users.phoneStore.app');
         });
+        $api->get('get_bind_miniProgram', 'UsersController@getBindMiniProgram');
+        $api->get('get_certification', 'UsersController@getCertification');
         $api->get('test', 'TestController@index');
         //微信jssdk的配置信息
         $api->post('we/wxconfig', 'WeController@wxconfig')->name('api.we.wxconfig');

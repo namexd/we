@@ -12,6 +12,7 @@ use App\Models\Role;
 use App\Models\RoleHasUser;
 use App\Models\User;
 use App\Models\UserHasApp;
+use App\Models\Weapp;
 use App\Transformers\UserHasAppTransformer;
 use App\Transformers\UserQrcodeTransformer;
 use App\Transformers\UserTransformer;
@@ -259,6 +260,26 @@ class UsersController extends Controller
             return $this->response->item($user, new UserQrcodeTransformer());
         }
         return $this->response->noContent();
+    }
+
+    public function getBindMiniProgram($company_id='2441')
+    {
+        $userCount=UserHasApp::query()->where('app_unitid',$company_id)->where('app_id',1)->whereHas('user',function ($query){
+           $query->whereHas('weuser',function ($query){
+               $query->whereHas('weappHasWeusers',function ($query){
+                  $query->where('weapp_id',Weapp::壹苗链小程序);
+               });
+           }) ;
+        })->count();
+        return $this->response->array(['count'=>$userCount]);
+    }
+
+    public function getCertification($company_id='2441')
+    {
+        $userCount=UserHasApp::query()->where('app_unitid',$company_id)->where('app_id',1)->whereHas('user',function ($query){
+            $query->where('phone_verified',1);
+        })->count();
+        return $this->response->array(['count'=>$userCount]);
     }
 
 }
