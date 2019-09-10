@@ -616,10 +616,34 @@ class WeController extends Controller
                     $hasWeuser->user_id = $user->id;
                     $hasWeuser->save();
                 }
-                $weuser = $hasWeuser->weuser;
-                return response()->view('we.success', ['message' => '恭喜，' . $weuser->name . '（' . $user->name . '），你已经绑定成功。']);
+
+                $user->name = $userInfo['original']['nickname'];
+                $user->save();
+
+                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功。']);
             } else {
-                return response()->view('we.error', ['message' => '微信授权失败']);
+                //create weuser
+                $new_weuser = [
+                    'nickname' => $userInfo['original']['nickname'],
+                    'sex' => $userInfo['original']['sex'],
+                    'language' => $userInfo['original']['language'],
+                    'city' => $userInfo['original']['city'],
+                    'province' => $userInfo['original']['province'],
+                    'country' => $userInfo['original']['country'],
+                    'headimgurl' => $userInfo['original']['headimgurl'],
+                    'privilege' => json_encode($userInfo['original']['privilege'])
+                ];
+                $weuser = new Weuser($new_weuser);
+                $user->weuser()->save($weuser);
+                $new_weappHasWeuser = [
+                    'weapp_id' => Weapp::智慧冷链用户中心,
+                    'openid' => $userInfo['original']['openid'],
+                    'unionid' => $userInfo['original']['unionid'],
+                    'weuser_id' => $user->weuser->id,
+                ];
+                $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
+                $weappHasWeuser->save();
+                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功啦。']);
             }
         } else {
             return response()->view('we.error', ['message' => '微信授权失败']);
