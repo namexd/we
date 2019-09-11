@@ -39,7 +39,7 @@ class UserLoginLog extends Coldchain2Model
         $log->type = $type;
         $log->login_time = $login_time;
         $log->ip = $ip;
-        $log->note = $note;
+        $log->note = $note??'';
         $log->wxcode = $wxcode;
         $log->save();
     }
@@ -54,7 +54,7 @@ class UserLoginLog extends Coldchain2Model
         $log->type = $type;
         $log->login_time = $login_time;
         $log->ip = $ip;
-        $log->note = $note;
+        $log->note = $note??'';
         $log->wxcode = $wxcode;
         $log->save();
     }
