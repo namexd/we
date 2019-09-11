@@ -279,6 +279,36 @@ class WeController extends Controller
                     ];
                     $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                     $new_weappHasWeuser->save();
+                }else{
+                    $new_user = [
+                        'name' => $userInfo['nickname']
+                    ];
+                    //扫码 create user
+                    $user = new User($new_user);
+                    $user->save();
+                    //扫码 create weuser
+
+                    $new_weuser = [
+                        'nickname' => $userInfo['nickname'],
+                        'sex' => $userInfo['sex'],
+                        'language' => $userInfo['language'],
+                        'city' => $userInfo['city'],
+                        'province' => $userInfo['province'],
+                        'country' => $userInfo['country'],
+                        'headimgurl' => $userInfo['headimgurl'],
+                        'privilege' => json_encode($userInfo['privilege'])
+                    ];
+                    $weuser = new Weuser($new_weuser);
+                    $user->weuser()->save($weuser);
+                    $new_weappHasWeuser = [
+                        'weapp_id' => Weapp::智慧冷链用户中心,
+                        'openid' => $userInfo['openid'],
+                        'unionid' => $userInfo['unionid'],
+                        'weuser_id' => $user->weuser->id,
+                    ];
+                    $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
+                    $weappHasWeuser->save();
+                    $hasWeuser = $weappHasWeuser;
                 }
             }
             if ($hasWeuser) {
