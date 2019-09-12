@@ -8,17 +8,21 @@
     <title>成功</title>
     <style>
         #error {
-            margin: 25% auto;
+            margin: 15% auto;
             text-align: center;
             color: darkgreen;
             font-size: 16px;
             font-weight: bold;
         }
+        #error h1{ font-size:80px;}
     </style>
 </head>
 <body>
 <div id="error">
+    <h1>:)</h1>
+    <br>
     {{ $message }}
+    <a href="{{ $refer }}">点击返回</a>
 </div>
 </body>
 </html>

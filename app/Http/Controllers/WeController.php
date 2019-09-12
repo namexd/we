@@ -19,6 +19,7 @@ use GuzzleHttp\Client;
 use Illuminate\Support\Facades\Auth;
 use Redirect;
 use EasyWeChat\Factory;
+use URL;
 
 /**
  * 智慧冷链公众号：网页版微信授权
@@ -279,6 +280,36 @@ class WeController extends Controller
                     ];
                     $new_weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
                     $new_weappHasWeuser->save();
+                } else {
+                    $new_user = [
+                        'name' => $userInfo['nickname']
+                    ];
+                    //扫码 create user
+                    $user = new User($new_user);
+                    $user->save();
+                    //扫码 create weuser
+
+                    $new_weuser = [
+                        'nickname' => $userInfo['nickname'],
+                        'sex' => $userInfo['sex'],
+                        'language' => $userInfo['language'],
+                        'city' => $userInfo['city'],
+                        'province' => $userInfo['province'],
+                        'country' => $userInfo['country'],
+                        'headimgurl' => $userInfo['headimgurl'],
+                        'privilege' => json_encode($userInfo['privilege'])
+                    ];
+                    $weuser = new Weuser($new_weuser);
+                    $user->weuser()->save($weuser);
+                    $new_weappHasWeuser = [
+                        'weapp_id' => Weapp::智慧冷链用户中心,
+                        'openid' => $userInfo['openid'],
+                        'unionid' => $userInfo['unionid'],
+                        'weuser_id' => $user->weuser->id,
+                    ];
+                    $weappHasWeuser = new WeappHasWeuser($new_weappHasWeuser);
+                    $weappHasWeuser->save();
+                    $hasWeuser = $weappHasWeuser;
                 }
             }
             if ($hasWeuser) {
@@ -521,12 +552,14 @@ class WeController extends Controller
     public function bind()
     {
 
+
+        $refer = URL::previous();
         if (session('user')) {
             $user = session('user');
         } else {
             $user = auth('api')->user();
             if (!$user) {
-                return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.']);
+                return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.', 'refer' => $refer]);
             } else {
                 $user = $user->toArray();
             }
@@ -535,9 +568,9 @@ class WeController extends Controller
         if ($user) {
             session()->put('user', $user);
         } else {
-            return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.']);
+            return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.', 'refer' => $refer]);
         }
-
+        session()->put('redirectPath', URL::previous());
         $url = route('we.qrcode', base64_encode(route('we.qrbind'))) . '?qrback=we.qrback.bind';
         return Redirect::away($url);
 
@@ -550,7 +583,10 @@ class WeController extends Controller
      */
     public function qrbackBind()
     {
+        $refer = session('redirectPath');
         $user_session = session('user');
+        session()->forget('redirectPath');
+        session()->forget('user');
         $user = User::find($user_session['id']);
         if (!$user) {
             return response()->view('we.error', ['message' => '没有获得用户信息,请重新登录.']);
@@ -566,7 +602,10 @@ class WeController extends Controller
             if (isset($redirect['url'])) {
                 $this->redirect_url = $redirect['url'];
             }
+            session()->forget('qrback_url');
         }
+
+
         if ($code)  //有code
         {
             //通过code获得 access_token + openid
@@ -611,8 +650,15 @@ class WeController extends Controller
                     $hasWeuser->save();
                 }
                 $weuser = $hasWeuser->weuser;
+                $old_user = $weuser->user;
+                if ($old_user->phone_verified == 1) {
+                    return response()->view('we.error', ['message' => '该微信已经绑定过账号"' . $old_user->name . '(' . $old_user->realname . ')"了', 'refer' =>
+                        $refer]);
+                }
                 if ($weuser and $weuser->user_id != $user->id) {
-                    User::where('id', $weuser->user_id)->update(['status' => 0]);
+                    $old_user->status = 0;
+                    $old_user->save();
+
                     $weuser->user_id = $user->id;
                     $weuser->save();
                 }
@@ -620,7 +666,8 @@ class WeController extends Controller
                 $user->name = $userInfo['nickname'];
                 $user->save();
 
-                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功。']);
+                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功。', 'refer' =>
+                    $refer]);
             } else {
                 //create weuser
                 $new_weuser = [
@@ -647,10 +694,14 @@ class WeController extends Controller
                 $user->name = $userInfo['nickname'];
                 $user->save();
 
-                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功啦。']);
+
+
+                return response()->view('we.success', ['message' => '恭喜，' . $user->name . '，你已经绑定成功啦。', 'refer' =>
+                    $refer]);
             }
         } else {
-            return response()->view('we.error', ['message' => '微信授权失败']);
+            return response()->view('we.error', ['message' => '微信授权失败', 'refer' =>
+                $refer]);
         }
     }
 }

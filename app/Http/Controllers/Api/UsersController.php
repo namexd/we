@@ -80,12 +80,38 @@ class UsersController extends Controller
 
         if (!hash_equals($verifyData['code'], $request->verification_code)) {
             // 返回401
-            return $this->response->errorUnauthorized('验证码错误');
+            return $this->response->error('验证码错误', 422);
         }
         //监测手机号是否被占用
         $phone_exist = User::where('phone', $verifyData['phone'])->count();
         if ($phone_exist) {
-            return $this->response->error('手机号被占用了，请更换手机号或者联系客服解绑', 422);
+            $old_user = User::where('phone', $verifyData['phone'])->first();
+            if($old_user and !$old_user->weuser)
+            {
+                //手机号注册的用户,删除当前user,把weuser绑定到之前的user
+                $user = User::where('id', $this->user()->id)->first();
+                $weuser= $user->weuser;
+                $weuser->user_id = $old_user->id;
+                $weuser->save();
+
+                $user->status=0;
+                $user->save();
+
+                //实名认证之前的user
+                $old_user->phone = $verifyData['phone'];
+                $old_user->phone_verified = 1;
+                $old_user->realname = $request->realname;
+                $old_user->save();
+                $old_user->weuser;
+                $token = auth()->guard('api')->fromUser($old_user);
+                return $this->response->array([
+                    'access_token' => $token,
+                    'token_type' => 'Bearer',
+                    'expires_in' => \Auth::guard('api')->factory()->getTTL() * 60
+                ])->setStatusCode(201);
+            }else{
+                return $this->response->error('手机号被占用了，请更换手机号或者联系客服解绑', 422);
+            }
         }
 
         $user = User::where('id', $this->user()->id)->first();
