@@ -27,6 +27,13 @@ class DomainTransformer extends TransformerAbstract
     {
         $arrays=$domain->config()->get()->pluck('pivot.value','slug')->toArray();
         return new Item($arrays,function ($array){
+            foreach ($array as $k=>&$v)
+            {
+                if (is_array(json_decode($v,true)))
+                {
+                    $v= json_decode($v,true);
+                }
+            }
             return $array;
         });
     }

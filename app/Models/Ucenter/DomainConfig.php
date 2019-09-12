@@ -11,4 +11,14 @@ class DomainConfig extends Model
         'config_id',
         'value',
     ];
+    public function getValueAttribute($value)
+    {
+        if (is_array(json_decode($value,true)))
+        {
+            return json_decode($value,true);
+        }else
+        {
+            return $value;
+        }
+    }
 }
