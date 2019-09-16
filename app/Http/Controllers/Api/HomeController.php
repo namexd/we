@@ -29,9 +29,19 @@ class HomeController extends Controller
             if (count($user->hasApps)) {
                 $data['data']['announcement'] = config('api.defaults.announcement');
                 if (in_array(App::where('slug', App::冷链监测系统)->first()->id, $user->hasApps->pluck('app_id')->toArray())) {
-                    $count = (new ActionsController())->index('collectors/count_warningSetting_unset')['count'];
-                    if ($count > 0) {
-                        $data['data']['announcement'] = "<div style='color:red; padding:2px 10px;'>您当前有{$count}个探头未设置报警。</div>";
+                    $result = (new ActionsController())->index('collectors/count_warningSetting_unset');
+                    $data['data']['announcement']='您当前有';
+                    if ($result['warning_count'] > 0) {
+                        $data['data']['announcement'] .= "<span style='color:red; padding:2px 2px;'>{$result['warning_count']}个探头未设置报警;</span>";
+                    }
+                    if ($result['status_3'] > 0) {
+                        $data['data']['announcement'] .= "<span style='color:orange; padding:2px 2px;'>{$result['status_3']}个设备备用;</span>";
+                    }
+                    if ($result['status_6'] > 0) {
+                        $data['data']['announcement'] .= "<span style='color:orange; padding:2px 2px;'>{$result['status_6']}个设备除霜;</span>";
+                    }
+                    if ($result['status_5'] > 0) {
+                        $data['data']['announcement'] .= "<span style='color:orange; padding:2px 2px;'>{$result['status_5']}个设备盘苗;</span>";
                     }
                 }
             } else {
