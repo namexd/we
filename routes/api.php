@@ -131,6 +131,7 @@ $api->version('v1', [
             $api->get('users/qrcode', 'UsersController@qrcode')->name('api.users.qrcode');
             // 可查看的用户列表（通讯录）
             $api->get('users/list', 'UsersController@index')->name('api.users.index');
+            $api->put('users/change_real_name/{id}', 'UsersController@changeRealName')->name('api.users.change_real_name');
             //更新微信信息
             $api->get('weusers', 'WeusersController@show')->name('api.weusers.show');
             $api->put('weusers', 'WeusersController@store')->name('api.weusers.store');

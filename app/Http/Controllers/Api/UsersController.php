@@ -308,4 +308,14 @@ class UsersController extends Controller
         return $this->response->array(['count'=>$userCount]);
     }
 
+
+    public function changeRealName($id,Request $request)
+    {
+        $user=User::findOrFail($id);
+        $user->realname=$request->realname;
+        $user->save();
+        return $this->response->item($user, new UserTransformer());
+
+    }
+
 }
