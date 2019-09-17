@@ -32,7 +32,7 @@ class HomeController extends Controller
                     $result = (new ActionsController())->index('collectors/count_warningSetting_unset');
                     $data['data']['announcement']='您当前有';
                     if ($result['warning_count'] > 0) {
-                        $data['data']['announcement'] .= "<span style='color:red; padding:2px 2px;'>{$result['warning_count']}个探头未设置报警;</span>";
+                        $data['data']['announcement'] .= "<span style='color:red; padding:2px 2px;'>{$result['warning_count']}个探头报警未开启;</span>";
                     }
                     if ($result['status_3'] > 0) {
                         $data['data']['announcement'] .= "<span style='color:orange; padding:2px 2px;'>{$result['status_3']}个设备备用;</span>";
