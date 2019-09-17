@@ -200,7 +200,7 @@ class AuthorizationsController extends Controller
                 }
             }
         } else {
-            if($hasWeuser->unionid==null)
+            if($hasWeuser->unionid==null and isset($data['unionid']))
             {
                 $hasWeuser->unionid = $data['unionid'];
                 $hasWeuser->save();
