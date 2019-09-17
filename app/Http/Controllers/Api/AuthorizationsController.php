@@ -105,6 +105,7 @@ class AuthorizationsController extends Controller
     public function weappStore($weapp = 'default', WeappAuthorizationRequest $request)
     {
         $code = $request->code;
+        $userInfo = $request->post('userInfo',false);
 
         $weapp_id = Weapp::miniProgram[$weapp] ?? 'default';
         $weapp_app = Weapp::find($weapp_id);
@@ -113,6 +114,22 @@ class AuthorizationsController extends Controller
         // 根据 code 获取微信 openid 和 session_key
         $miniProgram = Factory::miniProgram($config);
         $data = $miniProgram->auth->session($code);
+        if($userInfo and !isset($data['unionid']))
+        {
+            $iv = $userInfo['iv'];
+            $encryptedData = $userInfo['encryptedData'];
+            $session_key = $data['session_key'];
+
+            $decryptedData = $miniProgram->encryptor->decryptData($session_key, $iv, $encryptedData);
+
+            if($decryptedData and isset($decryptedData['unionId']))
+            {
+                $data['unionid'] = $decryptedData['unionId'];
+                $data['decryptedData'] = $decryptedData;
+            }
+
+        }
+
 //  "session_key" => "EcIPGiWJDW7zueqgnJgyJA=="
 //  "expires_in" => 7200
 //  "openid" => "oozgd0WhYY2_XN3utLcHqYErRiOQ"
@@ -183,6 +200,11 @@ class AuthorizationsController extends Controller
                 }
             }
         } else {
+            if($hasWeuser->unionid==null)
+            {
+                $hasWeuser->unionid = $data['unionid'];
+                $hasWeuser->save();
+            }
             $user = $hasWeuser->weuser->user;
         }
         $token = Auth::guard('api')->fromUser($user);
