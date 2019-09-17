@@ -34,6 +34,9 @@ class HomeController extends Controller
                     if ($result['warning_count'] > 0) {
                         $data['data']['announcement'] .= "<span style='color:red; padding:2px 2px;'>{$result['warning_count']}个探头报警未开启;</span>";
                     }
+                    if ($result['status_2'] > 0) {
+                        $data['data']['announcement'] .= "<span style='color:orange; padding:2px 2px;'>{$result['status_3']}个设备维修;</span>";
+                    }
                     if ($result['status_3'] > 0) {
                         $data['data']['announcement'] .= "<span style='color:orange; padding:2px 2px;'>{$result['status_3']}个设备备用;</span>";
                     }
